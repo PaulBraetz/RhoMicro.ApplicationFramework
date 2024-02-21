@@ -1,0 +1,3 @@
+# Common
+
+Contains common types.
