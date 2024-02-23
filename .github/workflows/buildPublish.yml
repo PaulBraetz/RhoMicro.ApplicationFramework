@@ -12,7 +12,6 @@ env:
   DOTNET_NOLOGO: true
   NuGetDirectory: ${{ github.workspace }}/nuget
   AssemblyVersion: 1.0.0
-  ProjectsGlob: "**/**!(App).csproj"
 
 defaults:
   run:
@@ -47,7 +46,7 @@ jobs:
       run: dotnet test -c Release -p:Version=$Env:AssemblyVersion
 
     - name: Dotnet Build
-      run: dotnet build $Env:ProjectsGlob -c Release -p:Version=$Env:AssemblyVersion
+      run: dotnet build -c Release -p:Version=$Env:AssemblyVersion
 
     - name: Create Nuget Packages
       run: dotnet pack -c Release -o "$Env:NuGetDirectory" -p:PackageVersion=${{github.ref_name}} -p:Version=$Env:AssemblyVersion
