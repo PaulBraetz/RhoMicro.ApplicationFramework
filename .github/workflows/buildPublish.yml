@@ -12,7 +12,7 @@ env:
   DOTNET_NOLOGO: true
   NuGetDirectory: ${{ github.workspace }}/nuget
   AssemblyVersion: 1.0.0
-  ProjectsGlob: "**/*!(.App).csproj"
+  ProjectsGlob: "**/**!(.App).csproj"
 
 defaults:
   run:
