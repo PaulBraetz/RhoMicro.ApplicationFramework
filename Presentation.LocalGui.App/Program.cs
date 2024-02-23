@@ -1,4 +1,7 @@
 ﻿namespace RhoMicro.ApplicationFramework.Presentation.LocalGui.App;
+
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.App;
+
 internal class Program
 {
     [STAThread]
@@ -7,7 +10,7 @@ internal class Program
         var builder = PhotinoBlazorAppBuilder.CreateDefault();
 
         // register root component and selector
-        builder.RootComponents.Add<EntryPoint>("app");
+        builder.RootComponents.Add<App>("app");
 
         AddConfiguration(builder);
         AddLogging(builder);

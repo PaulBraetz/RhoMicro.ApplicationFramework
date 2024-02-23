@@ -1,6 +1,6 @@
-﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
+﻿namespace RhoMicro.ApplicationFramework.Presentation.Models;
 
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;
+using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 
 /// <summary>
 /// Dispose strategy that never disposes instances any time <see cref="Dispose(T)"/> is called.

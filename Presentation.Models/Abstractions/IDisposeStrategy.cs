@@ -1,4 +1,4 @@
-﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;
+﻿namespace RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 
 /// <summary>
 /// Strategy for conditionally disposing of disposable objects.

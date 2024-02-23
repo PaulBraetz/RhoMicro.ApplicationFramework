@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
@@ -6,9 +6,13 @@
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Description>Bootstrapping application for Photino Blazor desktop applications.</Description>
+		<Description>Contains a composition root template for blazor photino apps.</Description>
 		<PackageTags></PackageTags>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="RhoMicro.ApplicationFramework.Composition" Version="0.0.0-alpha.13" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="README.md" Pack="true" PackagePath="/" CopyToOutputDirectory="Always" />
