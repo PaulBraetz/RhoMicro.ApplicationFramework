@@ -1,0 +1,6 @@
+.clipboard:hover {
+    cursor: pointer;
+}
+.clipboard:active {
+    transform:scale(0.95);
+}

@@ -7,5 +7,4 @@ using RhoMicro.ApplicationFramework.Common.Abstractions;
 /// </summary>
 /// <typeparam name="TSubControlModel">The type of subcontrol encapsulated.</typeparam>
 public interface IDynamicMultiControlItemModelFactory<TSubControlModel> :
-    IFactory<IDynamicMultiControlItemModel<TSubControlModel>>
-{ }
+    IFactory<IDynamicMultiControlItemModel<TSubControlModel>>;

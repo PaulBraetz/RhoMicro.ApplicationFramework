@@ -42,14 +42,14 @@ internal partial class PhotinoSynchronizationContext : SynchronizationContext
         item.SynchronizationContext.ExecuteBackground(item);
     };
 
+    //private readonly Int32 _uiThreadId;
+
     private readonly PhotinoWindow _window;
-    private readonly Int32 _uiThreadId;
     private readonly MethodInfo _invokeMethodInfo;
 
     public PhotinoSynchronizationContext(PhotinoWindow window)
         : this(window, new State())
-    {
-    }
+    { }
 
     private PhotinoSynchronizationContext(PhotinoWindow window, State state)
     {
@@ -57,8 +57,8 @@ internal partial class PhotinoSynchronizationContext : SynchronizationContext
 
         _window = window ?? throw new ArgumentNullException(nameof(window));
 
-        _uiThreadId = (Int32)typeof(PhotinoWindow).GetField("_managedThreadId", BindingFlags.NonPublic | BindingFlags.Instance)!
-            .GetValue(_window)!;
+        //_uiThreadId = (Int32)typeof(PhotinoWindow).GetField("_managedThreadId", BindingFlags.NonPublic | BindingFlags.Instance)!
+        //    .GetValue(_window)!;
 
         _invokeMethodInfo = typeof(PhotinoWindow).GetMethod("Invoke", BindingFlags.Public | BindingFlags.Instance)!;
     }

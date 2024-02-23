@@ -47,13 +47,9 @@ public class InputGroupModel<TInput, TValue, TError> : HasObservableProperties, 
 /// </summary>
 /// <typeparam name="TValue">The type of value obtained by this model.</typeparam>
 /// <typeparam name="TError">The type of error displayed by this model.</typeparam>
-public class InputGroupModel<TValue, TError> : InputGroupModel<IInputModel<TValue, TError>, TValue, TError>, IInputGroupModel<TValue, TError>
-{
-    /// <summary>
-    /// Initializes a new instance.
-    /// </summary>
-    /// <param name="input">The input control to use.</param>
-    public InputGroupModel(IInputModel<TValue, TError> input) : base(input)
-    {
-    }
-}
+/// <remarks>
+/// Initializes a new instance.
+/// </remarks>
+/// <param name="input">The input control to use.</param>
+public class InputGroupModel<TValue, TError>(IInputModel<TValue, TError> input) 
+    : InputGroupModel<IInputModel<TValue, TError>, TValue, TError>(input), IInputGroupModel<TValue, TError>;

@@ -9,29 +9,18 @@ using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 public sealed class ToastModelEqualityComparer : IEqualityComparer<IToastModel>
 {
     /// <summary>
-    /// Initializes a new instance. If possible, use <see cref="Instance"/> instead.
-    /// </summary>
-    public ToastModelEqualityComparer() { }
-    /// <summary>
-    /// Gets the singleton instance.
+    /// Gets a static instance.
     /// </summary>
     public static ToastModelEqualityComparer Instance { get; } = new();
     /// <inheritdoc/>
     public Boolean Equals(IToastModel? x, IToastModel? y)
     {
-        if(x == null)
-        {
-            return y == null;
-        }
-
-        if(y == null)
-        {
-            return x == null;
-        }
-
-        var result = x.CreatedAt == y.CreatedAt &&
-            x.Header == y.Header &&
-            x.Body == y.Body;
+        var result = x == null
+                    ? y == null
+                    : y != null
+                    && x.CreatedAt == y.CreatedAt
+                    && x.Header == y.Header
+                    && x.Body == y.Body;
 
         return result;
     }

@@ -1,0 +1,13 @@
+﻿@inherits ModelComponentBase<String>
+
+<div @attributes="Attributes">
+    @Model
+</div>
+
+@code {
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        EnsureClassNames("text-krtBlack", "bg-alert", "font-mono", "text-center");
+    }
+}

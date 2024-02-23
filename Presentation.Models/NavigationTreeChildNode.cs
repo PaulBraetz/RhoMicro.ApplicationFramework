@@ -6,10 +6,9 @@ using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 /// </summary>
 public sealed class NavigationTreeChildNode : NavigationTreeNode, INavigationTreeChildNode
 {
-    internal NavigationTreeChildNode(String name, String path, INavigationTreeNode parent) : base(name, path)
-    {
-        Parent = parent;
-    }
+    internal NavigationTreeChildNode(String name, String path, INavigationTreeNode parent)
+        : base(name, path)
+        => Parent = parent;
     /// <inheritdoc/>
     public INavigationTreeNode Parent { get; }
 }

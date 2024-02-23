@@ -1,0 +1,25 @@
+﻿@typeparam TError
+@typeparam TNumber
+@inherits ModelComponentBase<IInputModel<TNumber, TError>>
+
+<InputControl @attributes="Attributes"
+              type="number"
+              Value="Model"
+              TValue="TNumber"
+              TError="TError"
+              Parse="Parse"
+              CanParse="CanParse"
+              UpdateOnFocusLost="UpdateOnFocusLost"
+              ErrorTitleParse="ErrorTitleParse!"
+              InitialValueParse="v=>v.ToString()" />
+
+@code {
+    [Parameter]
+    public Func<String, Boolean>? CanParse { get; set; }
+    [Parameter]
+    public Func<String, TNumber>? Parse { get; set; }
+    [Parameter]
+    public Func<TError, String>? ErrorTitleParse { get; set; }
+    [Parameter]
+    public Boolean UpdateOnFocusLost { get; set; }
+}

@@ -1,0 +1,12 @@
+﻿@inherits InjectedModelComponentBase<IAgeModel>
+
+@Model.Value
+
+@code {
+#pragma warning disable BL0007 //silly warning
+    [Parameter]
+    public DateTimeOffset Origin { get => Model.Origin; set => Model.Origin = value; }
+    [Parameter]
+    public Func<TimeSpan, String> FormatAge { get => Model.FormatAge; set => Model.FormatAge = value; }
+#pragma warning restore
+}

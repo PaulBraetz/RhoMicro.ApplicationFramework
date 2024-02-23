@@ -6,9 +6,9 @@ using Microsoft.Extensions.Logging;
 using SimpleInjector;
 
 /// <summary>
-/// Logs the root Object graphs constructed by a container.
+/// Logs the root object graphs constructed by a container.
 /// </summary>
-public sealed class RootGraphLogger : IContainerLogger
+public sealed class ObjectGraphLogger : IContainerLogger
 {
     /// <inheritdoc/>
     public void Log(Container container, ILogger logger)

@@ -7,40 +7,31 @@ using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 /// Values published will be raised as info toasts.
 /// </summary>
 /// <typeparam name="T">The type of command to execute.</typeparam>
-public sealed class ToastsSuccessModel<T> : Common.Abstractions.IObserver<T>, IToastsModel
+/// <remarks>
+/// Initializes a new instance.
+/// </remarks>
+/// <param name="toastModelFactory">The factory to use when creating new toast models for exceptions received.</param>
+/// <param name="toastComparer">The comparer to use when relating a toasts <see cref="IToastModel.HasExpired"/> event to the toast to remove.</param>
+/// <param name="valueFormatter">The formatter used to create the toasts body upon notification of a new value.</param>
+public sealed class ToastsSuccessModel<T>(
+    IToastModelFactory toastModelFactory,
+    IEqualityComparer<IToastModel> toastComparer,
+    IStaticFormatter<T> valueFormatter) : IObserver<T>, IToastsModel
 {
-    /// <summary>
-    /// Initializes a new instance.
-    /// </summary>
-    /// <param name="toastModelFactory">The factory to use when creating new toast models for exceptions received.</param>
-    /// <param name="toastComparer">The comparer to use when relating a toasts <see cref="IToastModel.HasExpired"/> event to the toast to remove.</param>
-    /// <param name="valueFormatter">The formatter used to create the toasts body upon notification of a new value.</param>
-    public ToastsSuccessModel(
-        IToastModelFactory toastModelFactory,
-        IEqualityComparer<IToastModel> toastComparer,
-        IStaticFormatter<T> valueFormatter)
-    {
-        _toastModelFactory = toastModelFactory;
-        _valueFormatter = valueFormatter;
-        _toasts = new(toastComparer);
-    }
-
     private const Int32 _charDisplayMillis = 50;
     private const Int32 _minDisplayMillis = 5_000;
     private const String _toastHeader = "Info";
 
-    private readonly HashSet<IToastModel> _toasts;
-    private readonly IStaticFormatter<T> _valueFormatter;
-    private readonly IToastModelFactory _toastModelFactory;
+    private readonly HashSet<IToastModel> _toasts = new(toastComparer);
 
     /// <inheritdoc/>
     public void Notify(T value)
     {
-        var body = _valueFormatter.Format(value);
+        var body = valueFormatter.Format(value);
         var minDisplayMillis = body.Length * _charDisplayMillis;
         var displayMillis = Math.Max(minDisplayMillis, _minDisplayMillis);
         var lifespan = TimeSpan.FromMilliseconds(displayMillis);
-        var toast = _toastModelFactory.Create(_toastHeader, body, ToastType.Info, lifespan);
+        var toast = toastModelFactory.Create(_toastHeader, body, ToastType.Info, lifespan);
         AddToast(toast);
     }
 

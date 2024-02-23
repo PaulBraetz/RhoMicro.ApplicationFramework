@@ -1,4 +1,5 @@
 ﻿namespace RhoMicro.ApplicationFramework.Presentation.Models;
+
 using System.Text;
 
 using RhoMicro.ApplicationFramework.Common;

@@ -12,23 +12,12 @@ using RhoMicro.ApplicationFramework.Aspects.Abstractions;
 /// </remarks>
 /// <param name="serviceType">The type of service to log.</param>
 /// <param name="level">The level at which the execution is to be logged.</param>
-public readonly struct ServiceTypeLogEntry(
+public sealed class ServiceTypeLogEntry(
     Type serviceType,
-    LogLevel level = LogLevel.Information) : ILogEntry, IEquatable<ServiceTypeLogEntry>
+    LogLevel level = LogLevel.Information) : ILogEntry
 {
     /// <inheritdoc/>
     public LogLevel Level { get; } = level;
-
     /// <inheritdoc/>
     public String Evaluate() => $"Service Type: {serviceType.Name}";
-    /// <inheritdoc/>
-    public override Boolean Equals(Object? obj) => throw new NotImplementedException();
-    /// <inheritdoc/>
-    public override Int32 GetHashCode() => throw new NotImplementedException();
-    /// <inheritdoc/>
-    public static Boolean operator ==(ServiceTypeLogEntry left, ServiceTypeLogEntry right) => left.Equals(right);
-    /// <inheritdoc/>
-    public static Boolean operator !=(ServiceTypeLogEntry left, ServiceTypeLogEntry right) => !( left == right );
-    /// <inheritdoc/>
-    public Boolean Equals(ServiceTypeLogEntry other) => throw new NotImplementedException();
 }

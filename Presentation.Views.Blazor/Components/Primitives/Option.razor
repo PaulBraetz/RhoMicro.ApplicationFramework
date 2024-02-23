@@ -1,0 +1,28 @@
+﻿@typeparam TValue
+@inherits ModelComponentBase<IOptionModel<TValue>>
+
+<option @attributes="Attributes">
+	@Model.Name
+</option>
+
+@code {
+	protected override void OnParametersSet()
+	{
+		base.OnParametersSet();
+		if (Model.Disabled)
+			Attributes.TryAdd("disabled", "true");
+		else
+			Attributes.Remove("disabled");
+
+		if (Model.IsSelected)
+		{
+			Attributes.TryAdd("selected", "true");
+			Attributes.Remove("value");
+		}
+		else
+		{
+			Attributes.TryAdd("value", Model.Id);
+			Attributes.Remove("selected");
+		}
+	}
+}

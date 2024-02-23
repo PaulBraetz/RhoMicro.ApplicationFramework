@@ -41,10 +41,7 @@ public abstract class DisposableBase : IDisposable
     /// <summary>
     /// Disposes of managed state.
     /// </summary>
-    protected virtual void DisposeManaged()
-    {
-
-    }
+    protected virtual void DisposeManaged() { }
     /// <summary>
     /// Disposes unmanaged state and sets large fields to null. 
     /// When overriding this method, make sure to also implement a finalizer that calls <see cref="DisposeFinalize"/>.

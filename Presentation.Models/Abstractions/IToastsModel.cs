@@ -14,23 +14,23 @@ public interface IToastsModel
     /// </summary>
     event EventHandler<ToastChangedEventArgs>? ToastsChanged;
 }
-/// <summary>
-/// Contains descriptions for the type of change having occured upon <see cref="IToastsModel.ToastsChanged"/> having been raised.
-/// </summary>
-public enum ToastsChangedType
-{
-    /// <summary>
-    /// A toast has been added.
-    /// </summary>
-    Added,
-    /// <summary>
-    /// A toast has been removed.
-    /// </summary>
-    Removed
-}
+
 /// <summary>
 /// Argument for <see cref="IToastsModel.ToastsChanged"/> event.
 /// </summary>
-/// <param name="Type">The type of change that occured.</param>
-/// <param name="ToastAffected">The toast affected by the change.</param>
-public sealed record ToastChangedEventArgs(ToastsChangedType Type, IToastModel ToastAffected);
+/// <remarks>
+/// Initializes a new instance.
+/// </remarks>
+/// <param name="type">The type of change that occured.</param>
+/// <param name="toastAffected">The toast affected by the change.</param>
+public sealed class ToastChangedEventArgs(ToastsChangedType type, IToastModel toastAffected) : EventArgs
+{
+    /// <summary>
+    /// Gets the type of change that occured.
+    /// </summary>
+    public ToastsChangedType Type { get; } = type;
+    /// <summary>
+    /// Gets the toast affected by the change.
+    /// </summary>
+    public IToastModel ToastAffected { get; } = toastAffected;
+}

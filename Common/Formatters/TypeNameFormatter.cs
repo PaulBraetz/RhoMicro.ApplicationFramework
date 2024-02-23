@@ -9,11 +9,7 @@ using RhoMicro.ApplicationFramework.Common.Abstractions;
 public sealed class TypeNameFormatter<T> : IStaticFormatter<T>
 {
     /// <summary>
-    /// Initializes a new instance. If possible, use <see cref="Instance"/> instead.
-    /// </summary>
-    public TypeNameFormatter() { }
-    /// <summary>
-    /// Gets the singleton instance.
+    /// Gets a static instance.
     /// </summary>
 #pragma warning disable CA1000 // Do not declare static members on generic types <- use is not common due to singleton di container
     public static TypeNameFormatter<T> Instance { get; } = new();

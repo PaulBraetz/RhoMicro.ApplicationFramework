@@ -1,0 +1,46 @@
+﻿@typeparam TValue
+@typeparam TError
+@inherits ModelComponentBase<ISelectInputModel<TValue, TError>>
+
+<select @attributes="Attributes" @onchange="OnSelected">
+    @foreach(var option in _options!.Values)
+    {
+        @Option(option)
+    }
+</select>
+
+@code {
+    [Parameter]
+    public required RenderFragment<IOptionModel<TValue>> Option { get; set; } = DefaultOption;
+
+    private IDictionary<String, IOptionModel<TValue>>? _options;
+
+    private void OnSelected(ChangeEventArgs e)
+    {
+        if(e.Value != null &&
+            e.Value is String stringValue &&
+            _options!.TryGetValue(stringValue, out var option))
+        {
+            option.IsSelected = true;
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        EnsureClassNames("select-input");
+        _options = Model.GetOptions().ToDictionary(o => o.Id, o => o);
+    }
+
+    private static RenderFragment DefaultOption(IOptionModel<TValue> value)
+    {
+        return result;
+
+        void result(RenderTreeBuilder builder)
+        {
+            builder.OpenComponent<Option<TValue>>(0);
+            builder.AddAttribute(1, "Value", value);
+            builder.CloseComponent();
+        }
+    }
+}

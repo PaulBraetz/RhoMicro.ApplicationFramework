@@ -22,7 +22,6 @@ public interface IService<TRequest, TResult>
 /// Service implementing the request object pattern.
 /// </summary>
 /// <typeparam name="TRequest">The type of request to execute.</typeparam>
-public interface IService<TRequest> : IService<TRequest, ServiceResult>
-    where TRequest : IServiceRequest
-{
-}
+public interface IService<TRequest> 
+    : IService<TRequest, ServiceResult>
+    where TRequest : IServiceRequest;

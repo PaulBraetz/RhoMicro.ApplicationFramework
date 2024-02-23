@@ -5,14 +5,14 @@ using SimpleInjector;
 /// <summary>
 /// Contains  definitions for different application object graph roots.
 /// </summary>
-public static partial class Root
+public static partial class Composer
 {
     /// <summary>
     /// Creates a new composition root using the composition strategy provided.
     /// </summary>
     /// <param name="compose">The strategy using which to compose the application.</param>
     /// <returns>A new composition root based on the composition strategy passed.</returns>
-    public static IRoot Create(Action<Container> compose)
+    public static IComposer Create(Action<Container> compose)
     {
         ArgumentNullException.ThrowIfNull(compose);
 
@@ -24,7 +24,7 @@ public static partial class Root
     /// </summary>
     /// <param name="roots">The roots defining the composite composition.</param>
     /// <returns>A new composite composition root based on the roots provided.</returns>
-    public static IRoot Create(params IRoot[] roots) =>
+    public static IComposer Create(params IComposer[] roots) =>
         new Strategy(c =>
         {
             for(var i = 0; i < roots.Length; i++)

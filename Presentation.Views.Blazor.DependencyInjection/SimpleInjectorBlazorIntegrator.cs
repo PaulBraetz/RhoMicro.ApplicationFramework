@@ -44,7 +44,7 @@ public sealed class SimpleInjectorBlazorIntegrator : IDisposable
                 new ContainerDiagnosticsLogger(),
                 new FakeWarningsLogger()
 #if !DEBUG
-                ,new RootGraphLogger()
+                ,new ObjectGraphLogger()
 #endif
                 ));
 
@@ -55,16 +55,16 @@ public sealed class SimpleInjectorBlazorIntegrator : IDisposable
     /// Integrates SimpleInjector into the application and builds it.
     /// </summary>
     /// <param name="builder">The builder used for building the application.</param>
-    /// <param name="compositionRoot">The object graph root to configure the underlying service collection with.</param>
+    /// <param name="composer">The object graph composer to configure the underlying service collection with.</param>
     /// <param name="componentAssemblies">The assemblies to search for implementations of <see cref="IComponent"/> (Blazor components). Types located will be registered to the container.</param>
     /// <returns>An instance of <typeparamref name="TApplication"/>, as built by <paramref name="builder"/>.</returns>
-    public TApplication Integrate<TApplication>(IApplicationBuilder<TApplication> builder, IRoot compositionRoot, params Assembly[] componentAssemblies)
+    public TApplication Integrate<TApplication>(IApplicationBuilder<TApplication> builder, IComposer composer, params Assembly[] componentAssemblies)
         where TApplication : IApplication
     {
         ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(compositionRoot);
+        ArgumentNullException.ThrowIfNull(composer);
 
-        Initialize(builder.Services, compositionRoot, componentAssemblies);
+        Initialize(builder.Services, composer, componentAssemblies);
         var result = builder.Build();
         Finalize(result.Services);
         return result;
@@ -74,9 +74,9 @@ public sealed class SimpleInjectorBlazorIntegrator : IDisposable
     /// Configures an instance of <see cref="IServiceCollection"/> before the application is built.
     /// </summary>
     /// <param name="services">The service collection to which to add SimpleInjector.</param>
-    /// <param name="compositionRoot">The object graph root to configure the underlying service collection with.</param>
+    /// <param name="composer">The object graph composer to configure the underlying service collection with.</param>
     /// <param name="componentAssemblies">The assemblies to search for implementations of <see cref="IComponent"/>. Types found will be registered in the container.</param>
-    private void Initialize(IServiceCollection services, IRoot compositionRoot, params Assembly[] componentAssemblies)
+    private void Initialize(IServiceCollection services, IComposer composer, params Assembly[] componentAssemblies)
     {
 #pragma warning disable IDE0053 // Use expression body for lambda expression
         _ = services.AddSimpleInjector(_container, options =>
@@ -89,7 +89,7 @@ public sealed class SimpleInjectorBlazorIntegrator : IDisposable
         });
 #pragma warning restore IDE0053 // Use expression body for lambda expression
 
-        compositionRoot.Compose(_container);
+        composer.Compose(_container);
     }
     /// <summary>
     /// Configures an instance of <see cref="IServiceProvider"/> after the application has been built.

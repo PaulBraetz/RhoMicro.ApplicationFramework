@@ -20,18 +20,18 @@ public class NavigationTreeNode : INavigationTreeNode
     /// <summary>
     /// The default name for root nodes.
     /// </summary>
-    public const String ROOT_NAME = "root";
+    public const String RootName = "root";
     /// <summary>
     /// The default path for root nodes.
     /// </summary>
-    public const String ROOT_PATH = "";
+    public const String RootPath = "";
     /// <summary>
     /// Creates a root node.
     /// </summary>
     /// <param name="name">The name of the root node.</param>
     /// <param name="path">The path of the root node.</param>
     /// <returns>The root node.</returns>
-    public static NavigationTreeNode CreateRoot(String name = ROOT_NAME, String path = ROOT_PATH)
+    public static NavigationTreeNode CreateRoot(String name = RootName, String path = RootPath)
     {
         var result = new NavigationTreeNode(name, path);
 
@@ -51,7 +51,7 @@ public class NavigationTreeNode : INavigationTreeNode
         return child;
     }
 
-    private readonly Dictionary<String, INavigationTreeChildNode> _children = new();
+    private readonly Dictionary<String, INavigationTreeChildNode> _children = [];
 
     /// <inheritdoc/>
     public String Path { get; }

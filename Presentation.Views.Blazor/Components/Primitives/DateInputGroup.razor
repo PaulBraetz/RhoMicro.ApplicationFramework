@@ -1,0 +1,27 @@
+﻿@typeparam TError
+@inherits ModelComponentBase<IInputGroupModel<DateTime, TError>, IDateInputGroupCssStyle>
+
+<InputGroup @attributes="Attributes"
+            TValue="DateTime"
+            TError="TError"
+            Value="Model">
+    <Input>
+    <DateInput Style="Style.DateInputStyle"
+               Value="Model.Input"
+               UpdateOnFocusLost="UpdateOnFocusLost"
+               ErrorTitleParse="ErrorTitleParse"
+               TError="TError" />
+    </Input>
+    <Error>
+        @Error(Model.Input.ErrorValue)
+    </Error>
+</InputGroup>
+
+@code {
+    [Parameter]
+    public required RenderFragment<TError> Error { get; set; }
+    [Parameter]
+    public Boolean UpdateOnFocusLost { get; set; }
+    [Parameter]
+    public required Func<TError, String> ErrorTitleParse { get; set; }
+}

@@ -6,10 +6,7 @@ using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 /// </summary>
 public sealed class ToastsCompositeModel : IToastsModel
 {
-    private ToastsCompositeModel(IEnumerable<IToastsModel> children)
-    {
-        _children = children;
-    }
+    private ToastsCompositeModel(IEnumerable<IToastsModel> children) => _children = children;
     private readonly IEnumerable<IToastsModel> _children;
     /// <inheritdoc/>
     public event EventHandler<ToastChangedEventArgs>? ToastsChanged;

@@ -1,0 +1,10 @@
+﻿@typeparam TSubControlModel
+@inherits ModelComponentBase<IMultiControlModel<TSubControlModel>>
+
+<div @attributes="Attributes">
+	@Label(Model.Label)
+	<Virtualize Items="@Model.Items">
+		@Item(context)
+	</Virtualize>
+	@Description(Model.Description)
+</div>

@@ -106,7 +106,6 @@ public static class Extensions
     /// <returns>A new instance of <see cref="ValueTask{TResult}"/>, wrapping <paramref name="task"/>.</returns>
     public static ValueTask<T> AsValueTask<T>(this Task<T> task)
     {
-        //TODO: find and replace instances of ValueTask.FromResult(ServiceResult)
         var result = new ValueTask<T>(task);
 
         return result;

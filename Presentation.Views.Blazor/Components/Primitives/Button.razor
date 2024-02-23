@@ -1,0 +1,15 @@
+@inherits ModelComponentBase<IButtonModel>
+@if(Model.Disabled)
+{
+    <button @attributes="@Attributes" disabled>@GetContent()</button>
+} else
+{
+    <button @attributes="@Attributes" @onclick="()=>Model.Click(this.ComponentDisposalToken)">@GetContent()</button>
+}
+
+@code {
+    [Parameter]
+    public RenderFragment<IButtonModel>? ChildContent { get; set; }
+
+    private RenderFragment? GetContent() => ChildContent?.Invoke(Model);
+}

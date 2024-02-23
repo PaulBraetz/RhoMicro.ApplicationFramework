@@ -5,26 +5,21 @@ using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 /// Bridge between <see cref="IToastModel"/> and <see cref="Common.Abstractions.IObserver{T}"/>.
 /// Exceptions observed will be raised as error toasts.
 /// </summary>
-public sealed class ToastsErrorModel : Common.Abstractions.IObserver<Exception>, IToastsModel
+/// <remarks> 
+/// Initializes a new instance.
+/// </remarks>
+/// <param name="toastModelFactory">The factory to use when creating new toast models for exceptions received.</param>
+/// <param name="toastComparer">The comparer to use when relating a toasts <see cref="IToastModel.HasExpired"/> event to the toast to remove.</param>
+public sealed class ToastsErrorModel(
+    IToastModelFactory toastModelFactory,
+    IEqualityComparer<IToastModel> toastComparer)
+    : Common.Abstractions.IObserver<Exception>, IToastsModel
 {
-    /// <summary> 
-    /// Initializes a new instance.
-    /// </summary>
-    /// <param name="toastModelFactory">The factory to use when creating new toast models for exceptions received.</param>
-    /// <param name="toastComparer">The comparer to use when relating a toasts <see cref="IToastModel.HasExpired"/> event to the toast to remove.</param>
-    public ToastsErrorModel(IToastModelFactory toastModelFactory, IEqualityComparer<IToastModel> toastComparer)
-    {
-        _toastModelFactory = toastModelFactory;
-        _toasts = new HashSet<IToastModel>(toastComparer);
-    }
-
     private const Int32 _charDisplayMillis = 50;
     private const Int32 _minDisplayMillis = 5_000;
     private const String _toastHeader = "Error";
 
-    private readonly HashSet<IToastModel> _toasts;
-
-    private readonly IToastModelFactory _toastModelFactory;
+    private readonly HashSet<IToastModel> _toasts = new(toastComparer);
 
     /// <inheritdoc/>
     public void Notify(Exception value)
@@ -34,7 +29,7 @@ public sealed class ToastsErrorModel : Common.Abstractions.IObserver<Exception>,
         var minDisplayMillis = value.Message.Length * _charDisplayMillis;
         var displayMillis = Math.Max(minDisplayMillis, _minDisplayMillis);
         var lifespan = TimeSpan.FromMilliseconds(displayMillis);
-        var toast = _toastModelFactory.Create(_toastHeader, value.Message, ToastType.Error, lifespan);
+        var toast = toastModelFactory.Create(_toastHeader, value.Message, ToastType.Error, lifespan);
         AddToast(toast);
     }
 

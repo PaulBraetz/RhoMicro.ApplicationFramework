@@ -5,9 +5,7 @@ using RhoMicro.ApplicationFramework.Common.Results;
 /// <summary>
 /// Represents a command whose dependencies are fully captured.
 /// </summary>
-public interface IRequestClosure : IRequestClosure<ServiceResult>
-{
-}
+public interface IRequestClosure : IRequestClosure<ServiceResult>;
 /// <summary>
 /// <para>
 /// Represents a command whose dependencies are fully captured.

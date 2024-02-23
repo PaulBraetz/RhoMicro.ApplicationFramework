@@ -11,9 +11,7 @@ internal sealed class PhotinoHttpHandler : DelegatingHandler
     private readonly PhotinoBlazorApp _app;
 
     //use this constructor if a handler is registered in DI to inject dependencies
-    public PhotinoHttpHandler(PhotinoBlazorApp app) : this(app, null)
-    {
-    }
+    public PhotinoHttpHandler(PhotinoBlazorApp app) : this(app, null) { }
 
     //Use this constructor if a handler is created manually.
     //Otherwise, use DelegatingHandler.InnerHandler public property to set the next handler.

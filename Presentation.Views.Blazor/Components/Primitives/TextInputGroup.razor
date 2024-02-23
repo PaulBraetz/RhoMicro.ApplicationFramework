@@ -1,0 +1,27 @@
+﻿@typeparam TError
+@inherits ModelComponentBase<IInputGroupModel<String, TError>, ITextInputGroupCssStyle>
+
+<InputGroup @attributes="Attributes"
+            TValue="String"
+            TError="TError"
+            Value="Model">
+    <Input>
+    <TextInput Style="Style.TextInputStyle"
+               Value="Model.Input"
+               UpdateOnFocusLost="UpdateOnFocusLost"
+               ErrorTitleParse="ErrorTitleParse"
+               TError="TError" />
+    </Input>
+    <Error>
+        @Error(Model.Input.ErrorValue)
+    </Error>
+</InputGroup>
+
+@code {
+    [Parameter]
+    public required RenderFragment<TError> Error { get; set; }
+    [Parameter]
+    public Boolean UpdateOnFocusLost { get; set; }
+    [Parameter]
+    public Func<TError, String>? ErrorTitleParse { get; set; }
+}

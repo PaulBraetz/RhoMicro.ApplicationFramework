@@ -9,11 +9,7 @@ using RhoMicro.ApplicationFramework.Common.Transactions.Abstractions;
 public sealed class ObservableTransactionStateMachineFactory : IFactory<IObservableTransactionStateMachine, ITransactionStateMachineSettings>
 {
     /// <summary>
-    /// Initializes a new instance. If possible, use <see cref="Instance"/> instead.
-    /// </summary>
-    public ObservableTransactionStateMachineFactory() { }
-    /// <summary>
-    /// Gets the singleton instance.
+    /// Gets a static instance.
     /// </summary>
 	public static ObservableTransactionStateMachineFactory Instance { get; } = new();
 

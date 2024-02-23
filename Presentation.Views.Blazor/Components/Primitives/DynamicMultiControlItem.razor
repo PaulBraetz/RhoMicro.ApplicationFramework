@@ -1,0 +1,26 @@
+﻿@inherits ModelComponentBase<IDynamicMultiControlItemModel<TSubControlModel>, IDynamicMultiControlItemCssStyle>
+@typeparam TSubControlModel
+
+<div @attributes="Attributes">
+    @RemoveButton(Model.Remove)
+    @SubControl(Model.Control)
+</div>
+
+@code {
+    [Parameter]
+    public required RenderFragment<TSubControlModel> SubControl { get; set; }
+    [Parameter]
+#pragma warning disable BL0007 //should be auto property
+    public required RenderFragment<IButtonModel> RemoveButton
+#pragma warning restore BL0007
+    {
+        get => _removeButtonSet ? _removeButton! : DefaultRemoveButton;
+        set
+        {
+            _removeButtonSet = true;
+            _removeButton = value;
+        }
+    }
+    private Boolean _removeButtonSet;
+    private RenderFragment<IButtonModel>? _removeButton;
+}

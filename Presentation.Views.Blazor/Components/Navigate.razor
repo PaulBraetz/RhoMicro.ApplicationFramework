@@ -1,0 +1,13 @@
+﻿@inherits InjectedModelComponentBase<INavigationManager>
+
+@code {
+    [Parameter]
+    public String Route { get; set; } = "/";
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Model.NavigateTo(Route);
+    }
+}

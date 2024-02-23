@@ -12,9 +12,9 @@ using RhoMicro.ApplicationFramework.Aspects.Abstractions;
 /// </remarks>
 /// <param name="executionTimeTicks">The execution time measured.</param>
 /// <param name="level">The level at which the execution time is to be logged.</param>
-public readonly struct ExecutionTimeLogEntry<TScope>(
+public sealed class ExecutionTimeLogEntry<TScope>(
     Int64 executionTimeTicks,
-    LogLevel level = LogLevel.Information) : ILogEntry, IEquatable<ExecutionTimeLogEntry<TScope>>
+    LogLevel level = LogLevel.Information) : ILogEntry
 {
     private readonly Lazy<String> _evaluation = new(() => Format(executionTimeTicks));
 
@@ -28,7 +28,6 @@ public readonly struct ExecutionTimeLogEntry<TScope>(
 
     /// <inheritdoc/>
     public String Evaluate() => _evaluation.Value;
-
     private static String Format(Int64 executionTimeTicks)
     {
         var executionTimeMicros = executionTimeTicks / _microSecondTicks;
@@ -43,14 +42,4 @@ public readonly struct ExecutionTimeLogEntry<TScope>(
 
         return $"Done with {typeof(TScope).Name}: {executionTimeFormatted}";
     }
-    /// <inheritdoc/>
-    public override Boolean Equals(Object? obj) => throw new NotImplementedException();
-    /// <inheritdoc/>
-    public override Int32 GetHashCode() => throw new NotImplementedException();
-    /// <inheritdoc/>
-    public static Boolean operator ==(ExecutionTimeLogEntry<TScope> left, ExecutionTimeLogEntry<TScope> right) => left.Equals(right);
-    /// <inheritdoc/>
-    public static Boolean operator !=(ExecutionTimeLogEntry<TScope> left, ExecutionTimeLogEntry<TScope> right) => !( left == right );
-    /// <inheritdoc/>
-    public Boolean Equals(ExecutionTimeLogEntry<TScope> other) => throw new NotImplementedException();
 }

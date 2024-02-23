@@ -8,11 +8,7 @@ using RhoMicro.ApplicationFramework.Common.Abstractions;
 public sealed class EllipsisFormatter : IStaticFormatter<String>
 {
     /// <summary>
-    /// Initializes a new instance. If possible, use <see cref="Instance"/> instead.
-    /// </summary>
-    public EllipsisFormatter() { }
-    /// <summary>
-    /// Gets the singleton instance.
+    /// Gets a static instance.
     /// </summary>
     public static EllipsisFormatter Instance { get; } = new();
 

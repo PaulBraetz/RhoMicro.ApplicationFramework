@@ -11,9 +11,7 @@ public static partial class AmbientCallbackStateQueue<T>
         {
             private Int32 _disposedValue = BooleanState.FalseState;
 
-            public Scope()
-            {
-            }
+            public Scope() { }
 
             public static Scope Create(T item, Action<IEnumerable<T>> callback)
             {

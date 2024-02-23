@@ -1,0 +1,23 @@
+﻿@typeparam TError
+@inherits ModelComponentBase<IInputModel<DateTime, TError>>
+
+<InputControl @attributes="Attributes"
+              type="datetime-local"
+              Value="Model"
+              TValue="DateTime"
+              TError="TError"
+              Parse="DateTime.Parse"
+              CanParse="v=>DateTime.TryParse(v, out var _)"
+              UpdateOnFocusLost="UpdateOnFocusLost"
+              ErrorTitleParse="ErrorTitleParse!"
+              InitialValueParse="InitialValueParse" />
+
+@code {
+    [Parameter]
+    public Boolean UpdateOnFocusLost { get; set; }
+    [Parameter]
+    public Func<TError, String>? ErrorTitleParse { get; set; }
+
+    private static String InitialValueParse(DateTime value) =>
+        value.ToString("O");
+}

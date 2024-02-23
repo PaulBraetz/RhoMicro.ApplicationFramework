@@ -1,0 +1,14 @@
+﻿@inherits InjectedModelComponentBase<IAuthenticationModel>
+@if(Model.IsAuthenticated)
+{
+    @Authenticated
+} else
+{
+    @NotAuthenticated
+}
+@code {
+    [Parameter]
+    public RenderFragment? Authenticated { get; set; }
+    [Parameter]
+    public RenderFragment? NotAuthenticated { get; set; }
+}

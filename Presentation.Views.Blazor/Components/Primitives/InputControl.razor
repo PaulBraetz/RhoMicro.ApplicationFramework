@@ -1,0 +1,93 @@
+﻿@typeparam TValue
+@typeparam TError
+@inherits ModelComponentBase<IInputModel<TValue, TError>>
+@namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Components.Primitives
+@using System.Reactive.Subjects;
+
+<input type="text" @attributes="@Attributes" placeholder="@Model.Placeholder" @bind-value="@RawValue" @bind-value:event="@_bindEvent" @onkeypress="OnKeyPress" />
+@if(Model.AutoCompleteEnabled)
+{
+    @("complete: ")@Model.AutoCompleteValue
+}
+
+@code {
+    [Parameter]
+    public Func<String, Boolean>? CanParse { get; set; }
+    [Parameter]
+    public Func<String, TValue>? Parse { get; set; }
+    [Parameter]
+    public required Func<TValue, String> InitialValueParse { get; set; }
+    [Parameter]
+    public Func<TError, String>? ErrorTitleParse { get; set; }
+    [Parameter]
+    public Boolean UpdateOnFocusLost { get; set; }
+
+    private String _rawValue = String.Empty;
+    private String RawValue
+    {
+        get => _rawValue;
+        set
+        {
+            _rawValueReceiver.OnNext(value);
+        }
+    }
+
+    private readonly Subject<String> _rawValueReceiver = new Subject<String>();
+    private IDisposable? _valueParseSubscription;
+
+    private String _bindEvent = "oninput";
+
+    private Task OnKeyPress(KeyboardEventArgs args)
+    {
+        if(args.Code == "Enter" || args.Code == "NumpadEnter")
+        {
+            return Model.Enter();
+        }
+
+        return Task.CompletedTask;
+    }
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if(CanParse != null && Parse == null)
+        {
+            throw new InvalidOperationException($"Unable to parse values: {nameof(Parse)} was not supplid but {nameof(CanParse)} was.");
+        }
+        _rawValue = InitialValueParse.Invoke(Model.Value);
+
+        EnsureClassNames();
+
+        if(Model.Validity == InputValidityType.Invalid && ErrorTitleParse != null)
+        {
+            var errorTitle = ErrorTitleParse(Model.ErrorValue);
+            _ = Attributes.TryAdd("title", errorTitle);
+        }
+
+        _bindEvent = UpdateOnFocusLost ? "onchange" : "oninput";
+
+        _valueParseSubscription = CanParse == null ?
+            _rawValueReceiver.Subscribe(v => _rawValue = v) :
+            _rawValueReceiver.Subscribe(v =>
+            {
+                if(CanParse(v))
+                {
+                    Model.Value = Parse!.Invoke(v);
+                    _rawValue = v;
+                }
+            });
+    }
+
+    private void EnsureClassNames()
+    {
+        if(Model.Validity == InputValidityType.None)
+        {
+            EnsureClassNames("input-control");
+        } else if(Model.Validity == InputValidityType.Valid)
+            EnsureClassNames("input-control", "valid");
+        else
+        {
+            EnsureClassNames("input-control", "invalid");
+        }
+    }
+}

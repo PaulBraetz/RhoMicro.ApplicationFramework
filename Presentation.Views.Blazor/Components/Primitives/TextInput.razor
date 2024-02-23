@@ -1,0 +1,19 @@
+﻿@typeparam TError
+@inherits ModelComponentBase<IInputModel<String, TError>>
+
+<InputControl @attributes="Attributes"
+              Value="Model"
+              TValue="String"
+              TError="TError"
+              Parse="v=>v"
+              CanParse="v=>true"
+              UpdateOnFocusLost="UpdateOnFocusLost"
+              ErrorTitleParse="ErrorTitleParse!"
+              InitialValueParse="v=>v" />
+
+@code {
+    [Parameter]
+    public Boolean UpdateOnFocusLost { get; set; }
+    [Parameter]
+    public Func<TError, String>? ErrorTitleParse { get; set; }
+}

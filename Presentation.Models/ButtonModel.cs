@@ -55,7 +55,7 @@ public sealed class ButtonModel : HasObservableProperties, IButtonModel
     {
         try
         {
-            await Clicked.InvokeAsync(this, cancellationToken);
+            await Clicked.InvokeAsync(this, cancellationToken).ConfigureAwait(continueOnCapturedContext: true);
         } finally
         {
             _ = ExchangeLoading(false);

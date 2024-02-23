@@ -5,7 +5,7 @@ using SimpleInjector;
 /// <summary>
 /// Represents a composition root, ready to define its Object tree to a <see cref="Container"/> instance.
 /// </summary>
-public interface IRoot
+public interface IComposer
 {
     /// <summary>
     /// Defines the desired Object tree to a container.

@@ -5,14 +5,7 @@
 public sealed class NullDisposable : IDisposable
 {
     /// <summary>
-    /// Initializes a new instance. If possible, use <see cref="Instance"/> instead.
-    /// </summary>
-    public NullDisposable() { }
-    /// <summary>
-    /// Gets the singleton instance.
-    /// </summary>
-    /// <summary>
-    /// Gets the 
+    /// Gets a static instance.
     /// </summary>
     public static NullDisposable Instance { get; } = new();
     /// <inheritdoc/>

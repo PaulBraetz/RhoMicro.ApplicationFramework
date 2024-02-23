@@ -6,6 +6,4 @@
 /// <typeparam name="TValue">The type of value to select.</typeparam>
 /// <typeparam name="TError">The type of error displayed by this model.</typeparam>
 public interface ISelectInputGroupModel<TValue, TError> :
-    IInputGroupModel<ISelectInputModel<TValue, TError>, IOptionModel<TValue>?, TError>
-{
-}
+    IInputGroupModel<ISelectInputModel<TValue, TError>, IOptionModel<TValue>?, TError>;

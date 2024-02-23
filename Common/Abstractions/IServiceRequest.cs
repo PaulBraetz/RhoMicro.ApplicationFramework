@@ -17,4 +17,4 @@ public interface IServiceRequest<TResult>
 /// <summary>
 /// Represents a request parameter object whose execution must result in a result of type <see cref="ServiceResult"/>.
 /// </summary>
-public interface IServiceRequest : IServiceRequest<ServiceResult> { }
+public interface IServiceRequest : IServiceRequest<ServiceResult>;

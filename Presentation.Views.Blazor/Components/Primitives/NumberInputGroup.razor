@@ -1,0 +1,35 @@
+﻿@typeparam TNumber
+@typeparam TError
+@inherits ModelComponentBase<IInputGroupModel<TNumber, TError>, INumberInputGroupCssStyle>
+
+<InputGroup @attributes="Attributes"
+            TValue="TNumber"
+            TError="TError"
+            Value="Model">
+    <Input>
+    <NumberInput Style="Style.NumberInputStyle"
+                 Value="Model.Input"
+                 UpdateOnFocusLost="UpdateOnFocusLost"
+                 ErrorTitleParse="ErrorTitleParse"
+                 Parse="Parse"
+                 CanParse="CanParse"
+                 TNumber="TNumber"
+                 TError="TError" />
+    </Input>
+    <Error>
+        @Error(Model.Input.ErrorValue)
+    </Error>
+</InputGroup>
+
+@code {
+    [Parameter]
+    public Func<String, Boolean>? CanParse { get; set; }
+    [Parameter]
+    public Func<String, TNumber>? Parse { get; set; }
+    [Parameter]
+    public required RenderFragment<TError> Error { get; set; }
+    [Parameter]
+    public Boolean UpdateOnFocusLost { get; set; }
+    [Parameter]
+    public Func<TError, String>? ErrorTitleParse { get; set; }
+}

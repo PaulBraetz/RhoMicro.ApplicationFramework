@@ -1,0 +1,24 @@
+﻿@typeparam TValue
+@typeparam TError
+@inherits ModelComponentBase<ISelectInputGroupModel<TValue, TError>, ISelectInputGroupCssStyle>
+
+<InputGroupSpecialized @attributes="Attributes"
+                       TValue="IOptionModel<TValue>"
+                       TError="TError"
+                       TInput="ISelectInputModel<TValue, TError>"
+                       Value="Model">
+    <Input>
+    <SelectInput Style="Style.SelectInputStyle"
+                 Value="Model.Input"
+                 TError="TError"
+                 TValue="TValue" />
+    </Input>
+    <Error>
+        @Error(Model.Input.ErrorValue)
+    </Error>
+</InputGroupSpecialized>
+
+@code {
+    [Parameter]
+    public required RenderFragment<TError> Error { get; set; }
+}
