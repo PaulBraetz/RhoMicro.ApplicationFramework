@@ -1,5 +1,12 @@
 ﻿namespace RhoMicro.ApplicationFramework.Presentation.WebGui.App;
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.App;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
 
 public static class Program
 {
@@ -57,7 +64,7 @@ public static class Program
            adapter,
            Root.WebGui.Compose,
            typeof(Presentation.Views.Blazor._Imports).Assembly,
-           typeof(WebGui.EntryPoint).Assembly).App;
+           typeof().Assembly).App;
 
         return result;
     }

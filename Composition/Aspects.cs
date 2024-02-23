@@ -14,7 +14,7 @@ using RhoMicro.ApplicationFramework.Common.Formatters;
 using SimpleInjector;
 
 /// <summary>
-/// Contains Object tree definitions for cross-cutting concerns.
+/// Contains object graph definitions for cross-cutting concerns.
 /// </summary>
 public static class Aspects
 {

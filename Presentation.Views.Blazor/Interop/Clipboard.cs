@@ -2,6 +2,8 @@
 
 using Microsoft.JSInterop;
 
+using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions.Interop;
+
 /// <summary>
 /// Clipboard that accesses the underlying clipboard through a JavaScript runtime.
 /// </summary>
@@ -9,7 +11,7 @@ using Microsoft.JSInterop;
 /// Initializes a new instance.
 /// </remarks>
 /// <param name="jsRuntime">The runtime used for invoking the javascript clipboard functionality.</param>
-public sealed class Clipboard(IJSRuntime jsRuntime)
+public sealed class Clipboard(IJSRuntime jsRuntime) : IClipboardModel
 {
     /// <summary>
     /// Reads text stored in the clipboard.
