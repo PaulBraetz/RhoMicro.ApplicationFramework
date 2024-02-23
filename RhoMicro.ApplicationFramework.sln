@@ -16,9 +16,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation.LocalGui", "Pr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates_TODO", "Templates_TODO", "{D6B10658-4003-40B9-98C5-DDF1CA18D6B2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation.LocalGui.Template", "Presentation.LocalGui.App\Presentation.LocalGui.Template.csproj", "{DA404AAA-F37B-4B78-BDD8-19082D3FE050}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation.LocalGui.Template", "Presentation.LocalGui.Template\Presentation.LocalGui.Template.csproj", "{DA404AAA-F37B-4B78-BDD8-19082D3FE050}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation.WebGui.Template", "Presentation.WebGui.App\Presentation.WebGui.Template.csproj", "{182B9629-9C7F-4800-AED7-FD18797E67DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation.WebGui.Template", "Presentation.WebGui.Template\Presentation.WebGui.Template.csproj", "{182B9629-9C7F-4800-AED7-FD18797E67DA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Composition", "Composition\Composition.csproj", "{9FAE600D-B268-43C8-9FC8-E106F343C5AC}"
 EndProject
@@ -40,9 +40,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation.Models", "Pres
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation.Views.Blazor", "Presentation.Views.Blazor\Presentation.Views.Blazor.csproj", "{57209F28-36F0-497B-A694-0A9CB26CDB3D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation.Views.Blazor.Template", "Presentation.Views.Blazor.App\Presentation.Views.Blazor.Template.csproj", "{08C69D38-E43B-4DF6-8629-D745546AB7B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation.Views.Blazor.Template", "Presentation.Views.Blazor.Template\Presentation.Views.Blazor.Template.csproj", "{08C69D38-E43B-4DF6-8629-D745546AB7B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Composition.Template", "Composition.Template\Composition.Template.csproj", "{FBB1BAC0-2581-49A4-87E8-9A01A802EEEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Composition.Template", "Composition.Template\Composition.Template.csproj", "{FBB1BAC0-2581-49A4-87E8-9A01A802EEEB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -95,13 +95,9 @@ Global
 		{57209F28-36F0-497B-A694-0A9CB26CDB3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57209F28-36F0-497B-A694-0A9CB26CDB3D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{08C69D38-E43B-4DF6-8629-D745546AB7B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{08C69D38-E43B-4DF6-8629-D745546AB7B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08C69D38-E43B-4DF6-8629-D745546AB7B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{08C69D38-E43B-4DF6-8629-D745546AB7B3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FBB1BAC0-2581-49A4-87E8-9A01A802EEEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FBB1BAC0-2581-49A4-87E8-9A01A802EEEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBB1BAC0-2581-49A4-87E8-9A01A802EEEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FBB1BAC0-2581-49A4-87E8-9A01A802EEEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
