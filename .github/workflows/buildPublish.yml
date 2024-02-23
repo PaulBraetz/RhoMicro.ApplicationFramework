@@ -42,7 +42,7 @@ jobs:
       uses: actions/setup-dotnet@v4
 
     - name: Run Tests
-      run: dotnet test -c Release -p:Version=${{github.ref_name}}
+      run: dotnet test -c Release -p:Version=1.0.0
 
     - name: Dotnet Build
       run: dotnet build -c Release -p:Version=${{github.ref_name}}
