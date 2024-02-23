@@ -5,7 +5,7 @@
 
 	<PropertyGroup Label="VersionInfo">
 		<Version>1.0.0</Version>
-		<ReleaseAssemblyVersion >$(Version).0</ReleaseAssemblyVersion>
+		<ReleaseAssemblyVersion >$(Version)</ReleaseAssemblyVersion>
 		<TestProjectAssemblyVersion >$(ReleaseAssemblyVersion)</TestProjectAssemblyVersion>
 		<DebugAssemblyVersion >$(Version).$(AutoIncrementedAssemblyRevision)</DebugAssemblyVersion>
 		<AssemblyVersion Condition="$(Configuration) == 'Debug'">$(DebugAssemblyVersion)</AssemblyVersion>
