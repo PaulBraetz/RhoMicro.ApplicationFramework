@@ -46,7 +46,7 @@ jobs:
       run: dotnet test -c Release -p:Version=$Env:AssemblyVersion
 
     - name: Dotnet Build
-      run: dotnet build -c Release -p:Version=$Env:AssemblyVersion
+      run: dotnet build RhoMicro.ApplicationFramework -c Release -p:Version=$Env:AssemblyVersion
 
     - name: Create Nuget Packages
       run: dotnet pack -c Release -o "$Env:NuGetDirectory" -p:PackageVersion=${{github.ref_name}} -p:Version=$Env:AssemblyVersion
