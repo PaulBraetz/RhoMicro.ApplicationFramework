@@ -6,24 +6,16 @@
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Description>Contains types for Photino/Blazor integration.</Description>
-		<PackageTags></PackageTags>
+		<Description>Contains integration extensions for photino blazor applications into simple injector.</Description>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebView" Version="8.0.2" />
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
-		<PackageReference Include="Microsoft.JSInterop" Version="8.0.2" />
-		<PackageReference Include="Photino.NET" Version="2.6.0" />
-		<PackageReference Include="System.Collections" Version="4.3.0" />
-	</ItemGroup>
-
+	
 	<ItemGroup>
 		<None Include="README.md" Pack="true" PackagePath="/" CopyToOutputDirectory="Always" />
 		<None Include="LICENSE.txt" Pack="true" PackagePath="/" CopyToOutputDirectory="Always" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Photino.Blazor" Version="2.7.0" />
 	</ItemGroup>
 
 	<ItemGroup>

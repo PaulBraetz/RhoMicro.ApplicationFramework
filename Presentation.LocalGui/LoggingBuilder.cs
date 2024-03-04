@@ -1,5 +1,4 @@
 ﻿namespace RhoMicro.ApplicationFramework.Presentation.LocalGui;
-
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 

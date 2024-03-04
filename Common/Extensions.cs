@@ -7,6 +7,22 @@ using RhoMicro.ApplicationFramework.Common.Abstractions;
 public static class Extensions
 {
     /// <summary>
+    /// Gets a value indicating whether the specified runtime configuration is the debug ("DEBUG") configuration.
+    /// </summary>
+    /// <param name="runtimeConfiguration">The runtime configuration to check.</param>
+    /// <returns>
+    /// <see langword="true"/> if the configuration is the debug configuration; otherwise, <see langword="false"/>.
+    /// </returns>
+    public static Boolean IsDevelopment(this IAspEnvironment runtimeConfiguration)
+    {
+        ArgumentNullException.ThrowIfNull(runtimeConfiguration);
+
+        var result = runtimeConfiguration.Name == AspEnvironment.Development.Name;
+
+        return result;
+    }
+
+    /// <summary>
     /// Awaits a semaphore once and returns a disposable that, upon disposing, releases the semaphore once.
     /// </summary>
     /// <param name="gate">The semaphore to enter and release.</param>

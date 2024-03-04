@@ -1,0 +1,10 @@
+<Project>
+	
+	<PropertyGroup>
+		<Version></Version>
+		<RootNamespace>$(MSBuildProjectName)</RootNamespace>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+</Project>

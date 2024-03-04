@@ -15,9 +15,9 @@ using RhoMicro.ApplicationFramework.Presentation.Models;
 public static class Presentation
 {
     /// <summary>
-    /// Gets a composer able to compose presentation models.
+    /// Gets a composer able to compose hosting information graphs.
     /// </summary>
-    public static IComposer Composer { get; } = Composition.Composer.Create(c =>
+    public static IComposer HostingInformation { get; } = Composer.Create(c =>
     {
         c.Register<IHostingInformation>(() =>
         {
@@ -33,7 +33,12 @@ public static class Presentation
 
             return result;
         });
-
+    });
+    /// <summary>
+    /// Gets a composer able to compose presentation model graphs.
+    /// </summary>
+    public static IComposer Models { get; } = Composer.Create(c =>
+    {
         c.Register(typeof(IDisplayModel<>), typeof(DisplayModel<>));
 
         c.Register(typeof(IOptionsProvider<>), typeof(OptionsProviderAdapter<>), Lifestyle.Singleton);

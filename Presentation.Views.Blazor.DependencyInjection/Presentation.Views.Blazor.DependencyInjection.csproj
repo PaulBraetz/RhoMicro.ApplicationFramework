@@ -6,28 +6,22 @@
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Description>Provides types for Blazor/SImpleInjector integration.</Description>
+		<Description>Provides types for Blazor/SimpleInjector integration on the server side.</Description>
 		<PackageTags></PackageTags>
 	</PropertyGroup>
 
-
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
-		<PackageReference Include="RhoMicro.CodeAnalysis.UnionsGenerator" Version="14.0.5">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
 		<PackageReference Include="SimpleInjector" Version="5.4.4" />
-		<PackageReference Include="SimpleInjector.Integration.ServiceCollection" Version="5.5.0" />
 	</ItemGroup>
-
+	
 	<ItemGroup>
 		<None Include="README.md" Pack="true" PackagePath="/" CopyToOutputDirectory="Always" />
 		<None Include="LICENSE.txt" Pack="true" PackagePath="/" CopyToOutputDirectory="Always" />
 	</ItemGroup>
-
+	
 	<ItemGroup>
-	  <ProjectReference Include="..\Composition\Composition.csproj" />
+	  <ProjectReference Include="..\Presentation.Views.Blazor.DependencyInjection.Client\Presentation.Views.Blazor.DependencyInjection.Client.csproj" />
 	</ItemGroup>
 
 </Project>

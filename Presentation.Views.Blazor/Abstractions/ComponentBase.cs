@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Components;
 
 using RhoMicro.ApplicationFramework.Common;
+using RhoMicro.ApplicationFramework.Common.Abstractions;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Exceptions;
@@ -32,51 +33,59 @@ public abstract class ComponentBase<TStyle> : SimpleInjectorIntegratedComponent,
 #pragma warning restore CA1063 // Implement IDisposable Correctly
 {
     /// <summary>
+    /// Gets the runtime configuration under which the component is being executed.
+    /// </summary>
+    [Injected]
+    public required IAspEnvironment RuntimeConfiguration
+    {
+        get => _runtimeConfiguration;
+        set
+        {
+            _runtimeConfiguration = value;
+            EnsureComponentTypeAttribute();
+        }
+    }
+    /// <summary>
     /// Gets or sets the style to apply to the component.
     /// </summary>
     [Injected]
     [Parameter]
     public required TStyle Style { get; set; }
-    /// <summary>
-    /// Initializes a new instance.
-    /// </summary>
-    protected ComponentBase()
-    {
-        _attributes = new();
-#if DEBUG
-        _attributes.Add("component-type", GetType().Name);
-#endif
-    }
 
     private static readonly ConcurrentDictionary<Type, IReadOnlyList<Action<Object>>> _nullChecks = new();
     private readonly CancellationTokenSource _disposalCts = new();
-    private Dictionary<String, Object> _attributes;
+    private Dictionary<String, Object> _attributes = [];
     private Int32 _disposed = BooleanState.FalseState;
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private IAspEnvironment _runtimeConfiguration; //use property instead
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-#pragma warning disable BL0007 // Component parameters should be auto properties
     /// <summary>
     /// Gets or sets the otherwise unmatched attributes passed to the component.
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)]
-#pragma warning disable CA2227 // Collection properties should be read only <- case of mistaken identity
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "BL0007:Component parameters should be auto properties", Justification = "Required for debugging component types.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Required for debugging component types.")]
     public required Dictionary<String, Object> Attributes
-#pragma warning restore CA2227 // Collection properties should be read only
     {
         get => _attributes;
         set
         {
-#if DEBUG
-            // Allow assigning null value in order to force
-            // ParameterNullException in OnParametersSet and avoiding
-            // NullReferenceException here
-            _ = value?.TryAdd("component-type", GetType().Name);
             _attributes = value!;
-#else
-            _attributes = value;
-#endif
+            EnsureComponentTypeAttribute();
         }
     }
-#pragma warning restore BL0007 // Component parameters should be auto properties
+
+    private void EnsureComponentTypeAttribute()
+    {
+        if(!RuntimeConfiguration.IsDevelopment())
+            return;
+
+        // Allow assigning null value in order to force
+        // ParameterNullException in OnParametersSet and avoiding
+        // NullReferenceException here
+        _ = _attributes?.TryAdd("component-type", GetType().Name);
+    }
 
     /// <summary>
     /// Gets a cancellation token that will be cancelled upon <see cref="Dispose"/> being called.

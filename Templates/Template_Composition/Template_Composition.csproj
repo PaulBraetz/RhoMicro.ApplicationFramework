@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Description>Contains template composition components.</Description>
+		<PackageTags></PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="/" CopyToOutputDirectory="Always" />
+		<None Include="LICENSE.txt" Pack="true" PackagePath="/" CopyToOutputDirectory="Always" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Composition.Presentation.Views.Blazor\Composition.Presentation.Views.Blazor.csproj" />
+		<ProjectReference Include="..\..\Composition\Composition.csproj" />
+	</ItemGroup>
+
+</Project>

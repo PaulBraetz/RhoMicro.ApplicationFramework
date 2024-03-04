@@ -1,4 +1,4 @@
-Presentation.Views.Blazor.DependencyInjection
+Presentation.Views.Blazor.DependencyInjection.Server
 Copyright (C) 2024  Paul Brätz
 
 This program is free software: you can redistribute it and/or modify

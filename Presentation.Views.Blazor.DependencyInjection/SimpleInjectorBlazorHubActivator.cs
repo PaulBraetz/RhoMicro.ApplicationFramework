@@ -2,6 +2,8 @@
 
 using Microsoft.AspNetCore.SignalR;
 
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
+
 using SimpleInjector;
 
 /// <summary>

@@ -1,9 +1,6 @@
 ﻿namespace RhoMicro.ApplicationFramework.Presentation.LocalGui;
 
-using System;
-using System.IO;
-
-internal sealed class HostingEnvironment : IHostingEnvironment
+internal sealed class HostingEnvironment
 {
     public const String DEFAULT_ENVIRONMENT = "Production";
     public String ContentRootPath { get; set; } = Directory.GetCurrentDirectory();

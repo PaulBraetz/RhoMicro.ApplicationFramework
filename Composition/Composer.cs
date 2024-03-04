@@ -8,6 +8,11 @@ using SimpleInjector;
 public static partial class Composer
 {
     /// <summary>
+    /// Gets an empty composer instance. This composer will not compose an object graph.
+    /// </summary>
+    public static IComposer Empty { get; } = new EmptyComposer();
+
+    /// <summary>
     /// Creates a new composition root using the composition strategy provided.
     /// </summary>
     /// <param name="compose">The strategy using which to compose the application.</param>

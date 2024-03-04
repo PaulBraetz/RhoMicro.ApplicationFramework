@@ -1,0 +1,18 @@
+﻿@inherits AfComponent
+@page "/counter"
+@attribute [OptionalInteractiveAuto]
+
+<h1>Counter</h1>
+<h1 class="text-muted">Render @(OperatingSystem.IsBrowser() ? "Wasm" : "Server")</h1>
+<p>Current count: @currentCount</p>
+
+<button @attributes="Attributes" class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}

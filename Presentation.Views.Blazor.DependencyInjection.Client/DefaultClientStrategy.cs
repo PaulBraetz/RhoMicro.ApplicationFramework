@@ -1,0 +1,132 @@
+﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
+
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Frozen;
+using System.Reflection;
+
+using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
+
+using RhoMicro.ApplicationFramework.Composition;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Logging;
+using RhoMicro.CodeAnalysis;
+
+using SimpleInjector;
+using SimpleInjector.Diagnostics;
+using SimpleInjector.Integration.ServiceCollection;
+
+/// <summary>
+/// Provides a default integration strategy for client applications.
+/// </summary>
+/// <param name="composer"></param>
+/// <param name="componentAssemblies"></param>
+/// <param name="containerLogger"></param>
+/// <param name="renderModeOptions"></param>
+public partial class DefaultClientStrategy(
+    IComposer composer,
+    IEnumerable<Assembly> componentAssemblies,
+    IContainerLogger containerLogger,
+    RenderModeOptions renderModeOptions) : IIntegrationStrategy
+{
+    /// <summary>
+    /// Creates an instance of the <see cref="DefaultClientStrategy"/> for web servers.
+    /// </summary>
+    /// <param name="composer"></param>
+    /// <param name="componentAssemblies"></param>
+    /// <returns></returns>
+    public static DefaultClientStrategy CreateWeb(IComposer composer, IEnumerable<Assembly> componentAssemblies) =>
+        new(composer, componentAssemblies, CompositeContainerLogger.Default, new() { OmitRenderModes = false })
+        {
+            IsDefault = true
+        };
+
+    /// <summary>
+    /// Gets a value indicating whether this instance was created using a default factory.
+    /// </summary>
+    protected Boolean IsDefault { get; init; }
+
+    /// <inheritdoc/>
+    public IComposer Composer { get; } = composer;
+    /// <inheritdoc/>
+    public IEnumerable<Assembly> ComponentAssemblies { get; } = componentAssemblies;
+    /// <inheritdoc/>
+    public IContainerLogger ContainerLogger => containerLogger;
+    /// <inheritdoc/>
+    public RenderModeOptions RenderModeOptions => renderModeOptions;
+    /// <inheritdoc/>
+    public virtual void NotifyVerificationError(DiagnosticVerificationException exception) { }
+    /// <inheritdoc/>
+    public virtual void SimpleInjectorSetup(SimpleInjectorAddOptions options)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+
+        AddBlazor(options);
+        RegisterBlazorComponents(options);
+    }
+
+    private void AddBlazor(SimpleInjectorAddOptions options)
+    {
+        var services = options.Services;
+
+        // Unfortunate nasty hack. We reported this with Microsoft.
+        _ = services
+            .AddScoped<IComponentActivator, SimpleInjectorComponentActivator>()
+            .AddScoped<ScopeAccessor>()
+            .AddTransient<ServiceScopeApplier>()
+            .AddSingleton(RenderModeOptions);
+    }
+    private void RegisterBlazorComponents(SimpleInjectorAddOptions options)
+    {
+        var container = options.Container;
+        var registrations = container.GetTypesToRegister<IComponent>(
+                ComponentAssemblies,
+                new TypesToRegisterOptions { IncludeGenericTypeDefinitions = true })
+            .Where(componentType => componentType.GetCustomAttribute<ExcludeComponentFromContainerAttribute>() == null)
+            .Select(GetComponentRegistration);
+
+        foreach(var (componentType, implementationInfo) in registrations)
+        {
+            var componentImplementation = componentType;
+            if(implementationInfo.TryAsHelperComponents(out var helperComponents) && !RenderModeOptions.OmitRenderModes)
+            {
+                //intercept component type registration if helper attribute is detected (custom render mode was used) and we do not omit render modes
+                RegisterBlazorComponent(container, helperComponents.WrapperType, helperComponents.WrapperType);
+                componentImplementation = helperComponents.FrameType;
+            }
+
+            RegisterBlazorComponent(container, componentType, componentImplementation);
+        }
+    }
+
+    private static void RegisterBlazorComponent(Container container, Type componentType, Type componentImplementation)
+    {
+        if(componentType.IsGenericTypeDefinition)
+        {
+            container.Register(componentType, componentImplementation, Lifestyle.Transient);
+            return;
+        }
+
+        var registration = Lifestyle.Transient.CreateRegistration(componentImplementation, container);
+
+        registration.SuppressDiagnosticWarning(
+            DiagnosticType.DisposableTransientComponent,
+            "Blazor will dispose components.");
+
+        container.AddRegistration(componentType, registration);
+    }
+
+    private KeyValuePair<Type, ImplementationInfo> GetComponentRegistration(Type componentType)
+    {
+        var helperAttribute = componentType.GetCustomAttribute<RenderModeHelperComponentsAttribute>();
+
+        ImplementationInfo result = helperAttribute != null ?
+            helperAttribute :
+            componentType;
+
+        return KeyValuePair.Create(componentType, result);
+    }
+    [UnionType<Type>(Alias = "DeclaredComponent")]
+    [UnionType<RenderModeHelperComponentsAttribute>(Alias = "HelperComponents")]
+    private readonly partial struct ImplementationInfo;
+}

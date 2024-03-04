@@ -4,6 +4,14 @@
 		<TargetFramework>net8.0</TargetFramework>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<SupportedPlatform Include="browser" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.2" />
+	</ItemGroup>
+
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Description>Contains views and base view abstractions.</Description>
@@ -11,22 +19,18 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<FrameworkReference Include="Microsoft.AspNetCore.App" />
-	</ItemGroup>
-	
-	<ItemGroup>
 		<None Include="README.md" Pack="true" PackagePath="/" CopyToOutputDirectory="Always" />
 		<None Include="LICENSE.txt" Pack="true" PackagePath="/" CopyToOutputDirectory="Always" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
-	  <PackageReference Include="System.Reactive" Version="6.0.0" />
+		<PackageReference Include="System.Reactive" Version="6.0.0" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
-	  <ProjectReference Include="..\Common\Common.csproj" />
-	  <ProjectReference Include="..\Presentation.Models\Presentation.Models.csproj" />
-	  <ProjectReference Include="..\Presentation.Views.Blazor.DependencyInjection\Presentation.Views.Blazor.DependencyInjection.csproj" />
+		<ProjectReference Include="..\Common\Common.csproj" />
+		<ProjectReference Include="..\Presentation.Models\Presentation.Models.csproj" />
+		<ProjectReference Include="..\Presentation.Views.Blazor.DependencyInjection.Client\Presentation.Views.Blazor.DependencyInjection.Client.csproj" />
 	</ItemGroup>
 
 </Project>

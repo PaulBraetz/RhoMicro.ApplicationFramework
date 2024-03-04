@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Presentation.WebGui\Presentation.WebGui.csproj" />
+		<ProjectReference Include="..\Template_Composition\Template_Composition.csproj" />
+		<ProjectReference Include="..\Template_Views\Template_Views.csproj" />
+		<ProjectReference Include="..\Template_WebGui.Client\Template_WebGui.Client.csproj" />
+	</ItemGroup>
+
+</Project>
