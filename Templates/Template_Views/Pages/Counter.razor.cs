@@ -1,31 +1,23 @@
 ﻿namespace Template_Views.Pages;
 
-using System;
-
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
-using Microsoft.AspNetCore.Components.Web;
-
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
-
 [RenderModeHelperComponentsAttributeImpl]
 public partial class Counter;
 
-file sealed class RenderModeHelperComponentsAttributeImpl : RenderModeHelperComponentsAttribute
+file sealed class RenderModeHelperComponentsAttributeImpl : RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeHelperComponentsAttribute
 {
     public override Type FrameType => typeof(RenderModeFrame);
     public override Type WrapperType => typeof(RenderModeWrapper);
 }
 
-[ExcludeComponentFromContainer]
+[RhoMicro.ApplicationFramework.Presentation.Views.Blazor.ExcludeComponentFromContainer]
 file sealed class RenderModeFrame : Counter
 {
-    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    protected override void BuildRenderTree(global::Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder builder)
     {
         builder.OpenComponent<RenderModeWrapper>(0);
-        builder.AddComponentRenderMode(RenderMode.InteractiveAuto);
+        builder.AddComponentRenderMode(Microsoft.AspNetCore.Components.Web.RenderMode.InteractiveAuto);
         builder.CloseComponent();
     }
 }
-[ExcludeComponentFromContainer]
+[RhoMicro.ApplicationFramework.Presentation.Views.Blazor.ExcludeComponentFromContainer]
 file sealed class RenderModeWrapper : Counter;

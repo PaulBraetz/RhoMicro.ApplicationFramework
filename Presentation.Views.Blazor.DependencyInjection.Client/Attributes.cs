@@ -1,9 +1,31 @@
-﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
+﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
 
 using System;
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+
+/// <summary>
+/// Marks the target component to be excluded from conventional DI registrations via the containing assembly.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+public sealed class ExcludeComponentFromContainerAttribute : Attribute;
+
+/// <summary>
+/// Helper attribute used to register the required component frame and wrapper types.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+public abstract class RenderModeHelperComponentsAttribute : Attribute
+{
+    /// <summary>
+    /// Gets the type of render mode frame component to use when not omitting render modes.
+    /// </summary>
+    public abstract Type FrameType { get; }
+    /// <summary>
+    /// Gets the type of render mode wrapper component to use when not omitting render modes.
+    /// </summary>
+    public abstract Type WrapperType { get; }
+}
 
 /// <summary>
 /// Applies render mode to the target component conditionally.

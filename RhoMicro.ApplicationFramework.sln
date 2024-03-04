@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B8256C70-A3E6-40D2-8108-CF28FAE9DF1F}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		AutoUpdateAssemblyName.txt = AutoUpdateAssemblyName.txt
 		Directory.Build.props = Directory.Build.props
 		LICENSE = LICENSE
 	EndProjectSection
@@ -59,7 +60,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Composition.Presentation.Vi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Template_Composition", "Templates\Template_Composition\Template_Composition.csproj", "{833C8F6A-178D-497E-81CF-86345AA5D853}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation.WebGui.Client", "Presentation.WebGui.Client\Presentation.WebGui.Client.csproj", "{366C50BE-8CCA-4B24-A6F0-6FDCF2AEC877}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation.WebGui.Client", "Presentation.WebGui.Client\Presentation.WebGui.Client.csproj", "{366C50BE-8CCA-4B24-A6F0-6FDCF2AEC877}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

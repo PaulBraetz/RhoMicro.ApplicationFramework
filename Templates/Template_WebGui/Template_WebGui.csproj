@@ -9,6 +9,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Presentation.Views.Blazor.RenderModeGenerator\Presentation.Views.Blazor.RenderModeGenerator.csproj"
+						  OutputItemType="analyzer"
+						  ReferenceOutputAssembly="false"/>
 		<ProjectReference Include="..\..\Presentation.WebGui\Presentation.WebGui.csproj" />
 		<ProjectReference Include="..\Template_Composition\Template_Composition.csproj" />
 		<ProjectReference Include="..\Template_Views\Template_Views.csproj" />

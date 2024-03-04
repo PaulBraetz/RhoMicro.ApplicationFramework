@@ -22,6 +22,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Include="..\Presentation.Views.Blazor.DependencyInjection.Client\Attributes.cs" Link="Generators\Attributes.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Update="NETStandard.Library" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="*" />
 		<PackageReference Include="PolySharp" Version="*">
