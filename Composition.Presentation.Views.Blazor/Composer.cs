@@ -17,8 +17,5 @@ public static class BlazorViewComposers
     /// <summary>
     /// Gets the default composer instance.
     /// </summary>
-    public static IComposer Default { get; } = Composer.Create(c =>
-    {
-        c.RegisterSingleton<ICssStyle, CssStyle>();
-    });
+    public static IComposer Default { get; } = Composer.Create(c => c.RegisterSingleton<ICssStyle, CssStyle>());
 }

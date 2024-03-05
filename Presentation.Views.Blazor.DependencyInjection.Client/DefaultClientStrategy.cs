@@ -22,12 +22,10 @@ using SimpleInjector.Integration.ServiceCollection;
 /// <param name="composer"></param>
 /// <param name="componentAssemblies"></param>
 /// <param name="containerLogger"></param>
-/// <param name="renderModeOptions"></param>
 public partial class DefaultClientStrategy(
     IComposer composer,
     IEnumerable<Assembly> componentAssemblies,
-    IContainerLogger containerLogger,
-    RenderModeOptions renderModeOptions) : IIntegrationStrategy
+    IContainerLogger containerLogger) : IIntegrationStrategy
 {
     /// <summary>
     /// Creates an instance of the <see cref="DefaultClientStrategy"/> for web servers.
@@ -36,7 +34,11 @@ public partial class DefaultClientStrategy(
     /// <param name="componentAssemblies"></param>
     /// <returns></returns>
     public static DefaultClientStrategy CreateWeb(IComposer composer, IEnumerable<Assembly> componentAssemblies) =>
-        new(composer, componentAssemblies, CompositeContainerLogger.Default, new() { OmitRenderModes = false })
+        new(Composition.Composer.Create(c =>
+        {
+            c.RegisterInstance<IComponentRenderModeSettings>(new ComponentRenderModeSettings(ApplyRenderMode: true));
+            composer.Compose(c);
+        }), componentAssemblies, CompositeContainerLogger.Default)
         {
             IsDefault = true
         };
@@ -52,8 +54,6 @@ public partial class DefaultClientStrategy(
     public IEnumerable<Assembly> ComponentAssemblies { get; } = componentAssemblies;
     /// <inheritdoc/>
     public IContainerLogger ContainerLogger => containerLogger;
-    /// <inheritdoc/>
-    public RenderModeOptions RenderModeOptions => renderModeOptions;
     /// <inheritdoc/>
     public virtual void NotifyVerificationError(DiagnosticVerificationException exception) { }
     /// <inheritdoc/>
@@ -73,8 +73,7 @@ public partial class DefaultClientStrategy(
         _ = services
             .AddScoped<IComponentActivator, SimpleInjectorComponentActivator>()
             .AddScoped<ScopeAccessor>()
-            .AddTransient<ServiceScopeApplier>()
-            .AddSingleton(RenderModeOptions);
+            .AddTransient<ServiceScopeApplier>();
     }
     private void RegisterBlazorComponents(SimpleInjectorAddOptions options)
     {
@@ -88,11 +87,11 @@ public partial class DefaultClientStrategy(
         foreach(var (componentType, implementationInfo) in registrations)
         {
             var componentImplementation = componentType;
-            if(implementationInfo.TryAsHelperComponents(out var helperComponents) && !RenderModeOptions.OmitRenderModes)
+            if(implementationInfo.TryAsHelperComponents(out var helperComponents))
             {
                 //intercept component type registration if helper attribute is detected (custom render mode was used) and we do not omit render modes
-                RegisterBlazorComponent(container, helperComponents.WrapperType, helperComponents.WrapperType);
-                componentImplementation = helperComponents.FrameType;
+                RegisterBlazorComponent(container, helperComponents.ProxyType, helperComponents.ProxyType);
+                componentImplementation = helperComponents.WrapperType;
             }
 
             RegisterBlazorComponent(container, componentType, componentImplementation);

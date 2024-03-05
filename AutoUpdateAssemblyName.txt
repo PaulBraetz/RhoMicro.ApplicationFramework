@@ -1,1 +1,3 @@
 Templates/Template_Views
+Templates/Template_WebGui
+Libraries/Presentation.Views.Blazor

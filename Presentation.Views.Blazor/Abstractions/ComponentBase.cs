@@ -32,19 +32,11 @@ public abstract class ComponentBase<TStyle> : SimpleInjectorIntegratedComponent,
     where TStyle : ICssStyle
 #pragma warning restore CA1063 // Implement IDisposable Correctly
 {
-    /// <summary>
-    /// Gets the runtime configuration under which the component is being executed.
-    /// </summary>
-    [Injected]
-    public required IAspEnvironment RuntimeConfiguration
-    {
-        get => _runtimeConfiguration;
-        set
-        {
-            _runtimeConfiguration = value;
-            EnsureComponentTypeAttribute();
-        }
-    }
+    private static readonly ConcurrentDictionary<Type, IReadOnlyList<Action<Object>>> _nullChecks = new();
+    private readonly CancellationTokenSource _disposalCts = new();
+    private Int32 _disposed = BooleanState.FalseState;
+    private Dictionary<String, Object?>? _attributes;
+
     /// <summary>
     /// Gets or sets the style to apply to the component.
     /// </summary>
@@ -52,46 +44,47 @@ public abstract class ComponentBase<TStyle> : SimpleInjectorIntegratedComponent,
     [Parameter]
     public required TStyle Style { get; set; }
 
-    private static readonly ConcurrentDictionary<Type, IReadOnlyList<Action<Object>>> _nullChecks = new();
-    private readonly CancellationTokenSource _disposalCts = new();
-    private Dictionary<String, Object> _attributes = [];
-    private Int32 _disposed = BooleanState.FalseState;
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    private IAspEnvironment _runtimeConfiguration; //use property instead
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private Dictionary<String, Object?> AttributesInternal
+    {
+        get
+        {
+            if(_attributes == null)
+            {
+                _attributes = [];
+                EnsureComponentTypeAttributes();
+            }
+
+            return _attributes;
+        }
+    }
 
     /// <summary>
     /// Gets or sets the otherwise unmatched attributes passed to the component.
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "BL0007:Component parameters should be auto properties", Justification = "Required for debugging component types.")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Required for debugging component types.")]
-    public required Dictionary<String, Object> Attributes
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Required for parameter.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "BL0007:Component parameters should be auto properties", Justification = "Impossible due to EnsureComponentType")]
+    public required Dictionary<String, Object?> Attributes
     {
-        get => _attributes;
+        get => AttributesInternal;
         set
         {
-            _attributes = value!;
-            EnsureComponentTypeAttribute();
+            _attributes = value;
+            EnsureComponentTypeAttributes();
         }
     }
-
-    private void EnsureComponentTypeAttribute()
-    {
-        if(!RuntimeConfiguration.IsDevelopment())
-            return;
-
-        // Allow assigning null value in order to force
-        // ParameterNullException in OnParametersSet and avoiding
-        // NullReferenceException here
-        _ = _attributes?.TryAdd("component-type", GetType().Name);
-    }
-
     /// <summary>
     /// Gets a cancellation token that will be cancelled upon <see cref="Dispose"/> being called.
     /// </summary>
     protected CancellationToken ComponentDisposalToken => _disposalCts.Token;
 
+    private void EnsureComponentTypeAttributes()
+    {
+        if(!AspEnvironment.IsDevelopment())
+            return;
+
+        _ = Attributes.TryAdd("component-type", ComponentType.FullName ?? String.Empty);
+    }
     /// <summary>
     /// Ensures that each of the class names provided are removed from the <c>class</c> attribute.
     /// </summary>

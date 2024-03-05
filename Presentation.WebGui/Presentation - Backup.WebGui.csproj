@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Description>Contains integration extensions for blazor web applications into simple injector.</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="/" CopyToOutputDirectory="Always" />
+		<None Include="LICENSE.txt" Pack="true" PackagePath="/" CopyToOutputDirectory="Always" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		<PackageReference Include="Photino.Blazor" Version="2.7.0" />
+		<ProjectReference Include="..\Presentation.Views.Blazor.DependencyInjection\Presentation.Views.Blazor.DependencyInjection.csproj" />
+	</ItemGroup>
+
+</Project>

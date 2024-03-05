@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
-		<!--<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>-->
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -15,8 +14,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Presentation.Views.Blazor.DependencyInjection.Client\Presentation.Views.Blazor.DependencyInjection.Client.csproj" />
-	  <ProjectReference Include="..\..\Presentation.Views.Blazor\Presentation.Views.Blazor.csproj" />
+		<ProjectReference Include="..\..\Presentation.Views.Blazor.DependencyInjection.Client\Presentation.Views.Blazor.DependencyInjection.Client.csproj" />
+		<ProjectReference Include="..\..\Presentation.Views.Blazor.RenderModeGenerator\Presentation.Views.Blazor.RenderModeGenerator.csproj" OutputItemType="analyzer" ReferenceOutputAssembly="false"/>
+		<ProjectReference Include="..\..\Presentation.Views.Blazor\Presentation.Views.Blazor.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

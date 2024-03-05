@@ -1,19 +1,47 @@
 ﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
 
+using System.Reflection;
+
 using Microsoft.AspNetCore.Components;
 
+using RhoMicro.ApplicationFramework.Common.Abstractions;
+
 /// <summary>
-/// Base component that integrates with SimpleIjector.
+/// Base component that integrates with SimpleInjector.
 /// </summary>
 public abstract class SimpleInjectorIntegratedComponent : ComponentBase, IHandleEvent
 {
     /// <summary>
+    /// Initializes a new instance.
+    /// </summary>
+    protected SimpleInjectorIntegratedComponent()
+    {
+        var thisType = GetType();
+        ComponentType = thisType.GetCustomAttribute<RenderModeProxyAttribute>() is { ComponentType: Type proxiedType }
+            ? proxiedType
+            : thisType.GetCustomAttribute<RenderModeWrapperAttribute>() is { ComponentType: Type wrappedType }
+            ? wrappedType
+            : thisType;
+    }
+
+    /// <summary>
     /// Gets or sets the service scope applier to use when handling events.
     /// This property should not be set or used in client code.
     /// </summary>
-#pragma warning disable CS8618 // Should never be null during lifetime of instance due to DI
-    [Injected] public ServiceScopeApplier Applier { get; set; }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    [Injected] required public ServiceScopeApplier Applier { get; set; }
+
+    /// <summary>
+    /// Gets the type of this component. The runtime type might differ from this type, as
+    /// render mode proxy and/or wrapper component type implementations are used. 
+    /// This property gets the declared and publicly used component type.
+    /// </summary>
+    public Type ComponentType { get; }
+
+    /// <summary>
+    /// Gets the environment in which the component is being executed.
+    /// </summary>
+    [Injected]
+    public required IAspEnvironment AspEnvironment { get; set; }
 
     /// <inheritdoc/>
     public Task HandleEventAsync(EventCallbackWorkItem item, Object? arg)

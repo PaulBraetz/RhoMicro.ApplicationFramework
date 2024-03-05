@@ -1,6 +1,10 @@
 {
   "profiles": {
     "Profile 1": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\Templates\\Template_Views\\Template_Views.csproj"
+    },
+    "Profile 2": {
       "commandName": "DebugRoslynComponent"
     }
   }

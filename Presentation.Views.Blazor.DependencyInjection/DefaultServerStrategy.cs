@@ -20,13 +20,11 @@ using SimpleInjector.Integration.ServiceCollection;
 /// <param name="composer"></param>
 /// <param name="componentAssemblies"></param>
 /// <param name="containerLogger"></param>
-/// <param name="renderModeOptions"></param>
 public sealed class DefaultServerStrategy(
     IComposer composer,
     IEnumerable<Assembly> componentAssemblies,
-    IContainerLogger containerLogger,
-    RenderModeOptions renderModeOptions)
-    : DefaultClientStrategy(composer, componentAssemblies, containerLogger, renderModeOptions)
+    IContainerLogger containerLogger)
+    : DefaultClientStrategy(composer, componentAssemblies, containerLogger)
 {
     /// <summary>
     /// Creates an instance of the <see cref="DefaultClientStrategy"/> for web servers.
@@ -34,8 +32,12 @@ public sealed class DefaultServerStrategy(
     /// <param name="composer"></param>
     /// <param name="componentAssemblies"></param>
     /// <returns></returns>
-    public static DefaultServerStrategy CreateWeb(IComposer composer, IEnumerable<Assembly> componentAssemblies) =>
-        Create(composer, componentAssemblies, new() { OmitRenderModes = false });
+    public static new DefaultServerStrategy CreateWeb(IComposer composer, IEnumerable<Assembly> componentAssemblies) =>
+        Create(Composition.Composer.Create(c =>
+        {
+            c.RegisterInstance<IComponentRenderModeSettings>(new ComponentRenderModeSettings(ApplyRenderMode: true));
+            composer.Compose(c);
+        }), componentAssemblies);
     /// <summary>
     /// Creates an instance of the <see cref="DefaultClientStrategy"/> for local applications.
     /// </summary>
@@ -43,10 +45,14 @@ public sealed class DefaultServerStrategy(
     /// <param name="componentAssemblies"></param>
     /// <returns></returns>
     public static DefaultServerStrategy CreateLocal(IComposer composer, IEnumerable<Assembly> componentAssemblies) =>
-        Create(composer, componentAssemblies, new() { OmitRenderModes = true });
+        Create(Composition.Composer.Create(c =>
+        {
+            c.RegisterInstance<IComponentRenderModeSettings>(new ComponentRenderModeSettings(ApplyRenderMode: false));
+            composer.Compose(c);
+        }), componentAssemblies);
 
-    private static DefaultServerStrategy Create(IComposer composer, IEnumerable<Assembly> componentAssemblies, RenderModeOptions activatorOptions) =>
-    new(composer, componentAssemblies, CompositeContainerLogger.Default, activatorOptions)
+    private static DefaultServerStrategy Create(IComposer composer, IEnumerable<Assembly> componentAssemblies) =>
+    new(composer, componentAssemblies, CompositeContainerLogger.Default)
     {
         IsDefault = true
     };

@@ -1,15 +1,47 @@
-﻿@inherits AfComponent
+﻿@namespace TestNamespace
+@inherits AfComponent
 @page "/counter"
 @attribute [OptionalInteractiveAuto]
 
 <h1>Counter</h1>
-<h1 class="text-muted">Render @(OperatingSystem.IsBrowser() ? "Wasm" : "Server")</h1>
+<h6>Location: @(OperatingSystem.IsBrowser() ? "Wasm" : "Server")</h6>
+<h6>Type: @(GetType().FullName)</h6>
+<h6>Attributes:</h6>
+<dl>
+    @foreach(var (name, value) in this.Attributes)
+    {
+        <dt>
+            @(name)
+        </dt>
+        <dd>
+            @(value)
+        </dd>
+    }
+</dl>
+<h6>Properties:</h6>
+<dl>
+    @foreach(var (name, value) in GetPropertyValues())
+    {
+        <dt>
+            @(name)
+        </dt>
+        <dd>
+            @(value)
+        </dd>
+    }
+</dl>
+
 <p>Current count: @currentCount</p>
 
-<button @attributes="Attributes" class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
 @code {
     private int currentCount = 0;
+
+    private IEnumerable<(String, String)> GetPropertyValues() =>
+        this.GetType()
+            .GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public)
+            .Select(p => (p.Name, p.GetMethod?.Invoke(this, [])?.ToString() ?? "null"));
 
     private void IncrementCount()
     {

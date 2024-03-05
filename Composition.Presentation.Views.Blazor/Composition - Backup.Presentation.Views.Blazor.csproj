@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Description>Contains composers for composing blazor view object graphs.</Description>
+		<PackageTags></PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="/" CopyToOutputDirectory="Always" />
+		<None Include="LICENSE.txt" Pack="true" PackagePath="/" CopyToOutputDirectory="Always" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Composition\Composition.csproj" />
+	  <ProjectReference Include="..\Presentation.Views.Blazor\Presentation.Views.Blazor.csproj" />
+	</ItemGroup>
+
+</Project>

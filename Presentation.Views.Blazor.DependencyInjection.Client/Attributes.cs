@@ -6,6 +6,29 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
 /// <summary>
+/// Marker attribute for generated <c>RenderModeProxy</c> components.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+public abstract class RenderModeProxyAttribute : Attribute
+{
+    /// <summary>
+    /// Gets the proxied component.
+    /// </summary>
+    public abstract Type ComponentType { get; }
+}
+/// <summary>
+/// Marker attribute for generated <c>RenderModeWrapper</c> components.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+public abstract class RenderModeWrapperAttribute : Attribute
+{
+    /// <summary>
+    /// Gets the wrapped component.
+    /// </summary>
+    public abstract Type ComponentType { get; }
+}
+
+/// <summary>
 /// Marks the target component to be excluded from conventional DI registrations via the containing assembly.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
@@ -20,11 +43,11 @@ public abstract class RenderModeHelperComponentsAttribute : Attribute
     /// <summary>
     /// Gets the type of render mode frame component to use when not omitting render modes.
     /// </summary>
-    public abstract Type FrameType { get; }
+    public abstract Type WrapperType { get; }
     /// <summary>
     /// Gets the type of render mode wrapper component to use when not omitting render modes.
     /// </summary>
-    public abstract Type WrapperType { get; }
+    public abstract Type ProxyType { get; }
 }
 
 /// <summary>
@@ -43,7 +66,7 @@ public abstract class OptionalRenderModeAttribute : Attribute
 /// Applies the <see langword="null"/> render mode to the target component.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-public sealed class NoRenderModeAttribute : OptionalRenderModeAttribute
+public sealed class NullRenderModeAttribute : OptionalRenderModeAttribute
 {
     /// <inheritdoc/>
     public override IComponentRenderMode? Mode => null;

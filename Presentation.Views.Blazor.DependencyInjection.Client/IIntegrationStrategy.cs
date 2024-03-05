@@ -26,10 +26,6 @@ public interface IIntegrationStrategy
     /// </summary>
     IContainerLogger ContainerLogger { get; }
     /// <summary>
-    /// Gets render mode options.
-    /// </summary>
-    RenderModeOptions RenderModeOptions { get; }
-    /// <summary>
     /// Notifies the strategy about any diagnostics exceptions encountered while executing <see cref="Container.Verify()"/>.
     /// </summary>
     /// <param name="exception">

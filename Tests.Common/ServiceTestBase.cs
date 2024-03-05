@@ -28,6 +28,7 @@ public abstract class ServiceTestBase<TService>
             await Cleanup().ConfigureAwait(continueOnCapturedContext: false);
 
         var container = new Container();
+        container.Options.AllowOverridingRegistrations = true;
         Configure(container);
         container.Verify();
 

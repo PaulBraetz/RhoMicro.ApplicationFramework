@@ -13,11 +13,9 @@ using RhoMicro.ApplicationFramework.Common.Abstractions;
 /// <remarks>
 /// Initializes a new instance.
 /// </remarks>
-/// <param name="name">The name of the runtime configuration.</param>
-public sealed class AspEnvironment(String name) : IAspEnvironment
+/// <param name="Name">The name of the runtime configuration.</param>
+public sealed record AspEnvironment(String Name) : IAspEnvironment
 {
-    /// <inheritdoc/>
-    public String Name { get; } = name;
     /// <summary>
     /// Gets the debug ("DEBUG") configuration.
     /// </summary>
