@@ -1,4 +1,4 @@
-﻿namespace RhoMicro.ApplicationFramework.Presentation.Models.Abstractions.Interop;
+﻿namespace RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 
 /// <summary>
 /// Provides access to the clipboard.

@@ -6,31 +6,10 @@ using Microsoft.Extensions.Logging;
 using RhoMicro.ApplicationFramework.Aspects.Abstractions;
 using RhoMicro.ApplicationFramework.Aspects.Decorators;
 using RhoMicro.ApplicationFramework.Aspects.Services;
-using RhoMicro.ApplicationFramework.Common;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 using RhoMicro.ApplicationFramework.Common.Formatters;
 
 using SimpleInjector;
-
-/// <summary>
-/// Contains object graph definitions for common object graphs.
-/// </summary>
-public static class Common
-{
-    /// <summary>
-    /// Gets a composer able to compose common object graphs.
-    /// </summary>
-    public static IComposer Default { get; } = Composer.Create(c => c.RegisterInstance<IAspEnvironment>(new AspEnvironment(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development")));
-    /// <summary>
-    /// Gets a composer able to compose common debug object graphs.
-    /// </summary>
-    public static IComposer Debug { get; } = Composer.Create(c => c.RegisterInstance<IAspEnvironment>(AspEnvironment.Development));
-
-    /// <summary>
-    /// Gets a composer able to compose common debug object graphs.
-    /// </summary>
-    public static IComposer Release { get; } = Composer.Create(c => c.RegisterInstance<IAspEnvironment>(AspEnvironment.Production));
-}
 
 /// <summary>
 /// Contains object graph definitions for cross-cutting concerns.

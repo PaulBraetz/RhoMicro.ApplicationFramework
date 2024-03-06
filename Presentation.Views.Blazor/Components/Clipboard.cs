@@ -1,8 +1,8 @@
-﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Interop;
+﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Components;
 
 using Microsoft.JSInterop;
 
-using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions.Interop;
+using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 
 /// <summary>
 /// Clipboard that accesses the underlying clipboard through a JavaScript runtime.

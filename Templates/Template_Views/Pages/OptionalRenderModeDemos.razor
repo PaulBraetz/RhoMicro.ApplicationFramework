@@ -1,0 +1,35 @@
+﻿@inherits AfComponent
+@page "/optionalrendermodedemos"
+@using Microsoft.AspNetCore.Components
+
+<div class="d-flex flex-column">
+    <h1>Demonstrating optional rendermode attributes:</h1>
+    <p>
+        RenderModes that would lead to runtime exceptions are ignored.
+    </p>
+    <OptionalRenderModeDemo RenderModes="@_noop" IllegalRenderModes="[]" Name="NoOp" />
+    @foreach(var (name, renderMode, renderModes, illegalRenderModes) in _items)
+    {
+        <OptionalRenderModeDemo OptionalRenderMode="@renderMode"
+                           Name="@name"
+                           RenderModes="@renderModes"
+                           IllegalRenderModes="illegalRenderModes" />
+    }
+</div>
+
+@code {
+    private static String _null = "null";
+    private static String _auto = nameof(RenderMode.InteractiveAuto);
+    private static String _server = nameof(RenderMode.InteractiveServer);
+    private static String _wasm = nameof(RenderMode.InteractiveWebAssembly);
+
+    private static String[] _noop = [_null, _auto, _server, _wasm];
+
+    private static (string, IComponentRenderMode?, String[], String[])[] _items =
+        [
+            ("null", null, [_null, _auto, _server, _wasm], []),
+    ("RenderMode.InteractiveAuto", RenderMode.InteractiveAuto, [_null, _auto,_server,_wasm], []),
+    ("RenderMode.InteractiveServer", RenderMode.InteractiveServer, [_null, _auto,_server,_wasm], []),
+    ("RenderMode.InteractiveWebAssembly", RenderMode.InteractiveWebAssembly, [_null, _auto,_server,_wasm],[])
+        ];
+}

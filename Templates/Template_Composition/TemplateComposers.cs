@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using RhoMicro.ApplicationFramework.Common.Abstractions;
 using RhoMicro.ApplicationFramework.Composition;
 
 /// <summary>
@@ -12,25 +13,25 @@ using RhoMicro.ApplicationFramework.Composition;
 /// </summary>
 public static class TemplateComposers
 {
-    private static IComposer Default { get; } = Composer.Create(
+    private static IComposer CreateDefault(DeploymentPlatform deploymentPlatform) => Composer.Create(
         Presentation.Models,
         BlazorViewComposers.Default,
 #if DEBUG
-        Common.Debug
+        Common.CreateDebug(deploymentPlatform)
 #else
-        Common.Release
+        Common.CreateRelease(deploymentPlatform)
 #endif
         );
     /// <summary>
     /// Gets the default composition root for web application servers.
     /// </summary>
-    public static IComposer WebGui { get; } = Composer.Create(Default);
+    public static IComposer WebGui { get; } = CreateDefault(DeploymentPlatform.Server);
     /// <summary>
     /// Gets the default composition root for web application clients.
     /// </summary>
-    public static IComposer WebGuiClient { get; } = Composer.Create(Default);
+    public static IComposer WebGuiClient { get; } = CreateDefault(DeploymentPlatform.Server);
     /// <summary>
     /// Gets the default composition root for local application.
     /// </summary>
-    public static IComposer LocalGui { get; } = Composer.Create(Default);
+    public static IComposer LocalGui { get; } = CreateDefault(DeploymentPlatform.Desktop);
 }

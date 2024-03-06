@@ -28,15 +28,15 @@ public partial class DefaultClientStrategy(
     IContainerLogger containerLogger) : IIntegrationStrategy
 {
     /// <summary>
-    /// Creates an instance of the <see cref="DefaultClientStrategy"/> for web servers.
+    /// Creates an instance of the <see cref="DefaultClientStrategy"/>.
     /// </summary>
     /// <param name="composer"></param>
     /// <param name="componentAssemblies"></param>
     /// <returns></returns>
-    public static DefaultClientStrategy CreateWeb(IComposer composer, IEnumerable<Assembly> componentAssemblies) =>
+    public static DefaultClientStrategy CreateClient(IComposer composer, IEnumerable<Assembly> componentAssemblies) =>
         new(Composition.Composer.Create(c =>
         {
-            c.RegisterInstance<IComponentRenderModeSettings>(new ComponentRenderModeSettings(ApplyRenderMode: true));
+            c.RegisterSingleton<IRenderModeInterceptor, RenderModeInterceptor>();
             composer.Compose(c);
         }), componentAssemblies, CompositeContainerLogger.Default)
         {
@@ -65,7 +65,7 @@ public partial class DefaultClientStrategy(
         RegisterBlazorComponents(options);
     }
 
-    private void AddBlazor(SimpleInjectorAddOptions options)
+    private static void AddBlazor(SimpleInjectorAddOptions options)
     {
         var services = options.Services;
 

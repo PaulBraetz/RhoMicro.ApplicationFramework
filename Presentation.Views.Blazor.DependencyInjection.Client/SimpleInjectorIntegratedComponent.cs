@@ -25,12 +25,6 @@ public abstract class SimpleInjectorIntegratedComponent : ComponentBase, IHandle
     }
 
     /// <summary>
-    /// Gets or sets the service scope applier to use when handling events.
-    /// This property should not be set or used in client code.
-    /// </summary>
-    [Injected] required public ServiceScopeApplier Applier { get; set; }
-
-    /// <summary>
     /// Gets the type of this component. The runtime type might differ from this type, as
     /// render mode proxy and/or wrapper component type implementations are used. 
     /// This property gets the declared and publicly used component type.
@@ -38,10 +32,15 @@ public abstract class SimpleInjectorIntegratedComponent : ComponentBase, IHandle
     public Type ComponentType { get; }
 
     /// <summary>
+    /// Gets or sets the service scope applier to use when handling events.
+    /// This property should not be set or used in client code.
+    /// </summary>
+    [Injected] public required ServiceScopeApplier Applier { get; set; }
+
+    /// <summary>
     /// Gets the environment in which the component is being executed.
     /// </summary>
-    [Injected]
-    public required IAspEnvironment AspEnvironment { get; set; }
+    [Injected] public required IExecutionEnvironment ExecutionEnvironment { get; set; }
 
     /// <inheritdoc/>
     public Task HandleEventAsync(EventCallbackWorkItem item, Object? arg)

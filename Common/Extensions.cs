@@ -9,15 +9,15 @@ public static class Extensions
     /// <summary>
     /// Gets a value indicating whether the specified runtime configuration is the debug ("DEBUG") configuration.
     /// </summary>
-    /// <param name="runtimeConfiguration">The runtime configuration to check.</param>
+    /// <param name="configuration">The runtime configuration to check.</param>
     /// <returns>
     /// <see langword="true"/> if the configuration is the debug configuration; otherwise, <see langword="false"/>.
     /// </returns>
-    public static Boolean IsDevelopment(this IAspEnvironment runtimeConfiguration)
+    public static Boolean IsDevelopment(this IEnvironmentConfiguration configuration)
     {
-        ArgumentNullException.ThrowIfNull(runtimeConfiguration);
+        ArgumentNullException.ThrowIfNull(configuration);
 
-        var result = runtimeConfiguration.Name == AspEnvironment.Development.Name;
+        var result = configuration.Name == EnvironmentConfiguration.Development.Name;
 
         return result;
     }

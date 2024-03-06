@@ -66,7 +66,7 @@ public abstract class OptionalRenderModeAttribute : Attribute
 /// Applies the <see langword="null"/> render mode to the target component.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-public sealed class NullRenderModeAttribute : OptionalRenderModeAttribute
+public sealed class OptionalNullRenderModeAttribute : OptionalRenderModeAttribute
 {
     /// <inheritdoc/>
     public override IComponentRenderMode? Mode => null;
@@ -76,7 +76,7 @@ public sealed class NullRenderModeAttribute : OptionalRenderModeAttribute
 /// Applies the <see cref="RenderMode.InteractiveAuto"/> render mode to the target component conditionally.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-public sealed class OptionalInteractiveAutoAttribute : OptionalRenderModeAttribute
+public sealed class OptionalInteractiveAutoRenderModeAttribute : OptionalRenderModeAttribute
 {
     /// <inheritdoc/>
     public override IComponentRenderMode Mode => RenderMode.InteractiveAuto;
@@ -86,7 +86,7 @@ public sealed class OptionalInteractiveAutoAttribute : OptionalRenderModeAttribu
 /// Applies the <see cref="RenderMode.InteractiveServer"/> render mode to the target component conditionally.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-public sealed class OptionalInteractiveServerAttribute : OptionalRenderModeAttribute
+public sealed class OptionalInteractiveServerRenderModeAttribute : OptionalRenderModeAttribute
 {
     /// <inheritdoc/>
     public override IComponentRenderMode Mode => RenderMode.InteractiveServer;
@@ -96,8 +96,19 @@ public sealed class OptionalInteractiveServerAttribute : OptionalRenderModeAttri
 /// Applies the <see cref="RenderMode.InteractiveWebAssembly"/> render mode to the target component conditionally.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-public sealed class OptionalInteractiveWebAssemblyAttribute : OptionalRenderModeAttribute
+public sealed class OptionalInteractiveWebAssemblyRenderModeAttribute : OptionalRenderModeAttribute
 {
     /// <inheritdoc/>
     public override IComponentRenderMode Mode => RenderMode.InteractiveWebAssembly;
+}
+
+/// <summary>
+/// Applies the <see cref="NoOpRenderMode"/> render mode to the target component unconditionally.
+/// This means that no optional render mode will be applied.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+public sealed class NoOpRenderModeAttribute : OptionalRenderModeAttribute
+{
+    /// <inheritdoc/>
+    public override IComponentRenderMode Mode => NoOpRenderMode.Instance;
 }

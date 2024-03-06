@@ -1,0 +1,32 @@
+﻿<div class="d-flex flex-column">
+    <h5>@Name</h5>
+    <span><span class="text-primary font-weight-bold">Parent Location : </span><Location /></span>
+    <span><span class="text-success font-weight-bold">Child With NoOp : </span><Location /></span>
+    @foreach(var renderMode in RenderModeInstancess)
+    {
+        <span>
+            <span class="text-success font-weight-bold">Child With @(renderMode?.GetType().Name ?? "null") : </span>
+            <Location @rendermode="@renderMode" />
+        </span>
+    }@foreach(var renderMode in IllegalRenderModes)
+    {
+        <span><span class="text-success font-weight-bold">Child With @(renderMode) : </span> <span class="text-danger">illegal</span></span>
+    }
+</div>
+
+@code {
+    private static readonly Dictionary<String, IComponentRenderMode?> _renderModes = new()
+    {
+        {"null", null},
+        {nameof(RenderMode.InteractiveAuto), RenderMode.InteractiveAuto},
+        {nameof(RenderMode.InteractiveServer), RenderMode.InteractiveServer},
+        {nameof(RenderMode.InteractiveWebAssembly), RenderMode.InteractiveWebAssembly}
+    };
+    private IEnumerable<IComponentRenderMode?> RenderModeInstancess => RenderModes.Select(n => _renderModes[n]);
+    [Parameter]
+    public required String[] RenderModes { get; set; }
+    [Parameter]
+    public required String[] IllegalRenderModes { get; set; }
+    [Parameter]
+    public required string Name { get; set; }
+}

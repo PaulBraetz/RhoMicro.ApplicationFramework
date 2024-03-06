@@ -30,17 +30,20 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
 #endif
 
         var autoProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
-            "RhoMicro.ApplicationFramework.Presentation.Views.Blazor.OptionalInteractiveAutoAttribute",
+            "RhoMicro.ApplicationFramework.Presentation.Views.Blazor.OptionalInteractiveAutoRenderModeAttribute",
             IsTargetDeclaration, (context, ct) => GetOutput(context, "InteractiveAuto", ct));
         var ssrProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
-            "RhoMicro.ApplicationFramework.Presentation.Views.Blazor.OptionalInteractiveServerAttribute",
+            "RhoMicro.ApplicationFramework.Presentation.Views.Blazor.OptionalInteractiveServerRenderModeAttribute",
             IsTargetDeclaration, (context, ct) => GetOutput(context, "InteractiveServer", ct));
         var csrProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
-            "RhoMicro.ApplicationFramework.Presentation.Views.Blazor.OptionalInteractiveWebAssemblyAttribute",
+            "RhoMicro.ApplicationFramework.Presentation.Views.Blazor.OptionalInteractiveWebAssemblyRenderModeAttribute",
             IsTargetDeclaration, (context, ct) => GetOutput(context, "InteractiveWebAssembly", ct));
         var nullProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
-            "RhoMicro.ApplicationFramework.Presentation.Views.Blazor.NullRenderModeAttribute",
+            "RhoMicro.ApplicationFramework.Presentation.Views.Blazor.OptionalNullRenderModeAttribute",
             IsTargetDeclaration, (context, ct) => GetOutput(context, "null", ct));
+        var noOpProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
+            "RhoMicro.ApplicationFramework.Presentation.Views.Blazor.NoOpRenderModeAttribute",
+            IsTargetDeclaration, (context, ct) => GetOutput(context, "noop", ct));
 
         //retrieving razor components seems to only be possible through the actual razor files;
         //I have not found a way yet to access the generated razor classes, as of net8.
@@ -123,21 +126,24 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
         return result;
     }
 
-    private const String _auto = "OptionalInteractiveAuto";
-    private const String _server = "OptionalInteractiveServer";
-    private const String _webAssembly = "OptionalInteractiveWebAssembly";
-    private const String _nulLRenderMode = "NullRenderMode";
-    private static readonly Regex _renderModeAttributePattern = new(@"(?<=@attribute \[)(" + _auto + "|" + _server + "|" + _webAssembly + @")(?=\])", RegexOptions.Compiled);
+    private const String _autoRenderMode = "OptionalInteractiveAutoRenderMode";
+    private const String _serverRenderMode = "OptionalInteractiveServerRenderMode";
+    private const String _webAssemblyRenderMode = "OptionalInteractiveWebAssemblyRenderMode";
+    private const String _nullRenderMode = "OptionalNullRenderMode";
+    private const String _noOpRenderModeType = "global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.NoOpRenderMode";
+    private const String _noOpRenderModeInstanceExpr = _noOpRenderModeType + ".Instance";
+    private static readonly Regex _renderModeAttributePattern = new(@"(?<=@attribute \[)(" + _autoRenderMode + "|" + _serverRenderMode + "|" + _webAssemblyRenderMode + "|" + _nullRenderMode + @")(?=\])", RegexOptions.Compiled);
     private static String GetRenderModeExpr(String source, CancellationToken ct)
     {
         ct.ThrowIfCancellationRequested();
         var match = _renderModeAttributePattern.Match(source) is { Success: true, Captures: [Capture capture] } ? capture.Value : null;
         var result = match switch
         {
-            _auto => "InteractiveAuto",
-            _server => "InteractiveServer",
-            _webAssembly => "InteractiveWebAssembly",
-            _ => "null"
+            _autoRenderMode => "InteractiveAuto",
+            _serverRenderMode => "InteractiveServer",
+            _webAssemblyRenderMode => "InteractiveWebAssembly",
+            _nullRenderMode => "null",
+            _ => "noop"
         };
 
         return result;
@@ -219,7 +225,7 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
 
         return result;
     }
-    private static String GetHintName(String @namespace, String className, String renderModeExpr) => $"{@namespace.Replace('.', '_')}{( @namespace != String.Empty ? "_" : String.Empty )}{className}_{( renderModeExpr == "null" ? _nulLRenderMode : renderModeExpr )}.g.cs";
+    private static String GetHintName(String @namespace, String className, String renderModeExpr) => $"{@namespace.Replace('.', '_')}{( @namespace != String.Empty ? "_" : String.Empty )}{className}_{( renderModeExpr == "null" ? _nullRenderMode : renderModeExpr )}.g.cs";
     #endregion
     #region GetOutput
     private static (String hintName, String source) GetOutput(Compilation compilation, String path, String razorSource, EquatableList<String> importUsings, CancellationToken ct)
@@ -247,105 +253,6 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
     }
     #endregion
     #region GetSource
-    private static String GetSource(String @namespace, String[] usingNamespaces, String className, String renderModeExpr, String[] typeParameters, String[] typeConstraints, CancellationToken ct)
-    {
-        var typeParametersString = typeParameters.Length > 0 ?
-            $"<{String.Join(", ", typeParameters)}>" :
-            String.Empty;
-        var typeParametersOpenString = typeParameters.Length > 0 ?
-            $"<{String.Concat(Enumerable.Repeat(',', typeParameters.Length - 1))}>" :
-            String.Empty;
-        var fullyQualifiedRenderModeExpr = renderModeExpr != "null" ?
-            $"global::Microsoft.AspNetCore.Components.Web.RenderMode.{renderModeExpr}" :
-            renderModeExpr;
-        var result = new IndentedStringBuilder(IndentedStringBuilderOptions.GeneratedFile with
-        {
-            GeneratorName = typeof(RenderModeGenerator).FullName,
-            AmbientCancellationToken = ct
-        })
-        .Append("namespace ").Append(@namespace).AppendLine(';')
-        .Append(c =>
-        {
-            for(var i = 0; i < usingNamespaces.Length; i++)
-            {
-                c.Append("using ").Append(usingNamespaces[i]).Append(';').AppendLineCore();
-            }
-        })
-        .AppendLine("[RenderModeHelperComponentsAttributeImpl]")
-        .Append("partial class ").Append(className).Append(typeParametersString)
-        .AppendJoinLines(StringOrChar.Empty, typeConstraints)
-        .OpenBracesBlock()
-        .AppendLine("[global::Microsoft.AspNetCore.Components.Parameter]")
-        .Append("public global::Microsoft.AspNetCore.Components.IComponentRenderMode? OptionalRenderMode { get; set; } = ").Append(fullyQualifiedRenderModeExpr).AppendLine(';')
-        .AppendLine("#nullable disable")
-        .AppendLine("[global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Injected]")
-        .AppendLine("public global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.IComponentRenderModeSettings OptionalRenderModeSettings { get; set; }")
-        .AppendLine("#nullable restore")
-        .CloseBlock()
-        .AppendLine("file sealed class RenderModeHelperComponentsAttributeImpl : global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeHelperComponentsAttribute")
-        .OpenBracesBlock()
-        .Append("public override global::System.Type WrapperType => typeof(RenderModeWrapper").Append(typeParametersOpenString).AppendLine(");")
-        .Append("public override global::System.Type ProxyType => typeof(RenderModeProxy").Append(typeParametersOpenString).AppendLine(");")
-        .CloseBlock()
-        .AppendLine("file sealed class RenderModeProxyAttributeImpl : global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeProxyAttribute")
-        .OpenBracesBlock()
-        .Append("public override global::System.Type ComponentType => typeof(").Append(className).Append(typeParametersOpenString).AppendLine(");")
-        .CloseBlock()
-        .AppendLine("file sealed class RenderModeWrapperAttributeImpl : global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeWrapperAttribute")
-        .OpenBracesBlock()
-        .Append("public override global::System.Type ComponentType => typeof(").Append(className).Append(typeParametersOpenString).AppendLine(");")
-        .CloseBlock()
-        .AppendLine("[global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.ExcludeComponentFromContainer]")
-        .AppendLine("[RenderModeProxyAttributeImpl]")
-        .Append("file sealed class RenderModeWrapper").Append(typeParametersString).Append(" : ").Append(className).AppendLine(typeParametersString)
-        .AppendJoinLines(StringOrChar.Empty, typeConstraints)
-        .OpenBracesBlock()
-        .AppendLine("static RenderModeWrapper()")
-        .OpenBracesBlock()
-        .AppendLine("_parameters = [];")
-        .Append("var propertyInfos = typeof(").Append(className).Append(typeParametersString).Append(").GetProperties(global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.Public);")
-        .AppendLine("foreach(var propertyInfo in propertyInfos)")
-        .OpenBracesBlock()
-        .AppendJoinLines(StringOrChar.Empty, [
-            "if(global::System.Reflection.CustomAttributeExtensions.GetCustomAttribute<global::Microsoft.AspNetCore.Components.ParameterAttribute>(propertyInfo) == null) continue;",
-            "var accessorInfo = propertyInfo.GetMethod;",
-            "if(accessorInfo == null) continue;"])
-        .Append("var parameter = global::System.Linq.Expressions.Expression.Parameter(typeof(").Append(className).Append(typeParametersOpenString).AppendLine("));")
-        .AppendLine("var callExpr = global::System.Linq.Expressions.Expression.Call(parameter, accessorInfo);")
-        .Append("var getAccessor = (global::System.Func<").Append(className).Append(typeParametersString).AppendLine(", global::System.Object?>)global::System.Linq.Expressions.Expression.Lambda(callExpr, parameter).Compile();")
-        .AppendLine("var name = propertyInfo.Name;")
-        .AppendLine("_parameters.Add((name, getAccessor));")
-        .CloseBlock()
-        .CloseBlock()
-        //TODO: generate static parameter list
-        .Append("private static readonly global::System.Collections.Generic.List<(global::System.String name, global::System.Func<").Append(className).Append(typeParametersString).AppendLine(", global::System.Object?> getAccessor)> _parameters;")
-        .AppendLine("protected override void BuildRenderTree(global::Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder builder)")
-        .OpenBracesBlock()
-        .Append("builder.OpenComponent(0, typeof(RenderModeProxy").Append(typeParametersOpenString).AppendLine("));")
-        .AppendLine("for(var i = 0; i < _parameters.Count; i++)")
-        .OpenBracesBlock()
-        .AppendJoinLines(StringOrChar.Empty, [
-                "var (name, getAccessor) = _parameters[i];",
-                "var value = getAccessor.Invoke(this);",
-                "builder.AddComponentParameter(i + 1, name, value);"
-            ])
-        .CloseBlock()
-        .AppendLine("if(this.OptionalRenderModeSettings.ApplyRenderMode)")
-        .OpenBracesBlock()
-        .AppendLine("builder.AddComponentRenderMode(OptionalRenderMode);")
-        .CloseBlock()
-        .AppendLine("builder.CloseComponent();")
-        .CloseBlock()
-        .CloseBlock()
-        .AppendLine("[global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.ExcludeComponentFromContainer]")
-        .AppendLine("[RenderModeWrapperAttributeImpl]")
-        .Append("file sealed class RenderModeProxy").Append(typeParametersString).Append(" : ").Append(className).AppendLine(typeParametersString)
-        .AppendJoinLines(StringOrChar.Empty, typeConstraints)
-        .AppendLine(';')
-        .ToString();
-
-        return result;
-    }
     private static String GetSource(GeneratorAttributeSyntaxContext context, String renderModeExpr, CancellationToken ct)
     {
         ct.ThrowIfCancellationRequested();
@@ -388,6 +295,151 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
         }).ToArray();
 
         var result = GetSource(@namespace, [], className, renderModeExpr, typeParameters, typeConstraints, ct);
+
+        return result;
+    }
+    private static String GetSource(String @namespace, String[] usingNamespaces, String className, String renderModeExpr, String[] typeParameters, String[] typeConstraints, CancellationToken ct)
+    {
+        var typeParametersString = typeParameters.Length > 0 ?
+            $"<{String.Join(", ", typeParameters)}>" :
+            String.Empty;
+        var typeParametersOpenString = typeParameters.Length > 0 ?
+            $"<{String.Concat(Enumerable.Repeat(',', typeParameters.Length - 1))}>" :
+            String.Empty;
+        var fullyQualifiedRenderModeExpr = renderModeExpr switch
+        {
+            "null" => renderModeExpr,
+            "noop" => _noOpRenderModeInstanceExpr,
+            _ => $"global::Microsoft.AspNetCore.Components.Web.RenderMode.{renderModeExpr}"
+        };
+
+        var result = new IndentedStringBuilder(IndentedStringBuilderOptions.GeneratedFile with
+        {
+            GeneratorName = typeof(RenderModeGenerator).FullName,
+            AmbientCancellationToken = ct
+        })
+        .Append("namespace ").Append(@namespace).AppendLine(';')
+        .Append(c =>
+        {
+            for(var i = 0; i < usingNamespaces.Length; i++)
+            {
+                c.Append("using ").Append(usingNamespaces[i]).Append(';').AppendLineCore();
+            }
+        })
+        .AppendLine("[RenderModeHelperComponentsAttributeImpl]")
+        .Append("partial class ").Append(className).Append(typeParametersString).Append(" : global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.IOptionalRenderModeComponent")
+        .AppendJoinLines(StringOrChar.Empty, typeConstraints)
+        .OpenBracesBlock()
+        .AppendLine("[global::Microsoft.AspNetCore.Components.CascadingParameter(Name = nameof(ParentOptionalRenderMode))]")
+        .Append("public global::Microsoft.AspNetCore.Components.IComponentRenderMode? ParentOptionalRenderMode { get; set; } = ").Append(_noOpRenderModeInstanceExpr).AppendLine(';')
+        .AppendLine("[global::Microsoft.AspNetCore.Components.Parameter]")
+        .Append("public global::Microsoft.AspNetCore.Components.IComponentRenderMode? OptionalRenderMode { get; set; } = ").Append(fullyQualifiedRenderModeExpr).AppendLine(';')
+        .AppendLine("#nullable disable")
+        .AppendLine("[global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Injected]")
+        .AppendLine("public global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.IRenderModeInterceptor RenderModeInterceptor { get; set; }")
+        .AppendLine("#nullable restore")
+        .CloseBlock()
+        .AppendLine("file sealed class RenderModeHelperComponentsAttributeImpl : global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeHelperComponentsAttribute")
+        .OpenBracesBlock()
+        .Append("public override global::System.Type WrapperType => typeof(RenderModeWrapper").Append(typeParametersOpenString).AppendLine(");")
+        .Append("public override global::System.Type ProxyType => typeof(RenderModeProxy").Append(typeParametersOpenString).AppendLine(");")
+        .CloseBlock()
+        .AppendLine("file sealed class RenderModeProxyAttributeImpl : global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeProxyAttribute")
+        .OpenBracesBlock()
+        .Append("public override global::System.Type ComponentType => typeof(").Append(className).Append(typeParametersOpenString).AppendLine(");")
+        .CloseBlock()
+        .AppendLine("file sealed class RenderModeWrapperAttributeImpl : global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeWrapperAttribute")
+        .OpenBracesBlock()
+        .Append("public override global::System.Type ComponentType => typeof(").Append(className).Append(typeParametersOpenString).AppendLine(");")
+        .CloseBlock()
+        .AppendLine("[global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.ExcludeComponentFromContainer]")
+        .AppendLine("[RenderModeProxyAttributeImpl]")
+        .Append("file sealed class RenderModeWrapper").Append(typeParametersString).Append(" : ").Append(className).AppendLine(typeParametersString)
+        .AppendJoinLines(StringOrChar.Empty, typeConstraints)
+        .OpenBracesBlock()
+        .AppendLine("static RenderModeWrapper()")
+        .OpenBracesBlock()
+        .AppendLine("_parameters = [];")
+        .Append("var propertyInfos = typeof(").Append(className).Append(typeParametersString).Append(").GetProperties(global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.Public);")
+        .AppendLine("foreach(var propertyInfo in propertyInfos)")
+        .OpenBracesBlock()
+        .AppendJoinLines(StringOrChar.Empty, [
+            "if(global::System.Reflection.CustomAttributeExtensions.GetCustomAttribute<global::Microsoft.AspNetCore.Components.ParameterAttribute>(propertyInfo) == null) continue;",
+            "var accessorInfo = propertyInfo.GetMethod;",
+            "if(accessorInfo == null) continue;"])
+        .Append("var parameter = global::System.Linq.Expressions.Expression.Parameter(typeof(").Append(className).Append(typeParametersOpenString).AppendLine("));")
+        .AppendLine("var callExpr = global::System.Linq.Expressions.Expression.Call(parameter, accessorInfo);")
+        .Append("var getAccessor = (global::System.Func<").Append(className).Append(typeParametersString).AppendLine(", global::System.Object?>)global::System.Linq.Expressions.Expression.Lambda(callExpr, parameter).Compile();")
+        .AppendLine("var name = propertyInfo.Name;")
+        .AppendLine("_parameters.Add((name, getAccessor));")
+        .CloseBlock()
+        .CloseBlock()
+        //TODO: generate static parameter list instead of reflection
+        .Append("private static readonly global::System.Collections.Generic.List<(global::System.String name, global::System.Func<").Append(className).Append(typeParametersString).AppendLine(", global::System.Object?> getAccessor)> _parameters;")
+        .AppendLine("protected override void BuildRenderTree(global::Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder builder)")
+        .OpenBracesBlock()
+        .Comment.OpenSingleLineBlock()
+        .AppendLine("As per the documentation (https://learn.microsoft.com/en-us/aspnet/core/blazor/components/render-modes?view=aspnetcore-8.0#render-mode-propagation),")
+        .AppendLine("a child component may not switch to a different interactive mode than the parent.")
+        .CloseBlock()
+        //if parent is neither null nor noop: explicit interactivity mode has been set : child must be parent
+        .Append("var actualRenderMode = ").Append("this.ParentOptionalRenderMode is not null and not ").AppendLine(_noOpRenderModeType)
+        .AppendLine("? this.ParentOptionalRenderMode")
+        .AppendLine(": this.OptionalRenderMode;")
+        .AppendLine("if(!this.RenderModeInterceptor.ApplyRenderMode(renderMode: actualRenderMode, component: this))")
+        .OpenBracesBlock()
+        .AppendLine("base.BuildRenderTree(builder);")
+        .AppendLine("return;")
+        .CloseBlock()
+#if DEBUG
+        //.AppendLine("global::System.Diagnostics.Debugger.Break();")
+#endif
+        .AppendLine("if(EqualityComparer<global::Microsoft.AspNetCore.Components.IComponentRenderMode?>.Default.Equals(actualRenderMode, this.ParentOptionalRenderMode))")
+        .OpenBracesBlock()
+        .Append("builder.OpenComponent(5, typeof(RenderModeProxy").Append(typeParametersOpenString).AppendLine("));")
+        .AppendLine("for(var i = 0; i < _parameters.Count; i++)")
+        .OpenBracesBlock()
+            .AppendJoinLines(StringOrChar.Empty, [
+                    "var (name, getAccessor) = _parameters[i];",
+                    "var value = name == nameof(OptionalRenderMode) ? actualRenderMode : getAccessor.Invoke(this);",
+                    "builder.AddComponentParameter(i + 6, name, value);"
+                ])
+        .CloseBlock()
+        .AppendLine("builder.AddComponentRenderMode(actualRenderMode);")
+        .AppendLine("builder.CloseComponent();")
+        .AppendLine("return;")
+        .CloseBlock()
+        .AppendJoinLines(StringOrChar.Empty, [
+            "builder.OpenComponent<global::Microsoft.AspNetCore.Components.CascadingValue<global::Microsoft.AspNetCore.Components.IComponentRenderMode?>>(0);",
+            "builder.AddComponentParameter(1, \"Value\", actualRenderMode);",
+            "builder.AddComponentParameter(2, \"Name\", nameof(ParentOptionalRenderMode));",
+            "builder.AddComponentParameter(3, \"IsFixed\", false);"
+            ])
+        .AppendLine()
+        .AppendLine("builder.AddAttribute(4, \"ChildContent\", (global::Microsoft.AspNetCore.Components.RenderFragment)(builder=>")
+        .OpenBracesBlock()
+        .Append("builder.OpenComponent(5, typeof(RenderModeProxy").Append(typeParametersOpenString).AppendLine("));")
+        .AppendLine("for(var i = 0; i < _parameters.Count; i++)")
+        .OpenBracesBlock()
+            .AppendJoinLines(StringOrChar.Empty, [
+                    "var (name, getAccessor) = _parameters[i];",
+                    "var value = getAccessor.Invoke(this);",
+                    "builder.AddComponentParameter(i + 6, name, value);"
+                ])
+        .CloseBlock()
+        .AppendLine("builder.AddComponentRenderMode(actualRenderMode);")
+        .AppendLine("builder.CloseComponent();")
+        .CloseBlock()
+        .AppendLine("));")
+        .AppendLine("builder.CloseComponent();")
+        .CloseBlock()
+        .CloseBlock()
+        .AppendLine("[global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.ExcludeComponentFromContainer]")
+        .AppendLine("[RenderModeWrapperAttributeImpl]")
+        .Append("file sealed class RenderModeProxy").Append(typeParametersString).Append(" : ").Append(className).AppendLine(typeParametersString)
+        .AppendJoinLines(StringOrChar.Empty, typeConstraints)
+        .AppendLine(';')
+        .ToString();
 
         return result;
     }

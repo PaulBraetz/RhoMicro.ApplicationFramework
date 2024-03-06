@@ -44,7 +44,13 @@ public abstract class ComponentBase<TStyle> : SimpleInjectorIntegratedComponent,
     [Parameter]
     public required TStyle Style { get; set; }
 
-    private Dictionary<String, Object?> AttributesInternal
+    /// <summary>
+    /// Gets or sets the otherwise unmatched attributes passed to the component.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Required for parameter.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "BL0007:Component parameters should be auto properties", Justification = "Impossible due to EnsureComponentType")]
+    public required Dictionary<String, Object?> Attributes
     {
         get
         {
@@ -56,17 +62,6 @@ public abstract class ComponentBase<TStyle> : SimpleInjectorIntegratedComponent,
 
             return _attributes;
         }
-    }
-
-    /// <summary>
-    /// Gets or sets the otherwise unmatched attributes passed to the component.
-    /// </summary>
-    [Parameter(CaptureUnmatchedValues = true)]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Required for parameter.")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "BL0007:Component parameters should be auto properties", Justification = "Impossible due to EnsureComponentType")]
-    public required Dictionary<String, Object?> Attributes
-    {
-        get => AttributesInternal;
         set
         {
             _attributes = value;
@@ -80,10 +75,10 @@ public abstract class ComponentBase<TStyle> : SimpleInjectorIntegratedComponent,
 
     private void EnsureComponentTypeAttributes()
     {
-        if(!AspEnvironment.IsDevelopment())
+        if(!ExecutionEnvironment.Configuration.IsDevelopment())
             return;
 
-        _ = Attributes.TryAdd("component-type", ComponentType.FullName ?? String.Empty);
+        _ = Attributes.TryAdd("component-type", ComponentType.FullName);
     }
     /// <summary>
     /// Ensures that each of the class names provided are removed from the <c>class</c> attribute.

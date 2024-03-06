@@ -20,6 +20,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\Composition.Presentation.Views.Blazor\Composition.Presentation.Views.Blazor.csproj" />
 		<ProjectReference Include="..\..\Composition\Composition.csproj" />
+		<ProjectReference Include="..\..\Common\Common.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -49,6 +49,6 @@ public static class WebAssemblyHostBuilderExtensions
         IEnumerable<Assembly> componentAssemblies,
         out IDisposable containerLifetime)
         => builder.IntegrateSimpleInjector(
-            DefaultClientStrategy.CreateWeb(composer, componentAssemblies),
+            DefaultClientStrategy.CreateClient(composer, componentAssemblies),
             out containerLifetime);
 }
