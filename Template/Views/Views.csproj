@@ -11,12 +11,18 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.2" />
+		<PackageReference Include="RhoMicro.ApplicationFramework.Presentation.Views.Blazor" Version="0.0.0-alpha.17" />
+		<PackageReference Include="RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client" Version="0.0.0-alpha.17" />
+		<PackageReference Include="RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeGenerator" Version="0.0.0-alpha.17">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Presentation.Views.Blazor.DependencyInjection.Client\Presentation.Views.Blazor.DependencyInjection.Client.csproj" />
+		<!--<ProjectReference Include="..\..\Presentation.Views.Blazor.DependencyInjection.Client\Presentation.Views.Blazor.DependencyInjection.Client.csproj" />
 		<ProjectReference Include="..\..\Presentation.Views.Blazor.RenderModeGenerator\Presentation.Views.Blazor.RenderModeGenerator.csproj" OutputItemType="analyzer" ReferenceOutputAssembly="false" />
-		<ProjectReference Include="..\..\Presentation.Views.Blazor\Presentation.Views.Blazor.csproj" />
+		<ProjectReference Include="..\..\Presentation.Views.Blazor\Presentation.Views.Blazor.csproj" />-->
 	</ItemGroup>
 
 	<ItemGroup>

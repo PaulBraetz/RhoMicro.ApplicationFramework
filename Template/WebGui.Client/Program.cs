@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 using RhoMicro.ApplicationFramework.Presentation.WebGui;
-using RhoMicro.ApplicationFramework.Template_Composition;
+using RhoMicro.ApplicationFramework.Composition;
 
-using Template_Views;
+using Views;
 
-using Template_WebGui.Client;
+using WebGui.Client;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 

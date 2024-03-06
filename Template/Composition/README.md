@@ -1,3 +1,3 @@
-# Template_Composition
+# Composition
 
 Contains template composition components.

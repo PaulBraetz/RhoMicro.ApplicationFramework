@@ -8,12 +8,13 @@
 
 	<ItemGroup>
 		<PackageReference Include="Photino.Blazor" Version="2.7.0" />
+		<PackageReference Include="RhoMicro.ApplicationFramework.Presentation.LocalGui" Version="0.0.0-alpha.17" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Presentation.LocalGui\Presentation.LocalGui.csproj" />
-	  <ProjectReference Include="..\Template_Views\Template_Views.csproj" />
-	  <ProjectReference Include="..\Template_Composition\Template_Composition.csproj" />
+	  <!--<ProjectReference Include="..\..\Presentation.LocalGui\Presentation.LocalGui.csproj" />-->
+	  <ProjectReference Include="..\Views\Views.csproj" />
+	  <ProjectReference Include="..\Composition\Composition.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,11 +1,11 @@
-namespace Template_WebGui;
+namespace WebGui;
 
 using RhoMicro.ApplicationFramework.Presentation.WebGui;
 
 using RhoMicro.ApplicationFramework.Composition;
 
-using Template_WebGui.Client;
-using RhoMicro.ApplicationFramework.Template_Composition;
+using WebGui.Client;
+using RhoMicro.ApplicationFramework.Composition;
 
 public class Program
 {
@@ -22,7 +22,7 @@ public class Program
 
         var app = builder.IntegrateSimpleInjectorWeb(
             TemplateComposers.WebGui,
-            [typeof(EntryPoint).Assembly, typeof(Components.App).Assembly, typeof(Template_Views.App).Assembly],
+            [typeof(EntryPoint).Assembly, typeof(Components.App).Assembly, typeof(Views.App).Assembly],
             out var containerLifetime);
 
         using var _0 = containerLifetime;
@@ -48,7 +48,7 @@ public class Program
             .AddInteractiveWebAssemblyRenderMode()
             .AddAdditionalAssemblies(
                 typeof(EntryPoint).Assembly,
-                typeof(Template_Views.App).Assembly);
+                typeof(Views.App).Assembly);
 
         app.Run();
     }

@@ -1,13 +1,13 @@
-﻿namespace Template_LocalGui;
+﻿namespace LocalGui;
 
 using System;
 
 using Photino.Blazor;
 
 using RhoMicro.ApplicationFramework.Presentation.LocalGui;
-using RhoMicro.ApplicationFramework.Template_Composition;
+using RhoMicro.ApplicationFramework.Composition;
 
-using Template_Views;
+using Views;
 
 class Program
 {

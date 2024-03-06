@@ -1,7 +1,8 @@
-﻿@page "/counter"
+﻿@page "/wasmcounter"
+@attribute [OptionalInteractiveWebAssemblyRenderMode]
 
-<h1>Counter</h1>
-
+<h1>Wasm Counter</h1>
+<Location/>
 <p>Current count: @currentCount</p>
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>

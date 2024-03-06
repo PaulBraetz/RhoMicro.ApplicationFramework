@@ -1,9 +1,4 @@
-﻿namespace RhoMicro.ApplicationFramework.Template_Composition;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace RhoMicro.ApplicationFramework.Composition;
 
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 using RhoMicro.ApplicationFramework.Composition;

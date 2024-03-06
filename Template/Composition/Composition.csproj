@@ -18,9 +18,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Composition.Presentation.Views.Blazor\Composition.Presentation.Views.Blazor.csproj" />
+	  <PackageReference Include="RhoMicro.ApplicationFramework.Common" Version="0.0.0-alpha.17" />
+	  <PackageReference Include="RhoMicro.ApplicationFramework.Composition" Version="0.0.0-alpha.17" />
+	  <PackageReference Include="RhoMicro.ApplicationFramework.Composition.Presentation.Views.Blazor" Version="0.0.0-alpha.17" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!--<ProjectReference Include="..\..\Composition.Presentation.Views.Blazor\Composition.Presentation.Views.Blazor.csproj" />
 		<ProjectReference Include="..\..\Composition\Composition.csproj" />
-		<ProjectReference Include="..\..\Common\Common.csproj" />
+		<ProjectReference Include="..\..\Common\Common.csproj" />-->
 	</ItemGroup>
 
 </Project>
