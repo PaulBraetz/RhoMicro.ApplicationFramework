@@ -1,4 +1,4 @@
-﻿namespace RhoMicro.ApplicationFramework.Composition;
+﻿namespace Template.Composition;
 
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 using RhoMicro.ApplicationFramework.Composition;

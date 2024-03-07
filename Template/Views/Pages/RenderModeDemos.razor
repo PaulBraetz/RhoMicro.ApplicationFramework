@@ -25,7 +25,7 @@
 
 @code {
     [Injected]
-    public IExecutionEnvironment ExecutionEnvironment { get; set; }
+    public required IExecutionEnvironment ExecutionEnvironment { get; set; }
 
     private static String _null = "null";
     private static String _auto = nameof(RenderMode.InteractiveAuto);

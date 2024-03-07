@@ -7,15 +7,15 @@
     <base href="/" />
     <link rel="stylesheet" href="app.css" />
     <link rel="stylesheet" href="WebGui.styles.css" />
-    <link href="_content/Views/css/bootstrap/bootstrap.min.css" rel="stylesheet" />
-    <link href="_content/Views/css/app.css" rel="stylesheet" />
-    <link href="_content/Views.styles.css" rel="stylesheet" />
+    <link href="_content/Template.Views/css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="_content/Template.Views/css/app.css" rel="stylesheet" />
+    <link href="_content/Template.Views.styles.css" rel="stylesheet" />
     <HeadOutlet @rendermode="InteractiveAuto" />
 </head>
 
 <body>
     <app>
-        <EntryPoint />
+        <Template.WebGui.Client.EntryPoint />
     </app>
     <script src="_framework/blazor.web.js"></script>
 </body>
