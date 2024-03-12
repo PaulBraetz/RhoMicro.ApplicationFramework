@@ -1,4 +1,7 @@
 ﻿namespace RhoMicro.ApplicationFramework.Common.Results;
+
+using System.Runtime.CompilerServices;
+
 /// <summary>
 /// Base result type exposing task wrappings.
 /// </summary>
@@ -22,4 +25,10 @@ public abstract class AwaitableResultBase<TSelf>
     /// Gets this instance wrapped in a <see cref="ValueTask"/>.
     /// </summary>
     public Task<TSelf> Task => _task ??= System.Threading.Tasks.Task.FromResult((TSelf)this);
+
+    /// <summary>
+    /// Gets an awaiter used to await <see cref="Task"/>.
+    /// </summary>
+    /// <returns>An awaiter instance.</returns>
+    public TaskAwaiter<TSelf> GetAwaiter() => Task.GetAwaiter();
 }
