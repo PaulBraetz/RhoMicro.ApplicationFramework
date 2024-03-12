@@ -5,16 +5,16 @@ using RhoMicro.ApplicationFramework.Aspects.Logging;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 
 /// <summary>
-/// Logging decorator for query services.
+/// Logging decorator for services.
 /// </summary>
-/// <typeparam name="TRequest">The type of query to execute and log.</typeparam>
+/// <typeparam name="TRequest">The type of request to execute and log.</typeparam>
 /// <typeparam name="TResult">The type of result to yield and log.</typeparam>
 /// <remarks>
 /// Initializes a new instance.
 /// </remarks>
 /// <param name="logger">The logger to use for logging execution status.</param>
 /// <param name="decorated">The decorated service.</param>
-/// <param name="formatter">The formatter to use when determining the logged query value.</param>
+/// <param name="formatter">The formatter to use when determining the logged request value.</param>
 /// <param name="resultFormatter">The formatter to use when determining the logged result value.</param>
 public sealed class ExecutionLoggingServiceDecorator<TRequest, TResult>(
     ILoggingService logger,

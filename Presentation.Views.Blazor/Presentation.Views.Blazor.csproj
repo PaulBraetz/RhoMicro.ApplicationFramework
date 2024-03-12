@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
 		<!--<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>-->
+		<RootNamespace>RhoMicro.ApplicationFramework.Presentation.Views.Blazor</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>

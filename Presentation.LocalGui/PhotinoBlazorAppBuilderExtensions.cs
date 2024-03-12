@@ -1,12 +1,12 @@
 ﻿namespace RhoMicro.ApplicationFramework.Presentation.LocalGui;
 
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 using Photino.Blazor;
 
 using RhoMicro.ApplicationFramework.Composition;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
 
 /// <summary>
 /// Provides extensions for integrating <see cref="PhotinoBlazorApp"/>, with SimpleInjector.

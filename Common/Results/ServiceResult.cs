@@ -1,6 +1,5 @@
 ﻿namespace RhoMicro.ApplicationFramework.Common.Results;
 
-using RhoMicro.ApplicationFramework.Common.Results;
 using RhoMicro.CodeAnalysis;
 
 /// <summary>

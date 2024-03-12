@@ -1,10 +1,9 @@
-﻿namespace RhoMicro.ApplicationFramework.Presentation.WebGui;
+﻿namespace RhoMicro.ApplicationFramework.Presentation.WebGui.Client;
 
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
 
 internal sealed class WebAssemblyHostBuilderAdapter(WebAssemblyHostBuilder builder) : IApplicationBuilder<WebAssemblyHostAdapter>
 {

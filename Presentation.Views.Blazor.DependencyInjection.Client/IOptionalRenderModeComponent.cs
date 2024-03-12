@@ -1,4 +1,4 @@
-﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
+﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
 
 using Microsoft.AspNetCore.Components;
 

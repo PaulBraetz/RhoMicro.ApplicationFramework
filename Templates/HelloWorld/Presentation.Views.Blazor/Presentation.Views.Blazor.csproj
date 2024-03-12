@@ -1,0 +1,62 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<SupportedPlatform Include="browser" />
+
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.2" />
+		<PackageReference Include="RhoMicro.ApplicationFramework.Presentation.Views.Blazor" Version="0.0.0-alpha.17" />
+		<PackageReference Include="RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client" Version="0.0.0-alpha.17" />
+		<PackageReference Include="RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeGenerator" Version="0.0.0-alpha.17">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Update="wwwroot\css\app.css">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\css\bootstrap\bootstrap.min.css">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\css\bootstrap\bootstrap.min.css.map">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\css\open-iconic\FONT-LICENSE">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\css\open-iconic\font\css\open-iconic-bootstrap.min.css">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\css\open-iconic\font\fonts\open-iconic.eot">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\css\open-iconic\font\fonts\open-iconic.otf">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\css\open-iconic\font\fonts\open-iconic.svg">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\css\open-iconic\font\fonts\open-iconic.ttf">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\css\open-iconic\font\fonts\open-iconic.woff">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\css\open-iconic\ICON-LICENSE">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\css\open-iconic\README.md">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+</Project>

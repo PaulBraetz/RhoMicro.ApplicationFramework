@@ -1,4 +1,4 @@
-﻿namespace RhoMicro.ApplicationFramework.Presentation.WebGui;
+﻿namespace RhoMicro.ApplicationFramework.Presentation.WebGui.Client;
 
 using System.Reflection;
 
@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 using RhoMicro.ApplicationFramework.Composition;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
 
 /// <summary>
 /// Provides extensions for integrating <see cref="WebAssemblyHost"/>, with SimpleInjector.

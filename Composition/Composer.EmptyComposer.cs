@@ -4,7 +4,7 @@ using SimpleInjector;
 
 public static partial class Composer
 {
-    sealed class EmptyComposer : IComposer
+    private sealed class EmptyComposer : IComposer
     {
         public void Compose(Container container) { }
     }

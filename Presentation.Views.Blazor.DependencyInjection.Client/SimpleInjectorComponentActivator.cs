@@ -1,10 +1,6 @@
-﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
-
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
+﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
 
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.DependencyInjection;
 
 using SimpleInjector;
 

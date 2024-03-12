@@ -1,2 +1,0 @@
-﻿@inherits AfComponent
-<span class="px-2 text-@(ExecutionEnvironment.OperatingSystem.IsBrowser()?"warning":"info")">@(ExecutionEnvironment.OperatingSystem.Name)(@(OptionalRenderMode?.GetType().Name ?? "null") in @(ParentOptionalRenderMode?.GetType().Name ?? "null"))</span>

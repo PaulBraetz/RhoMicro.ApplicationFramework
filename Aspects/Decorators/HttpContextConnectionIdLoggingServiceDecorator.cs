@@ -7,10 +7,10 @@ using RhoMicro.ApplicationFramework.Aspects.Logging;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 
 /// <summary>
-/// Decorator for query services that logs the http context connection id before executing the decorated service.
+/// Decorator for services that logs the http context connection id before executing the decorated service.
 /// </summary>
-/// <typeparam name="TRequest">The type of query to execute.</typeparam>
-/// <typeparam name="TResult">The type of result yielded by executing a query.</typeparam>
+/// <typeparam name="TRequest">The type of request to execute.</typeparam>
+/// <typeparam name="TResult">The type of result yielded by executing a request.</typeparam>
 /// <remarks>
 /// Initializes a new instance.
 /// </remarks>

@@ -51,5 +51,5 @@ public class InputGroupModel<TInput, TValue, TError> : HasObservableProperties, 
 /// Initializes a new instance.
 /// </remarks>
 /// <param name="input">The input control to use.</param>
-public class InputGroupModel<TValue, TError>(IInputModel<TValue, TError> input) 
+public class InputGroupModel<TValue, TError>(IInputModel<TValue, TError> input)
     : InputGroupModel<IInputModel<TValue, TError>, TValue, TError>(input), IInputGroupModel<TValue, TError>;

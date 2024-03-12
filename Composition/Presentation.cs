@@ -2,12 +2,13 @@
 
 using Microsoft.Extensions.Configuration;
 
-using SimpleInjector;
-using SimpleInjector.Diagnostics;
 using RhoMicro.ApplicationFramework.Common;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
-using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 using RhoMicro.ApplicationFramework.Presentation.Models;
+using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
+
+using SimpleInjector;
+using SimpleInjector.Diagnostics;
 
 /// <summary>
 /// Contains object graph definitions for presentation models.

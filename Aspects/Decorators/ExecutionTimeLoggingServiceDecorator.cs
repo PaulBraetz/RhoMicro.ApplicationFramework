@@ -6,9 +6,9 @@ using RhoMicro.ApplicationFramework.Aspects.Logging;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 
 /// <summary>
-/// Execution time logging decorator for query services.
+/// Execution time logging decorator for services.
 /// </summary>
-/// <typeparam name="TRequest">The type of query to execute and log.</typeparam>
+/// <typeparam name="TRequest">The type of request to execute and log.</typeparam>
 /// <typeparam name="TResult">The type of result to yield and log.</typeparam>
 /// <remarks>
 /// Initializes a new instance.

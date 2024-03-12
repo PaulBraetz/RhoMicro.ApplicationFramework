@@ -1,4 +1,4 @@
-﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
+﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
 
 using Microsoft.Extensions.DependencyInjection;
 

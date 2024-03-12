@@ -6,12 +6,12 @@ using RhoMicro.ApplicationFramework.Aspects.Abstractions;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 
 /// <summary>
-/// Log entry for logging results of query executions.
+/// Log entry for logging results of request executions.
 /// </summary>
 /// <remarks>
 /// Initializes a new instance.
 /// </remarks>
-/// <param name="scope">The result of the query execution.</param>
+/// <param name="scope">The result of the request execution.</param>
 /// <param name="formatter">The formatter used to format the result.</param>
 /// <param name="level">The level at which the result is to be logged.</param>
 public sealed class AfterQueryExecutionLogEntry<TRequest, TResult>(TResult scope,

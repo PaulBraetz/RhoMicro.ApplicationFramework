@@ -3,7 +3,7 @@
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 
 /// <summary>
-/// Decorates a query service with event publishing functionality.
+/// Decorates a service with event publishing functionality.
 /// </summary>
 /// <typeparam name="TRequest">The type of command to execute.</typeparam>
 /// <typeparam name="TResult">The type of result to be produced by a service.</typeparam>

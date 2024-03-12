@@ -1,6 +1,5 @@
 ﻿namespace RhoMicro.ApplicationFramework.Common;
 using System;
-using System.Runtime.Serialization;
 
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 

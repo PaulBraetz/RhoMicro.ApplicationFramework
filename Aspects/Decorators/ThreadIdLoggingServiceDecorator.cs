@@ -5,10 +5,10 @@ using RhoMicro.ApplicationFramework.Aspects.Logging;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 
 /// <summary>
-/// Logger for logging the current thread id at query execution time.
+/// Logger for logging the current thread id at request execution time.
 /// </summary>
-/// <typeparam name="TRequest">The type of query executed.</typeparam>
-/// <typeparam name="TResult">The type of result yielded by executing a query.</typeparam>
+/// <typeparam name="TRequest">The type of request executed.</typeparam>
+/// <typeparam name="TResult">The type of result yielded by executing a request.</typeparam>
 /// <remarks>
 /// Initializes a new instance.
 /// </remarks>

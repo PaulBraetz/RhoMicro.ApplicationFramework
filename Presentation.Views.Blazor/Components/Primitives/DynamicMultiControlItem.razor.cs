@@ -1,4 +1,5 @@
 ﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Components.Primitives;
+
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 

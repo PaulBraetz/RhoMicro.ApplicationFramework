@@ -3,13 +3,12 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-using Microsoft.AspNetCore.Server.IISIntegration;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 
 using RhoMicro.ApplicationFramework.Composition;
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Logging;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client.Logging;
 
 using SimpleInjector;
 using SimpleInjector.Integration.ServiceCollection;

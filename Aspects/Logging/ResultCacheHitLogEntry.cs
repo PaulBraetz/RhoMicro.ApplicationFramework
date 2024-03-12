@@ -7,7 +7,7 @@ using RhoMicro.ApplicationFramework.Aspects.Abstractions;
 /// <summary>
 /// Log entry for cache hits.
 /// </summary>
-/// <typeparam name="TRequest">The type of query whose cache was hit.</typeparam>
+/// <typeparam name="TRequest">The type of request whose cache was hit.</typeparam>
 /// <remarks>
 /// Initializes a new instance.
 /// </remarks>

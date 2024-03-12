@@ -4,7 +4,7 @@ using System;
 
 using Photino.Blazor;
 
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
 
 /// <summary>
 /// Adapts the <see cref="PhotinoBlazorApp"/> onto the integration interface <see cref="IApplication"/>.

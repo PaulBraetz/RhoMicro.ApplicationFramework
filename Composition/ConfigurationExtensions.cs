@@ -1,8 +1,8 @@
 ﻿namespace RhoMicro.ApplicationFramework.Composition;
 
-using Microsoft.Extensions.Configuration;
-
 using System.Globalization;
+
+using Microsoft.Extensions.Configuration;
 
 using RhoMicro.ApplicationFramework.Aspects;
 

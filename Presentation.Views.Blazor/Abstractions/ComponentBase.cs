@@ -1,18 +1,17 @@
 ﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;
 
-using Microsoft.AspNetCore.Components;
-
-using RhoMicro.ApplicationFramework.Common;
-using RhoMicro.ApplicationFramework.Common.Abstractions;
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Exceptions;
-
 using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+
+using Microsoft.AspNetCore.Components;
+
+using RhoMicro.ApplicationFramework.Common;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Exceptions;
 
 /// <summary>
 /// <inheritdoc/>

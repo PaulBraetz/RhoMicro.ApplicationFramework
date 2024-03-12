@@ -1,17 +1,11 @@
 ﻿namespace RhoMicro.ApplicationFramework.Presentation.LocalGui;
-
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.Logging;
 
 using Photino.Blazor;
 
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
-using Microsoft.AspNetCore.Hosting;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
 
 /// <summary>
 /// Adapts the <see cref="PhotinoBlazorAppBuilder"/> onto the <see cref="IApplicationBuilder{TApplication}"/> integration interface.
@@ -74,7 +68,7 @@ public sealed class PhotinoBlazorAppBuilderAdapter : IApplicationBuilder<Photino
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true);
     private static HostingEnvironment CreateEnvironment() => new();
-    
+
     /// <inheritdoc/>
     public PhotinoBlazorAppAdapter Build()
     {

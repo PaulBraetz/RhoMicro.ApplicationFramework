@@ -6,7 +6,7 @@ using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 /// </summary>
 /// <param name="IsAbsolute">Indicates whether the path is absolute.</param>
 /// <param name="Path">The path.</param>
-public readonly record struct PathModel(Boolean IsAbsolute, String Path) : IPathModel 
+public readonly record struct PathModel(Boolean IsAbsolute, String Path) : IPathModel
 {
     /// <summary>
     /// Creates a new absolute path.

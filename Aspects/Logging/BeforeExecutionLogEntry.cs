@@ -5,7 +5,7 @@ using RhoMicro.ApplicationFramework.Aspects.Abstractions;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 
 /// <summary>
-/// Log entry for logging executions (command or query) that are about to commence.
+/// Log entry for logging executions (command or request) that are about to commence.
 /// </summary>
 /// <remarks>
 /// Initializes a new instance.

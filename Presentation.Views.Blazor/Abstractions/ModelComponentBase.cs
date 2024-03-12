@@ -1,12 +1,11 @@
 ﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;
 
-using Microsoft.AspNetCore.Components;
-
+using System.Collections.Generic;
 using System.ComponentModel;
 
+using Microsoft.AspNetCore.Components;
+
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Exceptions;
-using System.Collections.Generic;
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
 
 /// <summary>
 /// <inheritdoc/>

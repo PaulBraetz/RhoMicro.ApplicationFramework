@@ -1,4 +1,4 @@
-﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
+﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
 
 using System.Reflection;
 
@@ -66,13 +66,11 @@ public abstract class SimpleInjectorIntegratedComponent : ComponentBase, IHandle
         } catch
         {
             if(task.IsCanceled)
-            {
                 return;
-            }
 
             throw;
         }
 
-        base.StateHasChanged();
+        StateHasChanged();
     }
 }

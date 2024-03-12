@@ -2,9 +2,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-
 using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;
 
@@ -29,7 +26,6 @@ public partial class MultiControl<TSubControlModel> : ModelComponentBase<IMultiC
     /// </summary>
     [Parameter]
     public required RenderFragment<TSubControlModel> Item { get; set; }
-#nullable restore
 
     private static RenderFragment DefaultLabel(String value)
     {

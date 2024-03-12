@@ -4,7 +4,7 @@ using System;
 
 using Microsoft.AspNetCore.Builder;
 
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
 
 internal sealed class WebApplicationAdapter(WebApplication app) : IApplication
 {

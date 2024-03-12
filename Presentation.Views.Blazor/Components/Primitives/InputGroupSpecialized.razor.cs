@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
-using System.ComponentModel.DataAnnotations;
-
 using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;
 

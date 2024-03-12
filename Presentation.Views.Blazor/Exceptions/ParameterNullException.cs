@@ -18,7 +18,7 @@ public sealed class ParameterNullException : Exception
     {
         ArgumentNullException.ThrowIfNull(parameterName);
         ArgumentNullException.ThrowIfNull(componentType);
-        
+
         ParameterName = parameterName;
         ComponentType = componentType;
     }

@@ -7,8 +7,8 @@ using RhoMicro.ApplicationFramework.Common.Abstractions;
 /// <summary>
 /// Adds exception caching functionality to a service.
 /// </summary>
-/// <typeparam name="TRequest">The type of query to execute.</typeparam>
-/// <typeparam name="TResult">The type of result yielded by executing a query.</typeparam>
+/// <typeparam name="TRequest">The type of request to execute.</typeparam>
+/// <typeparam name="TResult">The type of result yielded by executing a request.</typeparam>
 /// <typeparam name="TException">The type of exceptions cached.</typeparam>
 /// <remarks>
 /// Initializes a new instance.

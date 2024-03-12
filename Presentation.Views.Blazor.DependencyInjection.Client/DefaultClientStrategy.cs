@@ -1,15 +1,14 @@
 ﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
 
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Frozen;
 using System.Reflection;
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
 using RhoMicro.ApplicationFramework.Composition;
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Logging;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client.Logging;
 using RhoMicro.CodeAnalysis;
 
 using SimpleInjector;

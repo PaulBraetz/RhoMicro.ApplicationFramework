@@ -1,10 +1,4 @@
-﻿namespace RhoMicro.ApplicationFramework.Composition;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.JavaScript;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace RhoMicro.ApplicationFramework.Composition.Presentation.Views.Blazor;
 
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;

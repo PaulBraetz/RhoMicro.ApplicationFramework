@@ -1,12 +1,9 @@
-namespace RhoMicro.CodeAnalysis.Presentation.Views.Blazor.RenderModeGenerator.Generators;
+namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeGenerator.Generators;
 
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.RegularExpressions;
 
 using Microsoft.CodeAnalysis;
@@ -22,27 +19,58 @@ using RhoMicro.CodeAnalysis.Library.Text;
 [Generator(LanguageNames.CSharp)]
 public sealed class RenderModeGenerator : IIncrementalGenerator
 {
+    private const String _rootNamespaceAttributeSource =
+        """
+        namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
+        [global::System.AttributeUsage(global::System.AttributeTargets.Assembly, AllowMultiple = false, Inherited = false)]
+        internal sealed class RootNamespaceAttribute(global::System.String rootNamespace) : global::System.Attribute
+        {
+            public global::System.String RootNamespace { get; } = rootNamespace;
+        }
+        """;
+    private const String _rootNamespaceAttributeMetadataName = "RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RootNamespaceAttribute";
+    private const String _rootNamespaceAttributeHintName = "RhoMicro_ApplicationFramework_Presentation_Views_Blazor_RootNamespaceAttribute.g.cs";
+    private const String _optionalAutoAttributeMetadataName = "RhoMicro.ApplicationFramework.Presentation.Views.Blazor.OptionalInteractiveAutoRenderModeAttribute";
+    private const String _optionalServerAttributeMetadataName = "RhoMicro.ApplicationFramework.Presentation.Views.Blazor.OptionalInteractiveServerRenderModeAttribute";
+    private const String _optionalWasmAttributeMetadataName = "RhoMicro.ApplicationFramework.Presentation.Views.Blazor.OptionalInteractiveWebAssemblyRenderModeAttribute";
+    private const String _optionalNullAttributeMetadataName = "RhoMicro.ApplicationFramework.Presentation.Views.Blazor.OptionalNullRenderModeAttribute";
+    private const String _optionalNoOpAttributeMetadataName = "RhoMicro.ApplicationFramework.Presentation.Views.Blazor.NoOpRenderModeAttribute";
+
     /// <inheritdoc/>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
 #if DEBUG
         //Debugger.Launch();
 #endif
+        var rootNamespaceProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
+            _rootNamespaceAttributeMetadataName,
+            (node, ct) => node is CompilationUnitSyntax,
+            (context, ct) =>
+            {
+                var result = context.Attributes[0] is
+                {
+                    ConstructorArguments: [{ Kind: TypedConstantKind.Primitive, Value: String rootNamespace }]
+                } ? rootNamespace : null;
+
+                return result;
+            }).Collect()
+            .WithCollectionComparer()
+            .Select((roots, ct) => roots.Length > 0 ? roots.First(r => r is not null) : null);
 
         var autoProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
-            "RhoMicro.ApplicationFramework.Presentation.Views.Blazor.OptionalInteractiveAutoRenderModeAttribute",
+            _optionalAutoAttributeMetadataName,
             IsTargetDeclaration, (context, ct) => GetOutput(context, "InteractiveAuto", ct));
         var ssrProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
-            "RhoMicro.ApplicationFramework.Presentation.Views.Blazor.OptionalInteractiveServerRenderModeAttribute",
+            _optionalServerAttributeMetadataName,
             IsTargetDeclaration, (context, ct) => GetOutput(context, "InteractiveServer", ct));
         var csrProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
-            "RhoMicro.ApplicationFramework.Presentation.Views.Blazor.OptionalInteractiveWebAssemblyRenderModeAttribute",
+            _optionalWasmAttributeMetadataName,
             IsTargetDeclaration, (context, ct) => GetOutput(context, "InteractiveWebAssembly", ct));
         var nullProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
-            "RhoMicro.ApplicationFramework.Presentation.Views.Blazor.OptionalNullRenderModeAttribute",
+            _optionalNullAttributeMetadataName,
             IsTargetDeclaration, (context, ct) => GetOutput(context, "null", ct));
         var noOpProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
-            "RhoMicro.ApplicationFramework.Presentation.Views.Blazor.NoOpRenderModeAttribute",
+            _optionalNoOpAttributeMetadataName,
             IsTargetDeclaration, (context, ct) => GetOutput(context, "noop", ct));
 
         //retrieving razor components seems to only be possible through the actual razor files;
@@ -65,13 +93,15 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
             .Select((text, ct) => (path: text.Path, razorSource: text.GetText(ct)?.ToString() ?? String.Empty))
             .Combine(context.CompilationProvider)
             .Combine(importUsingsProvider)
-            .Select((t, ct) => GetOutput(t.Left.Right, t.Left.Left.path, t.Left.Left.razorSource, t.Right, ct));
+            .Combine(rootNamespaceProvider)
+            .Select((t, ct) => GetOutput(t.Left.Left.Right, t.Left.Left.Left.path, t.Left.Left.Left.razorSource, t.Left.Right, t.Right, ct));
 
         RegisterOutput(context, razorProvider);
         RegisterOutput(context, ssrProvider);
         RegisterOutput(context, csrProvider);
         RegisterOutput(context, autoProvider);
         RegisterOutput(context, nullProvider);
+        context.RegisterPostInitializationOutput(ctx => ctx.AddSource(_rootNamespaceAttributeHintName, _rootNamespaceAttributeSource));
     }
     private static void RegisterOutput(
         IncrementalGeneratorInitializationContext context,
@@ -163,7 +193,7 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
         @namespace = null;
         return false;
     }
-    private static void GetNamespaceAndClassName(Compilation compilation, String path, String razorSource, out String @namespace, out String className, CancellationToken ct)
+    private static void GetNamespaceAndClassName(Compilation compilation, String path, String razorSource, String? rootNamespace, out String @namespace, out String className, CancellationToken ct)
     {
         ct.ThrowIfCancellationRequested();
         /*
@@ -199,7 +229,7 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
             .Split(['.'], StringSplitOptions.RemoveEmptyEntries);
         //TODO: obtain root namespace (set in MsBuild) as first try, assembly name as fallback
         //For now, explicit root namespace from MsBuild is unsupported
-        var rootNamespace = assemblyName;
+        rootNamespace ??= assemblyName;
         className = namespaceParts[^2];
         if(namespaceParts.Length == 2)
         {
@@ -228,9 +258,9 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
     private static String GetHintName(String @namespace, String className, String renderModeExpr) => $"{@namespace.Replace('.', '_')}{( @namespace != String.Empty ? "_" : String.Empty )}{className}_{( renderModeExpr == "null" ? _nullRenderMode : renderModeExpr )}.g.cs";
     #endregion
     #region GetOutput
-    private static (String hintName, String source) GetOutput(Compilation compilation, String path, String razorSource, EquatableList<String> importUsings, CancellationToken ct)
+    private static (String hintName, String source) GetOutput(Compilation compilation, String path, String razorSource, EquatableList<String> importUsings, String? rootNamespace, CancellationToken ct)
     {
-        GetNamespaceAndClassName(compilation, path, razorSource, out var @namespace, out var className, ct);
+        GetNamespaceAndClassName(compilation, path, razorSource, rootNamespace, out var @namespace, out var className, ct);
         GetTypeParametersAndConstraints(razorSource, out var typeParameters, out var typeConstraints, ct);
         var renderModeExpr = GetRenderModeExpr(razorSource, ct);
         var usings = GetUsings(razorSource, importUsings);

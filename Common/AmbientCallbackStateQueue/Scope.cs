@@ -1,6 +1,5 @@
 ﻿namespace RhoMicro.ApplicationFramework.Common;
 
-using RhoMicro.ApplicationFramework.Common;
 using RhoMicro.ApplicationFramework.Common.Exceptions;
 
 public static partial class AmbientCallbackStateQueue<T>

@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Description>Contains template composition components.</Description>
+		<PackageTags></PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="/" CopyToOutputDirectory="Always" />
+		<None Include="LICENSE.txt" Pack="true" PackagePath="/" CopyToOutputDirectory="Always" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="RhoMicro.ApplicationFramework.Common" Version="0.0.0-alpha.17" />
+	  <PackageReference Include="RhoMicro.ApplicationFramework.Composition" Version="0.0.0-alpha.17" />
+	  <PackageReference Include="RhoMicro.ApplicationFramework.Composition.Presentation.Views.Blazor" Version="0.0.0-alpha.17" />
+	</ItemGroup>
+
+</Project>
