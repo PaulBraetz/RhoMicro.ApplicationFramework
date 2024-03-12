@@ -1,4 +1,4 @@
-﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client.Logging;
+﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Logging;
 
 using Microsoft.Extensions.Logging;
 

@@ -1,4 +1,4 @@
-﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
+﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
 
 /// <summary>
 /// Non-specific abstraction of an application.

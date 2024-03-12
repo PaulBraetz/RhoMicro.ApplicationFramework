@@ -1,9 +1,9 @@
-﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
+﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
 
 using System.Reflection;
 
 using RhoMicro.ApplicationFramework.Composition;
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client.Logging;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Logging;
 
 using SimpleInjector;
 using SimpleInjector.Integration.ServiceCollection;

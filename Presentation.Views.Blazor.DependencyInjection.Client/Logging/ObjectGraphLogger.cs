@@ -1,5 +1,5 @@
 ﻿#pragma warning disable CA1848 // Use the LoggerMessage delegates
-namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client.Logging;
+namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Logging;
 
 using Microsoft.Extensions.Logging;
 

@@ -1,4 +1,4 @@
-﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
+﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
 
 using System.Collections.Generic;
 using System.Reflection;
@@ -7,8 +7,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 
 using RhoMicro.ApplicationFramework.Composition;
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client.Logging;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Logging;
 
 using SimpleInjector;
 using SimpleInjector.Integration.ServiceCollection;

@@ -5,8 +5,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 
 using RhoMicro.ApplicationFramework.Composition;
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
 
 /// <summary>
 /// Provides extensions for integrating <see cref="WebApplication"/>, with SimpleInjector.

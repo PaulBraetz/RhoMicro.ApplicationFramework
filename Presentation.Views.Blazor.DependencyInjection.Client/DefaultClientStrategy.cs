@@ -1,4 +1,4 @@
-﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection;
+﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
 
 using System;
 using System.Reflection;
@@ -7,8 +7,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
 using RhoMicro.ApplicationFramework.Composition;
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client.Logging;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Logging;
 using RhoMicro.CodeAnalysis;
 
 using SimpleInjector;
@@ -124,6 +123,7 @@ public partial class DefaultClientStrategy(
 
         return KeyValuePair.Create(componentType, result);
     }
+
     [UnionType<Type>(Alias = "DeclaredComponent")]
     [UnionType<RenderModeHelperComponentsAttribute>(Alias = "HelperComponents")]
     private readonly partial struct ImplementationInfo;

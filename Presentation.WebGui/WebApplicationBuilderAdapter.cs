@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
 
 internal sealed class WebApplicationBuilderAdapter(WebApplicationBuilder builder) : IApplicationBuilder<WebApplicationAdapter>
 {

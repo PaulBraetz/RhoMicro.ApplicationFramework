@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Components;
 
 using RhoMicro.ApplicationFramework.Common;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Exceptions;
 
 /// <summary>

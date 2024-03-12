@@ -4,7 +4,7 @@ using System;
 
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
 
 internal sealed class WebAssemblyHostAdapter(WebAssemblyHost app) : IApplication
 {

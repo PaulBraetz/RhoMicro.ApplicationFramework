@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 using Photino.Blazor;
 
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
 
 /// <summary>
 /// Adapts the <see cref="PhotinoBlazorAppBuilder"/> onto the <see cref="IApplicationBuilder{TApplication}"/> integration interface.

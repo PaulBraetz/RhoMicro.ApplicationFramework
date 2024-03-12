@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
 
 internal sealed class WebAssemblyHostBuilderAdapter(WebAssemblyHostBuilder builder) : IApplicationBuilder<WebAssemblyHostAdapter>
 {

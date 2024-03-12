@@ -365,7 +365,7 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
         .AppendLine("[global::Microsoft.AspNetCore.Components.Parameter]")
         .Append("public global::Microsoft.AspNetCore.Components.IComponentRenderMode? OptionalRenderMode { get; set; } = ").Append(fullyQualifiedRenderModeExpr).AppendLine(';')
         .AppendLine("#nullable disable")
-        .AppendLine("[global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Injected]")
+        .AppendLine("[global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Injected]")
         .AppendLine("public global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.IRenderModeInterceptor RenderModeInterceptor { get; set; }")
         .AppendLine("#nullable restore")
         .CloseBlock()
