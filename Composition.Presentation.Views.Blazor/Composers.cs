@@ -1,12 +1,14 @@
 ﻿namespace RhoMicro.ApplicationFramework.Composition.Presentation.Views.Blazor;
 
+using System.Collections.Generic;
+
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;
 
 /// <summary>
 /// Contains composers able to compose blazor view object graphs.
 /// </summary>
-public static class BlazorViewComposers
+public static class Composers
 {
     /// <summary>
     /// Gets the default composer instance.

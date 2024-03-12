@@ -1,4 +1,4 @@
-﻿namespace RhoMicro.ApplicationFramework.Composition;
+﻿namespace RhoMicro.ApplicationFramework.Composition.Aspects;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -14,7 +14,7 @@ using SimpleInjector;
 /// <summary>
 /// Contains object graph definitions for cross-cutting concerns.
 /// </summary>
-public static class Aspects
+public static class Composers
 {
 #pragma warning disable IDE0053 // Use expression body for lambda expression
 #pragma warning disable IDE0200 // Remove unnecessary lambda expression

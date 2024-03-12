@@ -1,11 +1,11 @@
-﻿namespace RhoMicro.ApplicationFramework.Composition;
+﻿namespace RhoMicro.ApplicationFramework.Composition.Common;
 using RhoMicro.ApplicationFramework.Common;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 
 /// <summary>
 /// Contains object graph definitions for common object graphs.
 /// </summary>
-public static class Common
+public static class Composers
 {
     /// <summary>
     /// Gets a composer able to compose common debug object graphs.

@@ -1,4 +1,4 @@
-﻿namespace RhoMicro.ApplicationFramework.Composition;
+﻿namespace RhoMicro.ApplicationFramework.Composition.Presentation;
 
 using Microsoft.Extensions.Configuration;
 
@@ -13,7 +13,7 @@ using SimpleInjector.Diagnostics;
 /// <summary>
 /// Contains object graph definitions for presentation models.
 /// </summary>
-public static class Presentation
+public static class Composers
 {
     /// <summary>
     /// Gets a composer able to compose hosting information graphs.
