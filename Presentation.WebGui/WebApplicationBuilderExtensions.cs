@@ -46,7 +46,7 @@ public static class WebApplicationBuilderExtensions
     public static WebApplication IntegrateSimpleInjectorWeb(
         this WebApplicationBuilder builder,
         IComposer composer,
-        IEnumerable<Assembly> componentAssemblies,
+        ComponentTypeSet componentAssemblies,
         out IDisposable containerLifetime)
         => builder.IntegrateSimpleInjector(
             DefaultServerStrategy.CreateServer(composer, componentAssemblies),

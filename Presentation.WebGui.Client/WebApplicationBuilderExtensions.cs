@@ -46,7 +46,7 @@ public static class WebAssemblyHostBuilderExtensions
     public static WebAssemblyHost IntegrateSimpleInjectorWeb(
         this WebAssemblyHostBuilder builder,
         IComposer composer,
-        IEnumerable<Assembly> componentAssemblies,
+        ComponentTypeSet componentAssemblies,
         out IDisposable containerLifetime)
         => builder.IntegrateSimpleInjector(
             DefaultClientStrategy.CreateClient(composer, componentAssemblies),

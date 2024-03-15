@@ -18,25 +18,25 @@ using SimpleInjector.Integration.ServiceCollection;
 /// Provides a default integration strategy for client applications.
 /// </summary>
 /// <param name="composer"></param>
-/// <param name="componentAssemblies"></param>
+/// <param name="componentTypes"></param>
 /// <param name="containerLogger"></param>
 public partial class DefaultClientStrategy(
     IComposer composer,
-    IEnumerable<Assembly> componentAssemblies,
+    ComponentTypeSet componentTypes,
     IContainerLogger containerLogger) : IIntegrationStrategy
 {
     /// <summary>
     /// Creates an instance of the <see cref="DefaultClientStrategy"/>.
     /// </summary>
     /// <param name="composer"></param>
-    /// <param name="componentAssemblies"></param>
+    /// <param name="componentTypes"></param>
     /// <returns></returns>
-    public static DefaultClientStrategy CreateClient(IComposer composer, IEnumerable<Assembly> componentAssemblies) =>
+    public static DefaultClientStrategy CreateClient(IComposer composer, ComponentTypeSet componentTypes) =>
         new(Composition.Composer.Create(c =>
         {
             c.RegisterSingleton<IRenderModeInterceptor, RenderModeInterceptor>();
             composer.Compose(c);
-        }), componentAssemblies, CompositeContainerLogger.Default)
+        }), componentTypes, CompositeContainerLogger.Default)
         {
             IsDefault = true
         };
@@ -49,7 +49,7 @@ public partial class DefaultClientStrategy(
     /// <inheritdoc/>
     public IComposer Composer { get; } = composer;
     /// <inheritdoc/>
-    public IEnumerable<Assembly> ComponentAssemblies { get; } = componentAssemblies;
+    public ComponentTypeSet ComponentTypes { get; } = componentTypes;
     /// <inheritdoc/>
     public IContainerLogger ContainerLogger => containerLogger;
     /// <inheritdoc/>
@@ -76,11 +76,7 @@ public partial class DefaultClientStrategy(
     private void RegisterBlazorComponents(SimpleInjectorAddOptions options)
     {
         var container = options.Container;
-        var registrations = container.GetTypesToRegister<IComponent>(
-                ComponentAssemblies,
-                new TypesToRegisterOptions { IncludeGenericTypeDefinitions = true })
-            .Where(componentType => componentType.GetCustomAttribute<ExcludeComponentFromContainerAttribute>() == null)
-            .Select(GetComponentRegistration);
+        var registrations = ComponentTypes.Select(GetComponentRegistration);
 
         foreach(var (componentType, implementationInfo) in registrations)
         {

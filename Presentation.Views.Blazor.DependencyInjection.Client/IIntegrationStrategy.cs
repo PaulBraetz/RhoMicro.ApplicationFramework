@@ -18,9 +18,9 @@ public interface IIntegrationStrategy
     /// </summary>
     IComposer Composer { get; }
     /// <summary>
-    /// Gets the assemblies whose components to register to the container.
+    /// Gets the components types to register to the container.
     /// </summary>
-    IEnumerable<Assembly> ComponentAssemblies { get; }
+    ComponentTypeSet ComponentTypes { get; }
     /// <summary>
     /// Gets the logger to log container details after initialization.
     /// </summary>

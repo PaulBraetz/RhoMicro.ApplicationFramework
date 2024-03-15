@@ -61,7 +61,7 @@ public static class PhotinoBlazorAppBuilderExtensions
     public static PhotinoBlazorApp IntegrateSimpleInjectorLocal(
         this IApplicationBuilder<PhotinoBlazorAppAdapter> builder,
         IComposer composer,
-        IEnumerable<Assembly> componentAssemblies,
+        ComponentTypeSet componentAssemblies,
         out IDisposable containerLifetime)
         => builder.IntegrateSimpleInjector(
             DefaultServerStrategy.CreateServer(composer, componentAssemblies),

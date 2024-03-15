@@ -16,13 +16,13 @@ using SimpleInjector.Integration.ServiceCollection;
 /// Provides a default integration strategy for server applications.
 /// </summary>
 /// <param name="composer"></param>
-/// <param name="componentAssemblies"></param>
+/// <param name="componentTypes"></param>
 /// <param name="containerLogger"></param>
 public sealed class DefaultServerStrategy(
     IComposer composer,
-    IEnumerable<Assembly> componentAssemblies,
+    ComponentTypeSet componentTypes,
     IContainerLogger containerLogger)
-    : DefaultClientStrategy(composer, componentAssemblies, containerLogger)
+    : DefaultClientStrategy(composer, componentTypes, containerLogger)
 {
     /// <summary>
     /// Creates an instance of the <see cref="DefaultServerStrategy"/>.
@@ -30,7 +30,7 @@ public sealed class DefaultServerStrategy(
     /// <param name="composer"></param>
     /// <param name="componentAssemblies"></param>
     /// <returns></returns>
-    public static DefaultServerStrategy CreateServer(IComposer composer, IEnumerable<Assembly> componentAssemblies) =>
+    public static DefaultServerStrategy CreateServer(IComposer composer, ComponentTypeSet componentAssemblies) =>
     new(Composition.Composer.Create(c =>
     {
         c.RegisterSingleton<IRenderModeInterceptor, RenderModeInterceptor>();
