@@ -101,6 +101,9 @@ public partial class DefaultClientStrategy(
     {
         container.Register(componentType, componentImplementation, Lifestyle.Transient);
 
+        if(componentType.GetTypeInfo().ContainsGenericParameters)
+            return;
+
         container.GetRegistration(componentType)?.Registration
             .SuppressDiagnosticWarning(
             DiagnosticType.DisposableTransientComponent,
