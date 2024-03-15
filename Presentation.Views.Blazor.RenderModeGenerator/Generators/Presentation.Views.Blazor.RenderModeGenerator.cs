@@ -397,9 +397,11 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
             "if(global::System.Reflection.CustomAttributeExtensions.GetCustomAttribute<global::Microsoft.AspNetCore.Components.ParameterAttribute>(propertyInfo) == null) continue;",
             "var accessorInfo = propertyInfo.GetMethod;",
             "if(accessorInfo == null) continue;"])
+        .AppendLine()
         .Append("var parameter = global::System.Linq.Expressions.Expression.Parameter(typeof(").Append(className).Append(typeParametersOpenString).AppendLine("));")
         .AppendLine("var callExpr = global::System.Linq.Expressions.Expression.Call(parameter, accessorInfo);")
-        .Append("var getAccessor = (global::System.Func<").Append(className).Append(typeParametersString).AppendLine(", global::System.Object?>)global::System.Linq.Expressions.Expression.Lambda(callExpr, parameter).Compile();")
+        .AppendLine("var castExpr = global::System.Linq.Expressions.Expression.Convert(callExpr, typeof(global::System.Object));")
+        .Append("var getAccessor = (global::System.Func<").Append(className).Append(typeParametersString).AppendLine(", global::System.Object?>)global::System.Linq.Expressions.Expression.Lambda(castExpr, parameter).Compile();")
         .AppendLine("var name = propertyInfo.Name;")
         .AppendLine("_parameters.Add((name, getAccessor));")
         .CloseBlock()
