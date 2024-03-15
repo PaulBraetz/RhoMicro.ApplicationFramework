@@ -1,7 +1,7 @@
 ﻿@typeparam TInput where TInput : IInputModel<TValue, TError>
 @typeparam TValue
 @typeparam TError
-@inherits ModelComponentBase<IInputGroupModel<TInput,TValue, TError>>
+@inherits ModelComponentBase<IInputGroupModel<TInput,TValue, TError>, IInputGroupSpecializedCssStyle>
 
 <div @attributes="Attributes">
     @Label

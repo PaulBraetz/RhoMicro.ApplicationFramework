@@ -1,9 +1,36 @@
 ﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Components.Primitives;
+
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
 using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;
+
+/// <summary>
+/// Represents the style of an <see cref="InputGroupSpecialized{TInput, TValue, TError}"/> component.
+/// </summary>
+public interface IInputGroupSpecializedCssStyle : ICssStyle
+{
+    /// <summary>
+    /// Gets the style to apply to the default <see cref="InputGroupSpecialized{TInput, TValue, TError}.Label"/>.
+    /// </summary>
+    ICssStyle LabelStyle { get; }
+    /// <summary>
+    /// Gets the style to apply to the default <see cref="InputGroupSpecialized{TInput, TValue, TError}.Description"/>.
+    /// </summary>
+    ICssStyle DescriptionStyle { get; }
+}
+
+/// <inheritdoc cref="IInputGroupSpecializedCssStyle"/>
+public sealed class InputGroupSpecializedCssStyleOptions : CssStyleOptions, IInputGroupSpecializedCssStyle
+{
+    /// <inheritdoc cref="IInputGroupSpecializedCssStyle.LabelStyle"/>
+    public CssStyleOptions LabelStyle { get; set; } = new();
+    ICssStyle IInputGroupSpecializedCssStyle.LabelStyle => LabelStyle;
+    /// <inheritdoc cref="IInputGroupSpecializedCssStyle.DescriptionStyle"/>
+    public CssStyleOptions DescriptionStyle { get; set; } = new();
+    ICssStyle IInputGroupSpecializedCssStyle.DescriptionStyle => DescriptionStyle;
+}
 
 /// <summary>
 /// Base class for input controls that provide a label, description and error.
@@ -12,7 +39,7 @@ using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;
 /// <typeparam name="TError">The type of error displayed by the model.</typeparam>
 /// <typeparam name="TInput">The type of input model used to obtain input.</typeparam>
 public partial class InputGroupSpecialized<TInput, TValue, TError> :
-    ModelComponentBase<IInputGroupModel<TInput, TValue, TError>>
+    ModelComponentBase<IInputGroupModel<TInput, TValue, TError>, IInputGroupSpecializedCssStyle>
     where TInput : IInputModel<TValue, TError>
 {
     private RenderFragment? _label;
@@ -59,7 +86,7 @@ public partial class InputGroupSpecialized<TInput, TValue, TError> :
         if(String.IsNullOrEmpty(Model.Label))
             return;
         builder.OpenElement(0, "div");
-        builder.AddAttribute(1, "class", "mb-2 text-center font-light text-krtWhite text-2xl");
+        builder.AddAttribute(1, "class", Style.LabelStyle.GetCssClass());
         builder.AddContent(2, Model.Label);
         builder.CloseComponent();
     }
@@ -74,7 +101,7 @@ public partial class InputGroupSpecialized<TInput, TValue, TError> :
         if(String.IsNullOrEmpty(Model.Description))
             return;
         builder.OpenElement(0, "div");
-        builder.AddAttribute(1, "class", "input-group-description");
+        builder.AddAttribute(1, "class", Style.DescriptionStyle.GetCssClass());
         builder.AddContent(2, Model.Description);
         builder.CloseComponent();
     }
