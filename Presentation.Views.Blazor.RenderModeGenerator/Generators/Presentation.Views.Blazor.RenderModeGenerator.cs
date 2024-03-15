@@ -379,7 +379,7 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
             {
                 if(typeParameters.Length == 0)
                     return;
-                b.AppendCore(".MakeGenericType(requestedComponentType.GenericTypeArguments)");
+                b.AppendCore(".MakeGenericType(requestedComponentType.GetGenericArguments())");
             }).AppendLine(';')
         .Detent()
         .AppendLine("public override global::System.Type GetConstructedProxyType(global::System.Type requestedComponentType) =>")
@@ -388,7 +388,7 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
             {
                 if(typeParameters.Length == 0)
                     return;
-                b.AppendCore(".MakeGenericType(requestedComponentType.GenericTypeArguments)");
+                b.AppendCore(".MakeGenericType(requestedComponentType.GetGenericArguments())");
             }).AppendLine(';')
         .Detent()
         .CloseBlock()
@@ -400,7 +400,7 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
             {
                 if(typeParameters.Length == 0)
                     return;
-                b.AppendCore(".MakeGenericType(proxyType.GenericTypeArguments)");
+                b.AppendCore(".MakeGenericType(proxyType.GetGenericArguments())");
             }).AppendLine(';')
         .Detent()
         .CloseBlock()
@@ -412,7 +412,7 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
             {
                 if(typeParameters.Length == 0)
                     return;
-                b.AppendCore(".MakeGenericType(wrapperType.GenericTypeArguments)");
+                b.AppendCore(".MakeGenericType(wrapperType.GetGenericArguments())");
             }).AppendLine(';')
         .Detent()
         .CloseBlock()
