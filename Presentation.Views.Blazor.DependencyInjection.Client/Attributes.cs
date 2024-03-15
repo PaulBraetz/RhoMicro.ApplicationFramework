@@ -43,11 +43,11 @@ public abstract class RenderModeHelperComponentsAttribute : Attribute
     /// <summary>
     /// Gets the type of render mode frame component to use when not omitting render modes.
     /// </summary>
-    public abstract Type GetConstructedWrapperType(Type requestedComponentType);
+    public abstract Type OpenWrapperType { get; }
     /// <summary>
     /// Gets the type of render mode wrapper component to use when not omitting render modes.
     /// </summary>
-    public abstract Type GetConstructedProxyType(Type requestedComponentType);
+    public abstract Type OpenProxyType { get; }
 }
 
 /// <summary>

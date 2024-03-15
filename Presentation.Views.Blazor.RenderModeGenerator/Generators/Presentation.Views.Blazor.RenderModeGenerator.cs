@@ -373,24 +373,8 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
         .CloseBlock()
         .AppendLine("file sealed class RenderModeHelperComponentsAttributeImpl : global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeHelperComponentsAttribute")
         .OpenBracesBlock()
-        .AppendLine("public override global::System.Type GetConstructedWrapperType(global::System.Type requestedComponentType) =>")
-        .Indent()
-            .Append("typeof(RenderModeWrapper").Append(typeParametersOpenString).Append(')').Append(b =>
-            {
-                if(typeParameters.Length == 0)
-                    return;
-                b.AppendCore(".MakeGenericType(requestedComponentType.GetGenericArguments())");
-            }).AppendLine(';')
-        .Detent()
-        .AppendLine("public override global::System.Type GetConstructedProxyType(global::System.Type requestedComponentType) =>")
-        .Indent()
-            .Append("typeof(RenderModeProxy").Append(typeParametersOpenString).Append(')').Append(b =>
-            {
-                if(typeParameters.Length == 0)
-                    return;
-                b.AppendCore(".MakeGenericType(requestedComponentType.GetGenericArguments())");
-            }).AppendLine(';')
-        .Detent()
+        .AppendLine("public override global::System.Type OpenWrapperType { get; } = typeof(RenderModeWrapper").Append(typeParametersOpenString).AppendLine(");")
+        .AppendLine("public override global::System.Type OpenProxyType { get; } = typeof(RenderModeProxy").Append(typeParametersOpenString).AppendLine(");")
         .CloseBlock()
         .AppendLine("file sealed class RenderModeProxyAttributeImpl : global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeProxyAttribute")
         .OpenBracesBlock()
