@@ -115,7 +115,7 @@ public partial class DefaultClientStrategy(
 
     private KeyValuePair<Type, ImplementationInfo> GetComponentRegistration(Type componentType)
     {
-        var helperAttribute = componentType.GetCustomAttribute<RenderModeHelperComponentsAttribute>();
+        var helperAttribute = componentType.GetCustomAttribute<RenderModeHelperComponentsAttribute>(inherit: false);
 
         ImplementationInfo result = helperAttribute != null ?
             helperAttribute :
