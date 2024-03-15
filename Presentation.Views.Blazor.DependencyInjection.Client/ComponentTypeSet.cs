@@ -27,7 +27,6 @@ public sealed class ComponentTypeSet : IEnumerable<Type>
         new(componentTypes.Where(t =>
                !t.IsAbstract
             && t.IsClass
-            && ( t.IsConstructedGenericType || !t.IsGenericType )
             && t.IsAssignableTo(typeof(IComponent))
             && t.GetCustomAttribute<ExcludeComponentFromContainerAttribute>(inherit: false) == null)
         .ToHashSet());
