@@ -8,11 +8,13 @@ using Microsoft.AspNetCore.Components;
 public interface IOptionalRenderModeComponent : IComponent
 {
     /// <summary>
-    /// Gets the <see cref="IComponentRenderMode"/> to optionally apply to the component.
+    /// Gets or sets the <see cref="IComponentRenderMode"/> to optionally apply to the component.
     /// </summary>
-    IComponentRenderMode? OptionalRenderMode { get; }
+    [Parameter]
+    IComponentRenderMode? OptionalRenderMode { get; set; }
     /// <summary>
-    /// Gets the <see cref="IComponentRenderMode"/> to optionally applied to the components parent.
+    /// Gets or sets the <see cref="IComponentRenderMode"/> to optionally applied to the components parent.
     /// </summary>
-    IComponentRenderMode? ParentOptionalRenderMode { get; }
+    [CascadingParameter]
+    IComponentRenderMode? ParentOptionalRenderMode { get; set; }
 }

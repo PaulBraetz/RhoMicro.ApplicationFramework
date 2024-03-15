@@ -17,10 +17,10 @@ public abstract class SimpleInjectorIntegratedComponent : ComponentBase, IHandle
     protected SimpleInjectorIntegratedComponent()
     {
         var thisType = GetType();
-        ComponentType = thisType.GetCustomAttribute<RenderModeProxyAttribute>() is { ComponentType: Type proxiedType }
-            ? proxiedType
-            : thisType.GetCustomAttribute<RenderModeWrapperAttribute>() is { ComponentType: Type wrappedType }
-            ? wrappedType
+        ComponentType = thisType.GetCustomAttribute<RenderModeProxyAttribute>() is RenderModeProxyAttribute proxyAttribute
+            ? proxyAttribute.GetConstructedComponentType(thisType)
+            : thisType.GetCustomAttribute<RenderModeWrapperAttribute>() is RenderModeWrapperAttribute wrapperAttribute
+            ? wrapperAttribute.GetConstructedComponentType(thisType)
             : thisType;
     }
 

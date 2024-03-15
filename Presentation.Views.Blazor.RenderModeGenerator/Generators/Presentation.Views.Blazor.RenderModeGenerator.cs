@@ -3,6 +3,8 @@ namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeGene
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
@@ -330,12 +332,12 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
     }
     private static String GetSource(String @namespace, String[] usingNamespaces, String className, String renderModeExpr, String[] typeParameters, String[] typeConstraints, CancellationToken ct)
     {
-        var typeParametersString = typeParameters.Length > 0 ?
-            $"<{String.Join(", ", typeParameters)}>" :
-            String.Empty;
-        var typeParametersOpenString = typeParameters.Length > 0 ?
-            $"<{String.Concat(Enumerable.Repeat(',', typeParameters.Length - 1))}>" :
-            String.Empty;
+        var typeParametersString = typeParameters.Length > 0
+            ? $"<{String.Join(", ", typeParameters)}>"
+            : String.Empty;
+        var typeParametersOpenString = typeParameters.Length > 0
+            ? $"<{String.Concat(Enumerable.Repeat(',', typeParameters.Length - 1))}>"
+            : String.Empty;
         var fullyQualifiedRenderModeExpr = renderModeExpr switch
         {
             "null" => renderModeExpr,
@@ -360,10 +362,10 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
         .Append("partial class ").Append(className).Append(typeParametersString).Append(" : global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.IOptionalRenderModeComponent")
         .AppendJoinLines(StringOrChar.Empty, typeConstraints)
         .OpenBracesBlock()
-        .AppendLine("[global::Microsoft.AspNetCore.Components.CascadingParameter(Name = nameof(ParentOptionalRenderMode))]")
-        .Append("public global::Microsoft.AspNetCore.Components.IComponentRenderMode? ParentOptionalRenderMode { get; set; } = ").Append(_noOpRenderModeInstanceExpr).AppendLine(';')
+        .AppendLine("[global::Microsoft.AspNetCore.Components.CascadingParameter(Name = \"ParentOptionalRenderMode\")]")
+        .Append("global::Microsoft.AspNetCore.Components.IComponentRenderMode? global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.IOptionalRenderModeComponent.ParentOptionalRenderMode { get; set; } = ").Append(_noOpRenderModeInstanceExpr).AppendLine(';')
         .AppendLine("[global::Microsoft.AspNetCore.Components.Parameter]")
-        .Append("public global::Microsoft.AspNetCore.Components.IComponentRenderMode? OptionalRenderMode { get; set; } = ").Append(fullyQualifiedRenderModeExpr).AppendLine(';')
+        .Append("global::Microsoft.AspNetCore.Components.IComponentRenderMode? global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.IOptionalRenderModeComponent.OptionalRenderMode { get; set; } = ").Append(fullyQualifiedRenderModeExpr).AppendLine(';')
         .AppendLine("#nullable disable")
         .AppendLine("[global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Injected]")
         .AppendLine("public global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.IRenderModeInterceptor RenderModeInterceptor { get; set; }")
@@ -371,16 +373,28 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
         .CloseBlock()
         .AppendLine("file sealed class RenderModeHelperComponentsAttributeImpl : global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeHelperComponentsAttribute")
         .OpenBracesBlock()
-        .Append("public override global::System.Type WrapperType => typeof(RenderModeWrapper").Append(typeParametersOpenString).AppendLine(");")
-        .Append("public override global::System.Type ProxyType => typeof(RenderModeProxy").Append(typeParametersOpenString).AppendLine(");")
+        .AppendLine("public override global::System.Type GetConstructedWrapperType(global::System.Type requestedComponentType) =>")
+        .Indent()
+            .Append("typeof(RenderModeWrapper").Append(typeParametersOpenString).AppendLine(").MakeGenericType(requestedComponentType.GenericTypeArguments);")
+        .Detent()
+        .AppendLine("public override global::System.Type GetConstructedProxyType(global::System.Type requestedComponentType) =>")
+        .Indent()
+            .Append("typeof(RenderModeProxy").Append(typeParametersOpenString).AppendLine(").MakeGenericType(requestedComponentType.GenericTypeArguments);")
+        .Detent()
         .CloseBlock()
         .AppendLine("file sealed class RenderModeProxyAttributeImpl : global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeProxyAttribute")
         .OpenBracesBlock()
-        .Append("public override global::System.Type ComponentType => typeof(").Append(className).Append(typeParametersOpenString).AppendLine(");")
+        .AppendLine("public override global::System.Type GetConstructedComponentType(global::System.Type proxyType) =>")
+        .Indent()
+            .Append("typeof(").Append(className).Append(typeParametersOpenString).Append(").MakeGenericType(proxyType.GenericTypeArguments);")
+        .Detent()
         .CloseBlock()
         .AppendLine("file sealed class RenderModeWrapperAttributeImpl : global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeWrapperAttribute")
         .OpenBracesBlock()
-        .Append("public override global::System.Type ComponentType => typeof(").Append(className).Append(typeParametersOpenString).AppendLine(");")
+        .AppendLine("public override global::System.Type GetConstructedComponentType(global::System.Type wrapperType) =>")
+        .Indent()
+            .Append("typeof(").Append(className).Append(typeParametersOpenString).Append(").MakeGenericType(wrapperType.GenericTypeArguments);")
+        .Detent()
         .CloseBlock()
         .AppendLine("[global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.ExcludeComponentFromContainer]")
         .AppendLine("[RenderModeProxyAttributeImpl]")
@@ -398,7 +412,7 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
             "var accessorInfo = propertyInfo.GetMethod;",
             "if(accessorInfo == null) continue;"])
         .AppendLine()
-        .Append("var parameter = global::System.Linq.Expressions.Expression.Parameter(typeof(").Append(className).Append(typeParametersOpenString).AppendLine("));")
+        .Append("var parameter = global::System.Linq.Expressions.Expression.Parameter(typeof(").Append(className).Append(typeParametersString).AppendLine("));")
         .AppendLine("var callExpr = global::System.Linq.Expressions.Expression.Call(parameter, accessorInfo);")
         .AppendLine("var castExpr = global::System.Linq.Expressions.Expression.Convert(callExpr, typeof(global::System.Object));")
         .Append("var getAccessor = (global::System.Func<").Append(className).Append(typeParametersString).AppendLine(", global::System.Object?>)global::System.Linq.Expressions.Expression.Lambda(castExpr, parameter).Compile();")
@@ -415,25 +429,21 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
         .AppendLine("a child component may not switch to a different interactive mode than the parent.")
         .CloseBlock()
         //if parent is neither null nor noop: explicit interactivity mode has been set : child must be parent
-        .Append("var actualRenderMode = ").Append("this.ParentOptionalRenderMode is not null and not ").AppendLine(_noOpRenderModeType)
-        .AppendLine("? this.ParentOptionalRenderMode")
-        .AppendLine(": this.OptionalRenderMode;")
-        .AppendLine("if(!this.RenderModeInterceptor.ApplyRenderMode(renderMode: actualRenderMode, component: this))")
+        .AppendLine("var actualRenderMode = this.RenderModeInterceptor.GetRenderMode((global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.IOptionalRenderModeComponent)this);")
+        .Append("if(actualRenderMode is ").Append(_noOpRenderModeType).AppendLine(")")
         .OpenBracesBlock()
         .AppendLine("base.BuildRenderTree(builder);")
         .AppendLine("return;")
         .CloseBlock()
-#if DEBUG
-        //.AppendLine("global::System.Diagnostics.Debugger.Break();")
-#endif
-        .AppendLine("if(EqualityComparer<global::Microsoft.AspNetCore.Components.IComponentRenderMode?>.Default.Equals(actualRenderMode, this.ParentOptionalRenderMode))")
+        .AppendLine("//omit cascading param if  parent render mode is equal to ours")
+        .AppendLine("if(EqualityComparer<global::Microsoft.AspNetCore.Components.IComponentRenderMode?>.Default.Equals(actualRenderMode, ((global::RhoMicro.ApplicationFramework.Presentation.Views.Blazor.IOptionalRenderModeComponent)this).ParentOptionalRenderMode))")
         .OpenBracesBlock()
-        .Append("builder.OpenComponent(5, typeof(RenderModeProxy").Append(typeParametersOpenString).AppendLine("));")
+        .Append("builder.OpenComponent(5, typeof(RenderModeProxy").Append(typeParametersString).AppendLine("));")
         .AppendLine("for(var i = 0; i < _parameters.Count; i++)")
         .OpenBracesBlock()
             .AppendJoinLines(StringOrChar.Empty, [
                     "var (name, getAccessor) = _parameters[i];",
-                    "var value = name == nameof(OptionalRenderMode) ? actualRenderMode : getAccessor.Invoke(this);",
+                    "var value = name == \"OptionalRenderMode\" ? actualRenderMode : getAccessor.Invoke(this);",
                     "builder.AddComponentParameter(i + 6, name, value);"
                 ])
         .CloseBlock()
@@ -444,13 +454,13 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
         .AppendJoinLines(StringOrChar.Empty, [
             "builder.OpenComponent<global::Microsoft.AspNetCore.Components.CascadingValue<global::Microsoft.AspNetCore.Components.IComponentRenderMode?>>(0);",
             "builder.AddComponentParameter(1, \"Value\", actualRenderMode);",
-            "builder.AddComponentParameter(2, \"Name\", nameof(ParentOptionalRenderMode));",
+            "builder.AddComponentParameter(2, \"Name\", \"ParentOptionalRenderMode\");",
             "builder.AddComponentParameter(3, \"IsFixed\", false);"
             ])
         .AppendLine()
         .AppendLine("builder.AddAttribute(4, \"ChildContent\", (global::Microsoft.AspNetCore.Components.RenderFragment)(builder=>")
         .OpenBracesBlock()
-        .Append("builder.OpenComponent(5, typeof(RenderModeProxy").Append(typeParametersOpenString).AppendLine("));")
+        .Append("builder.OpenComponent(5, typeof(RenderModeProxy").Append(typeParametersString).AppendLine("));")
         .AppendLine("for(var i = 0; i < _parameters.Count; i++)")
         .OpenBracesBlock()
             .AppendJoinLines(StringOrChar.Empty, [

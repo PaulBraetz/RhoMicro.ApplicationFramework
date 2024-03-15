@@ -14,7 +14,7 @@ public abstract class RenderModeProxyAttribute : Attribute
     /// <summary>
     /// Gets the proxied component.
     /// </summary>
-    public abstract Type ComponentType { get; }
+    public abstract Type GetConstructedComponentType(Type proxyType);
 }
 /// <summary>
 /// Marker attribute for generated <c>RenderModeWrapper</c> components.
@@ -25,7 +25,7 @@ public abstract class RenderModeWrapperAttribute : Attribute
     /// <summary>
     /// Gets the wrapped component.
     /// </summary>
-    public abstract Type ComponentType { get; }
+    public abstract Type GetConstructedComponentType(Type wrapperType);
 }
 
 /// <summary>
@@ -43,11 +43,11 @@ public abstract class RenderModeHelperComponentsAttribute : Attribute
     /// <summary>
     /// Gets the type of render mode frame component to use when not omitting render modes.
     /// </summary>
-    public abstract Type WrapperType { get; }
+    public abstract Type GetConstructedWrapperType(Type requestedComponentType);
     /// <summary>
     /// Gets the type of render mode wrapper component to use when not omitting render modes.
     /// </summary>
-    public abstract Type ProxyType { get; }
+    public abstract Type GetConstructedProxyType(Type requestedComponentType);
 }
 
 /// <summary>

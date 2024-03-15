@@ -10,12 +10,11 @@ using Microsoft.AspNetCore.Components;
 public interface IRenderModeInterceptor
 {
     /// <summary>
-    /// Gets a value indicating whether a render mode should be applied to a given component.
+    /// Gets the render mode to apply to a component.
     /// </summary>
-    /// <param name="renderMode">The render mode to intercept.</param>
-    /// <param name="component">The component to apply the rendermode to.</param>
+    /// <param name="component">The component to apply a render mode to.</param>
     /// <returns>
-    /// <see langword="true"/> if the <paramref name="renderMode"/> should be applied to <paramref name="component"/>; otherwise, <see langword="false"/>.
+    /// The render mode to apply to <paramref name="component"/>; or <see cref="NoOpRenderMode"/> if none should be applied.
     /// </returns>
-    Boolean ApplyRenderMode(IComponentRenderMode? renderMode, IOptionalRenderModeComponent component);
+    IComponentRenderMode? GetRenderMode(IOptionalRenderModeComponent component);
 }

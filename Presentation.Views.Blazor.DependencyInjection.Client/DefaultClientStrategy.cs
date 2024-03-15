@@ -84,8 +84,10 @@ public partial class DefaultClientStrategy(
             if(implementationInfo.TryAsHelperComponents(out var helperComponents))
             {
                 //intercept component type registration if helper attribute is detected (custom render mode was used) and we do not omit render modes
-                RegisterBlazorComponent(container, helperComponents.ProxyType, helperComponents.ProxyType);
-                componentImplementation = helperComponents.WrapperType;
+                var proxyType = helperComponents.GetConstructedProxyType(requestedComponentType: componentType);
+                RegisterBlazorComponent(container, proxyType, proxyType);
+                var wrapperType = helperComponents.GetConstructedWrapperType(requestedComponentType: componentType);
+                componentImplementation = wrapperType;
             }
 
             RegisterBlazorComponent(container, componentType, componentImplementation);

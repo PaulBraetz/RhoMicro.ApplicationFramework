@@ -16,15 +16,21 @@ using RhoMicro.ApplicationFramework.Common.Abstractions;
 public sealed class RenderModeInterceptor(IExecutionEnvironment executionEnvironment) : IRenderModeInterceptor
 {
     /// <inheritdoc/>
-    public Boolean ApplyRenderMode(IComponentRenderMode? renderMode, IOptionalRenderModeComponent component)
+    public IComponentRenderMode? GetRenderMode(IOptionalRenderModeComponent component)
     {
-        var result = !(
+        ArgumentNullException.ThrowIfNull(component);
+
+        var renderMode = component.ParentOptionalRenderMode is not null and not NoOpRenderMode
+        ? component.ParentOptionalRenderMode
+        : component.OptionalRenderMode;
+
+        var forceNoOp =
             //desktop does not support render modes at all
             executionEnvironment.DeploymentPlatform == DeploymentPlatform.Desktop
             //wasm runtime does not support ssr
-            || executionEnvironment.OperatingSystem.IsBrowser() && renderMode is InteractiveServerRenderMode
-            //noOp signals inheritance from parent
-            || renderMode is NoOpRenderMode );
+            || executionEnvironment.OperatingSystem.IsBrowser() && renderMode is InteractiveServerRenderMode;
+
+        var result = forceNoOp ? NoOpRenderMode.Instance : renderMode;
 
         return result;
     }
