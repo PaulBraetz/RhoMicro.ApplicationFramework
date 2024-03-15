@@ -81,12 +81,15 @@ public partial class DefaultClientStrategy(
         foreach(var (componentType, implementationInfo) in registrations)
         {
             var componentImplementation = componentType;
+
             if(implementationInfo.TryAsHelperComponents(out var helperComponents))
             {
-                //intercept component type registration if helper attribute is detected (custom render mode was used) and we do not omit render modes
+                //intercept component type registration if helper attribute is detected (custom render mode was used)
                 var proxyType = helperComponents.GetConstructedProxyType(requestedComponentType: componentType);
+                //register proxy separately for resolution in wrapper
                 RegisterBlazorComponent(container, proxyType, proxyType);
                 var wrapperType = helperComponents.GetConstructedWrapperType(requestedComponentType: componentType);
+                //register wrapper as implementation for component <- interception
                 componentImplementation = wrapperType;
             }
 
@@ -96,19 +99,12 @@ public partial class DefaultClientStrategy(
 
     private static void RegisterBlazorComponent(Container container, Type componentType, Type componentImplementation)
     {
-        if(componentType.IsGenericTypeDefinition)
-        {
-            container.Register(componentType, componentImplementation, Lifestyle.Transient);
-            return;
-        }
+        container.Register(componentType, componentImplementation, Lifestyle.Transient);
 
-        var registration = Lifestyle.Transient.CreateRegistration(componentImplementation, container);
-
-        registration.SuppressDiagnosticWarning(
+        container.GetRegistration(componentType)?.Registration
+            .SuppressDiagnosticWarning(
             DiagnosticType.DisposableTransientComponent,
             "Blazor will dispose components.");
-
-        container.AddRegistration(componentType, registration);
     }
 
     private KeyValuePair<Type, ImplementationInfo> GetComponentRegistration(Type componentType)
