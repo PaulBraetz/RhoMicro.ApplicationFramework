@@ -177,19 +177,17 @@ public abstract class ComponentBase<TStyle> : SimpleInjectorIntegratedComponent,
             //only check parameters with required keyword
             .Where(p => p.CustomAttributes.Any(a => a.AttributeType == typeof(RequiredMemberAttribute)))
             .Where(p => !p.PropertyType.IsValueType || Nullable.GetUnderlyingType(p.PropertyType) != null)
-            .Select(CreateNullCheck)
+            .Select(p => CreateNullCheck(p, componentType))
             .ToList();
 
         return result;
     }
-    private static Action<Object> CreateNullCheck(PropertyInfo info)
+    private static Action<Object> CreateNullCheck(PropertyInfo info, Type componentType)
     {
-        var thisType = info.DeclaringType
-            ?? throw new ArgumentException($"Unable to obtain declaring type of {info}.", nameof(info));
         //instance
         var instanceParam = Expression.Parameter(typeof(Object));
         //(Type)instance
-        var castExpr = Expression.Convert(instanceParam, thisType);
+        var castExpr = Expression.Convert(instanceParam, componentType);
         //((Type)instance).Prop
         var propertyExpr = Expression.Property(castExpr, info);
         //null
@@ -199,7 +197,7 @@ public abstract class ComponentBase<TStyle> : SimpleInjectorIntegratedComponent,
         //"Prop"
         var paramNameExpr = Expression.Constant(info.Name);
         //Type
-        var thisTypeExpr = Expression.Constant(thisType);
+        var thisTypeExpr = Expression.Constant(componentType);
         //Type
         var propertyTypeExpr = Expression.Constant(info.PropertyType);
         var exceptionCtor = typeof(ParameterNullException).GetConstructor([typeof(String), typeof(Type), typeof(Type)])!;
