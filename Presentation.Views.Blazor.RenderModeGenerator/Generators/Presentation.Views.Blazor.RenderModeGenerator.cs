@@ -470,7 +470,9 @@ public sealed class RenderModeGenerator : IIncrementalGenerator
         .AppendLine("[RenderModeWrapperAttributeImpl]")
         .Append("file sealed class RenderModeProxy").Append(typeParametersString).Append(" : ").Append(className).AppendLine(typeParametersString)
         .AppendJoinLines(StringOrChar.Empty, typeConstraints)
-        .AppendLine(';')
+        .OpenBracesBlock()
+        .AppendLine("public RenderModeProxy() { }")
+        .CloseBlock()
         .ToString();
 
         return result;
