@@ -3,6 +3,8 @@
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;
 
+using SimpleInjector;
+
 /// <summary>
 /// Contains composers able to compose blazor view object graphs.
 /// </summary>
@@ -11,5 +13,5 @@ public static class Composers
     /// <summary>
     /// Gets the default composer instance.
     /// </summary>
-    public static IComposer Default { get; } = Composer.Create(c => c.RegisterSingleton<ICssStyle, CssStyle>());
+    public static IComposer Default { get; } = Composer.Create(c => c.RegisterConditional<ICssStyle, CssStyle>(Lifestyle.Singleton, ctx => !ctx.Handled));
 }
