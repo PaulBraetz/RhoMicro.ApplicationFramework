@@ -22,13 +22,13 @@ public interface IInputGroupSpecializedCssStyle : ICssStyle
 }
 
 /// <inheritdoc cref="IInputGroupSpecializedCssStyle"/>
-public sealed class InputGroupSpecializedCssStyleOptions : CssStyleOptions, IInputGroupSpecializedCssStyle
+public sealed class InputGroupSpecializedCssStyleSettings : CssStyleSettings, IInputGroupSpecializedCssStyle
 {
     /// <inheritdoc cref="IInputGroupSpecializedCssStyle.LabelStyle"/>
-    public CssStyleOptions LabelStyle { get; set; } = new();
+    public CssStyleSettings LabelStyle { get; set; } = new();
     ICssStyle IInputGroupSpecializedCssStyle.LabelStyle => LabelStyle;
     /// <inheritdoc cref="IInputGroupSpecializedCssStyle.DescriptionStyle"/>
-    public CssStyleOptions DescriptionStyle { get; set; } = new();
+    public CssStyleSettings DescriptionStyle { get; set; } = new();
     ICssStyle IInputGroupSpecializedCssStyle.DescriptionStyle => DescriptionStyle;
 }
 

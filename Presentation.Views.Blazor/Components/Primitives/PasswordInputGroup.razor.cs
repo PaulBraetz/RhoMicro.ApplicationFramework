@@ -14,9 +14,9 @@ public interface IPasswordInputGroupCssStyle : ICssStyle
 }
 
 /// <inheritdoc cref="IPasswordInputGroupCssStyle"/>
-public sealed class PasswordInputGroupCssStyleOptions : CssStyleOptions, IPasswordInputGroupCssStyle
+public sealed class PasswordInputGroupCssStyleSettings : CssStyleSettings, IPasswordInputGroupCssStyle
 {
     /// <inheritdoc cref="IPasswordInputGroupCssStyle.PasswordInputStyle"/>
-    private CssStyleOptions PasswordInputStyle { get; set; } = new();
+    private CssStyleSettings PasswordInputStyle { get; set; } = new();
     ICssStyle IPasswordInputGroupCssStyle.PasswordInputStyle => PasswordInputStyle;
 }

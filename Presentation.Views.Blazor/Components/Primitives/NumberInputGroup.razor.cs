@@ -14,9 +14,9 @@ public interface INumberInputGroupCssStyle : ICssStyle
 }
 
 /// <inheritdoc cref="INumberInputGroupCssStyle"/>
-public sealed class NumberInputGroupCssStyleOptions : CssStyleOptions, INumberInputGroupCssStyle
+public sealed class NumberInputGroupCssStyleSettings : CssStyleSettings, INumberInputGroupCssStyle
 {
     /// <inheritdoc cref="INumberInputGroupCssStyle.NumberInputStyle"/>
-    public CssStyleOptions NumberInputStyle { get; set; } = new();
+    public CssStyleSettings NumberInputStyle { get; set; } = new();
     ICssStyle INumberInputGroupCssStyle.NumberInputStyle => NumberInputStyle;
 }

@@ -14,9 +14,9 @@ public interface IDateInputGroupCssStyle : ICssStyle
 }
 
 /// <inheritdoc cref="IDateInputGroupCssStyle"/>
-public sealed class DateInputGroupCssStyleOptions : CssStyleOptions, IDateInputGroupCssStyle
+public sealed class DateInputGroupCssStyleSettings : CssStyleSettings, IDateInputGroupCssStyle
 {
     /// <inheritdoc cref="IDateInputGroupCssStyle.DateInputStyle"/>
-    public CssStyleOptions DateInputStyle { get; set; } = new();
+    public CssStyleSettings DateInputStyle { get; set; } = new();
     ICssStyle IDateInputGroupCssStyle.DateInputStyle => DateInputStyle;
 }

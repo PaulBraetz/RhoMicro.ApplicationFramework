@@ -14,9 +14,9 @@ public interface ISelectInputGroupCssStyle : ICssStyle
 }
 
 /// <inheritdoc cref="ISelectInputGroupCssStyle"/>
-public sealed class SelectInputGroupCssStyleOptions : CssStyleOptions, ISelectInputGroupCssStyle
+public sealed class SelectInputGroupCssStyleSettings : CssStyleSettings, ISelectInputGroupCssStyle
 {
     /// <inheritdoc cref="ISelectInputGroupCssStyle.SelectInputStyle"/>
-    public CssStyleOptions SelectInputStyle { get; set; } = new();
+    public CssStyleSettings SelectInputStyle { get; set; } = new();
     ICssStyle ISelectInputGroupCssStyle.SelectInputStyle => SelectInputStyle;
 }

@@ -14,9 +14,9 @@ public interface ITextInputGroupCssStyle : ICssStyle
 }
 
 /// <inheritdoc cref="ITextInputGroupCssStyle"/>
-public sealed class TextInputGroupCssStyleOptions : CssStyleOptions, ITextInputGroupCssStyle
+public sealed class TextInputGroupCssStyleSettings : CssStyleSettings, ITextInputGroupCssStyle
 {
     /// <inheritdoc cref="ITextInputGroupCssStyle.TextInputStyle"/>
-    public CssStyleOptions TextInputStyle { get; set; } = new();
+    public CssStyleSettings TextInputStyle { get; set; } = new();
     ICssStyle ITextInputGroupCssStyle.TextInputStyle => TextInputStyle;
 }

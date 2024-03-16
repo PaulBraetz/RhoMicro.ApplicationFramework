@@ -7,7 +7,7 @@ using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;
 /// Implements the <see cref="ICssStyle"/> interface for sourcing 
 /// styles from the application configuration using the options pattern.
 /// </summary>
-public class CssStyleOptions : ICssStyle
+public class CssStyleSettings : ICssStyle
 {
     /// <inheritdoc/>
     IReadOnlyList<String> ICssStyle.Classes => Classes;

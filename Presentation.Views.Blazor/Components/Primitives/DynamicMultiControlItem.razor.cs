@@ -18,10 +18,10 @@ public interface IDynamicMultiControlItemCssStyle : ICssStyle
 }
 
 /// <inheritdoc cref="IDynamicMultiControlItemCssStyle"/>
-public sealed class DynamicMultiControlItemCssStyleOptions : CssStyleOptions, IDynamicMultiControlItemCssStyle
+public sealed class DynamicMultiControlItemCssStyleSettings : CssStyleSettings, IDynamicMultiControlItemCssStyle
 {
     /// <inheritdoc cref="IDynamicMultiControlItemCssStyle.RemoveButtonStyle"/>
-    public CssStyleOptions RemoveButtonStyle { get; set; } = new();
+    public CssStyleSettings RemoveButtonStyle { get; set; } = new();
     ICssStyle IDynamicMultiControlItemCssStyle.RemoveButtonStyle => RemoveButtonStyle;
 }
 

@@ -7,11 +7,12 @@
               Value="Model"
               TValue="TNumber"
               TError="TError"
-              Parse="Parse"
-              CanParse="CanParse"
+              Parse="Parse!"
+              CanParse="CanParse!"
               UpdateOnFocusLost="UpdateOnFocusLost"
               ErrorTitleParse="ErrorTitleParse!"
               InitialValueParse="v=>v.ToString()" />
+               @*razor not recognizing nullable params, thus banging*@
 
 @code {
     [Parameter]
