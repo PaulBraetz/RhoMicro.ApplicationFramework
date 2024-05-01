@@ -5,7 +5,6 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Description>Contains aspects, decorators, proxies, interceptors etc.</Description>
 		<PackageTags></PackageTags>
 	</PropertyGroup>

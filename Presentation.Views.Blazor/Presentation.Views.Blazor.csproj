@@ -16,7 +16,6 @@
 	</ItemGroup>
 
 	<PropertyGroup>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Description>Contains views and base view abstractions.</Description>
 		<PackageTags></PackageTags>
 	</PropertyGroup>

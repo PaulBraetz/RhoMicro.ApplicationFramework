@@ -5,7 +5,6 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Description>Contains composers for composing blazor view object graphs.</Description>
 		<PackageTags></PackageTags>
 	</PropertyGroup>

@@ -5,7 +5,6 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Description>Contains presentation models.</Description>
 		<PackageTags></PackageTags>
 	</PropertyGroup>

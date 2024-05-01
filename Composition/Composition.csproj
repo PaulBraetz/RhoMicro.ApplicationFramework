@@ -5,7 +5,6 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Description>Contains DI object graph composition types.</Description>
 		<PackageTags></PackageTags>
 	</PropertyGroup>
