@@ -9,6 +9,10 @@ using RhoMicro.ApplicationFramework.Common;
 /// </summary>
 public static partial class Progress
 {
+    sealed class SynchronousProgress<T>(Action<T> handler) : IProgress<T>
+    {
+        public void Report(T value) => handler.Invoke(value);
+    }
 
     private static readonly SemaphoreSlim _contextGate = new(1);
     private static AsyncLocal<ConcurrentDictionary<Type, Object>> Context { get; set; } = new();
@@ -30,7 +34,15 @@ public static partial class Progress
     /// <typeparam name="T">The type of progress update value to report to <paramref name="handler"/>.</typeparam>
     /// <param name="handler">The progress handler to register to the context.</param>
     /// <returns>The subscription whose disposal unregisters <paramref name="handler"/> from the local context.</returns>
-    public static ProgressSubscription<T> Register<T>(Action<T> handler) => Register(new Progress<T>(handler));
+    public static ProgressSubscription<T> Register<T>(Action<T> handler)
+    {
+        ArgumentNullException.ThrowIfNull(handler);
+
+        var result = Register(new SynchronousProgress<T>(handler));
+
+        return result;
+    }
+
     /// <summary>
     /// Registers a <see cref="IProgress{T}"/> to the ambient context.
     /// </summary>
