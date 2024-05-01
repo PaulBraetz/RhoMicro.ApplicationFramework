@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 public interface ILogEntry
 {
     /// <summary>
-    /// Gets the log leval at which the log is to be logged.
+    /// Gets the log level at which the log is to be logged.
     /// </summary>
     LogLevel Level { get; }
     /// <summary>

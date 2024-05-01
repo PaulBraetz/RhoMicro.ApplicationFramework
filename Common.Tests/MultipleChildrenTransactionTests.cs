@@ -1,22 +1,21 @@
-﻿#pragma warning disable CA2000 // Dispose objects before losing scope
+﻿#pragma warning disable CA2007 // Consider calling ConfigureAwait on the awaited task
+#pragma warning disable CA2000 // Dispose objects before losing scope
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 namespace RhoMicro.ApplicationFramework.Common.Tests;
 
 using RhoMicro.ApplicationFramework.Common.Transactions;
 using RhoMicro.ApplicationFramework.Common.Transactions.Abstractions;
 
-[TestClass]
 public class MultipleChildrenTransactionTests
 {
+    public MultipleChildrenTransactionTests() => Root = new ObservableTransactionStateMachine(Comparer);
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private ObservableTransactionStateMachine Root { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private IEqualityComparer<ITransactionStateMachine> Comparer { get; } = TransactionStateMachineEqualityComparer.Instance;
 
-    [TestInitialize]
-    public void Setup() => Root = new ObservableTransactionStateMachine(Comparer);
-
-    [TestMethod]
+    [Fact]
     public async Task RootFlushRequestFlushesChildren()
     {
         //Arrange
@@ -24,19 +23,19 @@ public class MultipleChildrenTransactionTests
         var child2 = new ObservableTransactionStateMachine(Comparer);
         var child3 = new ObservableTransactionStateMachine(Comparer);
 
-        await Root.AddChild(child1).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child2).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child3).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child1);
+        await Root.AddChild(child2);
+        await Root.AddChild(child3);
 
         //Act
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await Root.RequestFlush();
 
         //Assert
-        Assert.AreEqual(TransactionState.Flushed, child1.State);
-        Assert.AreEqual(TransactionState.Flushed, child2.State);
-        Assert.AreEqual(TransactionState.Flushed, child3.State);
+        Assert.Equal(TransactionState.Flushed, child1.State);
+        Assert.Equal(TransactionState.Flushed, child2.State);
+        Assert.Equal(TransactionState.Flushed, child3.State);
     }
-    [TestMethod]
+    [Fact]
     public async Task UncommittedRootFlushRequestFlushesToRollbackOnUncommittedChildren()
     {
         //Arrange
@@ -44,18 +43,18 @@ public class MultipleChildrenTransactionTests
         var child2 = new ObservableTransactionStateMachine(Comparer);
         var child3 = new ObservableTransactionStateMachine(Comparer);
 
-        await Root.AddChild(child1).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child2).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child3).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child1);
+        await Root.AddChild(child2);
+        await Root.AddChild(child3);
 
         //Act
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task UncommittedRootFlushRequesteFlushesToRollbackOnPartiallyUncommittedChildren()
     {
         //Arrange
@@ -63,19 +62,19 @@ public class MultipleChildrenTransactionTests
         var child2 = new ObservableTransactionStateMachine(Comparer);
         var child3 = new ObservableTransactionStateMachine(Comparer);
 
-        await Root.AddChild(child1).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child2).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child3).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child1);
+        await Root.AddChild(child2);
+        await Root.AddChild(child3);
 
         //Act
-        await child2.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child2.Commit();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task UncommittedRootFlushRequestFlushesToRollbackOnRolledBackChildren()
     {
         //Arrange
@@ -83,21 +82,21 @@ public class MultipleChildrenTransactionTests
         var child2 = new ObservableTransactionStateMachine(Comparer);
         var child3 = new ObservableTransactionStateMachine(Comparer);
 
-        await Root.AddChild(child1).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child2).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child3).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child1);
+        await Root.AddChild(child2);
+        await Root.AddChild(child3);
 
         //Act
-        await child1.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await child2.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await child3.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child1.Rollback();
+        await child2.Rollback();
+        await child3.Rollback();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task UncommittedRootFlushRequestFlushesToRollbackOnPartiallyRolledBackChildren()
     {
         //Arrange
@@ -105,20 +104,20 @@ public class MultipleChildrenTransactionTests
         var child2 = new ObservableTransactionStateMachine(Comparer);
         var child3 = new ObservableTransactionStateMachine(Comparer);
 
-        await Root.AddChild(child1).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child2).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child3).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child1);
+        await Root.AddChild(child2);
+        await Root.AddChild(child3);
 
         //Act
-        await child1.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await child3.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child1.Rollback();
+        await child3.Rollback();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task UncommittedRootFlushRequestFlushesToRollbackOnCommittedChildren()
     {
         //Arrange
@@ -126,21 +125,21 @@ public class MultipleChildrenTransactionTests
         var child2 = new ObservableTransactionStateMachine(Comparer);
         var child3 = new ObservableTransactionStateMachine(Comparer);
 
-        await Root.AddChild(child1).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child2).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child3).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child1);
+        await Root.AddChild(child2);
+        await Root.AddChild(child3);
 
         //Act
-        await child1.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await child2.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await child3.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child1.Commit();
+        await child2.Commit();
+        await child3.Commit();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task UncommittedRootFlushRequestFlushesToRollbackOnPartiallyCommittedChildren()
     {
         //Arrange
@@ -148,20 +147,20 @@ public class MultipleChildrenTransactionTests
         var child2 = new ObservableTransactionStateMachine(Comparer);
         var child3 = new ObservableTransactionStateMachine(Comparer);
 
-        await Root.AddChild(child1).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child2).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child3).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child1);
+        await Root.AddChild(child2);
+        await Root.AddChild(child3);
 
         //Act
-        await child1.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await child3.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child1.Commit();
+        await child3.Commit();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task RolledBackRootFlushRequestFlushesToRollbackOnUncommittedChildren()
     {
         //Arrange
@@ -169,19 +168,19 @@ public class MultipleChildrenTransactionTests
         var child2 = new ObservableTransactionStateMachine(Comparer);
         var child3 = new ObservableTransactionStateMachine(Comparer);
 
-        await Root.AddChild(child1).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child2).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child3).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child1);
+        await Root.AddChild(child2);
+        await Root.AddChild(child3);
 
         //Act
-        await Root.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await Root.Rollback();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task RolledBackRootFlushRequestFlushesToRollbackOnPartiallyUncommittedChildren()
     {
         //Arrange
@@ -189,37 +188,37 @@ public class MultipleChildrenTransactionTests
         var child2 = new ObservableTransactionStateMachine(Comparer);
         var child3 = new ObservableTransactionStateMachine(Comparer);
 
-        await Root.AddChild(child1).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child2).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child3).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child1);
+        await Root.AddChild(child2);
+        await Root.AddChild(child3);
 
         //Act
-        await child2.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child2.Commit();
+        await Root.Rollback();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task RolledBackRootFlushRequestFlushesToRollbackOnRolledBackChildren()
     {
         //Arrange
         var root = new ObservableTransactionStateMachine(Comparer);
         var child = new ObservableTransactionStateMachine(Comparer);
-        await root.AddChild(child).ConfigureAwait(continueOnCapturedContext: false);
+        await root.AddChild(child);
 
         //Act
-        await child.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await root.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child.Rollback();
+        await root.Rollback();
+        await root.RequestFlush();
 
         //Assert
-        var condition = await root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task RolledBackRootFlushRequestFlushesToRollbackOnCommittedChildren()
     {
         //Arrange
@@ -227,22 +226,22 @@ public class MultipleChildrenTransactionTests
         var child2 = new ObservableTransactionStateMachine(Comparer);
         var child3 = new ObservableTransactionStateMachine(Comparer);
 
-        await Root.AddChild(child1).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child2).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child3).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child1);
+        await Root.AddChild(child2);
+        await Root.AddChild(child3);
 
         //Act
-        await child1.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await child2.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await child3.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child1.Commit();
+        await child2.Commit();
+        await child3.Commit();
+        await Root.Rollback();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task RolledBackRootFlushRequestFlushesToRollbackOnPartiallyCommittedChildren()
     {
         //Arrange
@@ -250,21 +249,21 @@ public class MultipleChildrenTransactionTests
         var child2 = new ObservableTransactionStateMachine(Comparer);
         var child3 = new ObservableTransactionStateMachine(Comparer);
 
-        await Root.AddChild(child1).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child2).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child3).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child1);
+        await Root.AddChild(child2);
+        await Root.AddChild(child3);
 
         //Act
-        await child1.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await child3.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child1.Commit();
+        await child3.Commit();
+        await Root.Rollback();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task CommittedBackRootFlushRequestFlushesToRollbackOnUncommittedChildren()
     {
         //Arrange
@@ -272,19 +271,19 @@ public class MultipleChildrenTransactionTests
         var child2 = new ObservableTransactionStateMachine(Comparer);
         var child3 = new ObservableTransactionStateMachine(Comparer);
 
-        await Root.AddChild(child1).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child2).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child3).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child1);
+        await Root.AddChild(child2);
+        await Root.AddChild(child3);
 
         //Act
-        await Root.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await Root.Commit();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task CommittedBackRootFlushRequestFlushesToRollbackOnPartiallyUncommittedChildren()
     {
         //Arrange
@@ -292,20 +291,20 @@ public class MultipleChildrenTransactionTests
         var child2 = new ObservableTransactionStateMachine(Comparer);
         var child3 = new ObservableTransactionStateMachine(Comparer);
 
-        await Root.AddChild(child1).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child2).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child3).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child1);
+        await Root.AddChild(child2);
+        await Root.AddChild(child3);
 
         //Act
-        await child2.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child2.Commit();
+        await Root.Commit();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task CommittedRootFlushRequestFlushesToRollbackOnRolledBackChildren()
     {
         //Arrange
@@ -313,22 +312,22 @@ public class MultipleChildrenTransactionTests
         var child2 = new ObservableTransactionStateMachine(Comparer);
         var child3 = new ObservableTransactionStateMachine(Comparer);
 
-        await Root.AddChild(child1).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child2).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child3).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child1);
+        await Root.AddChild(child2);
+        await Root.AddChild(child3);
 
         //Act
-        await child1.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await child2.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await child3.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child1.Rollback();
+        await child2.Rollback();
+        await child3.Rollback();
+        await Root.Commit();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task CommittedRootFlushRequestFlushesToRollbackOnPartiallyRolledBackChildren()
     {
         //Arrange
@@ -336,22 +335,22 @@ public class MultipleChildrenTransactionTests
         var child2 = new ObservableTransactionStateMachine(Comparer);
         var child3 = new ObservableTransactionStateMachine(Comparer);
 
-        await Root.AddChild(child1).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child2).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child3).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child1);
+        await Root.AddChild(child2);
+        await Root.AddChild(child3);
 
         //Act
-        await child1.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await child2.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await child3.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child1.Rollback();
+        await child2.Commit();
+        await child3.Rollback();
+        await Root.Commit();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task CommittedRootFlushRequestFlushesToCommitOnCommittedChildren()
     {
         //Arrange
@@ -359,22 +358,22 @@ public class MultipleChildrenTransactionTests
         var child2 = new ObservableTransactionStateMachine(Comparer);
         var child3 = new ObservableTransactionStateMachine(Comparer);
 
-        await Root.AddChild(child1).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child2).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child3).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child1);
+        await Root.AddChild(child2);
+        await Root.AddChild(child3);
 
         //Act
-        await child1.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await child2.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await child3.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child1.Commit();
+        await child2.Commit();
+        await child3.Commit();
+        await Root.Commit();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsTrue(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.True(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task CommittedRootFlushRequestFlushesToRollbackOnPartiallyCommittedChildren()
     {
         //Arrange
@@ -382,18 +381,19 @@ public class MultipleChildrenTransactionTests
         var child2 = new ObservableTransactionStateMachine(Comparer);
         var child3 = new ObservableTransactionStateMachine(Comparer);
 
-        await Root.AddChild(child1).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child2).ConfigureAwait(continueOnCapturedContext: false);
-        await Root.AddChild(child3).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child1);
+        await Root.AddChild(child2);
+        await Root.AddChild(child3);
 
         //Act
-        await child1.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await child3.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child1.Commit();
+        await child3.Commit();
+        await Root.Commit();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
 }
+#pragma warning restore CA2007 // Consider calling ConfigureAwait on the awaited task

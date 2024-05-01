@@ -1,21 +1,20 @@
+#pragma warning disable CA2007 // Consider calling ConfigureAwait on the awaited task
 namespace RhoMicro.ApplicationFramework.Common.Tests;
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using RhoMicro.ApplicationFramework.Common.Transactions;
 using RhoMicro.ApplicationFramework.Common.Transactions.Abstractions;
 
-[TestClass]
 public class RootTransactionTests
 {
+    public RootTransactionTests() => Root = new ObservableTransactionStateMachine(Comparer);
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private ObservableTransactionStateMachine Root { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private IEqualityComparer<ITransactionStateMachine> Comparer { get; } = TransactionStateMachineEqualityComparer.Instance;
 
-    [TestInitialize]
-    public void Setup() => Root = new ObservableTransactionStateMachine(Comparer);
-
-    [TestMethod]
+    [Fact]
     public async Task DefaultIsCommitIsFalse()
     {
         //Arrange
@@ -23,113 +22,113 @@ public class RootTransactionTests
         //Act
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task FlushRequestedRootThrowsOnCommit()
     {
         //Arrange
 
         //Act
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await Root.RequestFlush();
 
         //Assert
-        _ = await Assert.ThrowsExceptionAsync<InvalidOperationException>(async () => await Root.Commit().ConfigureAwait(continueOnCapturedContext: false)).ConfigureAwait(continueOnCapturedContext: false);
+        _ = await Assert.ThrowsAsync<InvalidOperationException>(async () => await Root.Commit());
     }
-    [TestMethod]
+    [Fact]
     public async Task FlushRequestedRootThrowsOnRollback()
     {
         //Arrange
 
         //Act
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await Root.RequestFlush();
 
         //Assert
-        _ = await Assert.ThrowsExceptionAsync<InvalidOperationException>(async () => await Root.Rollback().ConfigureAwait(continueOnCapturedContext: false)).ConfigureAwait(continueOnCapturedContext: false);
+        _ = await Assert.ThrowsAsync<InvalidOperationException>(async () => await Root.Rollback());
     }
-    [TestMethod]
+    [Fact]
     public async Task FlushRequestedRootDoesNotThrowOnFlushRequest()
     {
         //Arrange
 
         //Act
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await Root.RequestFlush();
 
         //Assert
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await Root.RequestFlush();
     }
-    [TestMethod]
+    [Fact]
     public async Task RolledBackRootFlushRequestsToFlushed()
     {
         //Arrange
 
         //Act
-        await Root.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await Root.Rollback();
+        await Root.RequestFlush();
 
         //Assert
-        Assert.AreEqual(TransactionState.Flushed, Root.State);
+        Assert.Equal(TransactionState.Flushed, Root.State);
     }
-    [TestMethod]
+    [Fact]
     public async Task RolledBackRootFlushRequestsToRollback()
     {
         //Arrange
 
         //Act
-        await Root.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await Root.Rollback();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task CommittedRootFlushRequestsToFlushed()
     {
         //Arrange
 
         //Act
-        await Root.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await Root.Commit();
+        await Root.RequestFlush();
 
         //Assert
-        Assert.AreEqual(TransactionState.Flushed, Root.State);
+        Assert.Equal(TransactionState.Flushed, Root.State);
     }
-    [TestMethod]
+    [Fact]
     public async Task CommittedRootFlushRequestsToCommitted()
     {
         //Arrange
 
         //Act
-        await Root.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await Root.Commit();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsTrue(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.True(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task UncommittedRootFlushRequestsToRollback()
     {
         //Arrange
 
         //Act
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task UncommittedRootFlushRequestsToFlushed()
     {
         //Arrange
 
         //Act
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await Root.RequestFlush();
 
         //Assert
-        Assert.AreEqual(TransactionState.Flushed, Root.State);
+        Assert.Equal(TransactionState.Flushed, Root.State);
     }
 }

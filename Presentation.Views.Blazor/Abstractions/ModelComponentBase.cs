@@ -91,7 +91,7 @@ public abstract class ModelComponentBase<TModel, TStyle> : ComponentBase<TStyle>
     {
         if(ModelIsRequired() && Value == null)
         {
-            throw new ParameterNullException(nameof(Value), typeof(TModel), GetType());
+            throw new NullComponentParameterException(nameof(Value), typeof(TModel), GetType());
         }
     }
     private void RegisterModelPropertyChangedHandler()

@@ -1,5 +1,2 @@
-Templates/Template_Views
-Templates/Template_WebGui
-Templates/Template_LocalGui
-Templates/Template_WebGui.Client
+RenderModeDemo/RMD.Presentation.Views.Blazor
 Libraries/Presentation.Views.Blazor

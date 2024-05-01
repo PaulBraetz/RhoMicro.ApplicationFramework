@@ -1,207 +1,206 @@
-﻿#pragma warning disable CA2000 // Dispose objects before losing scope
+﻿#pragma warning disable CA2007 // Consider calling ConfigureAwait on the awaited task
+#pragma warning disable CA2000 // Dispose objects before losing scope
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 namespace RhoMicro.ApplicationFramework.Common.Tests;
 
 using RhoMicro.ApplicationFramework.Common.Transactions;
 using RhoMicro.ApplicationFramework.Common.Transactions.Abstractions;
 
-[TestClass]
 public class SingleChildTransactionTests
 {
+    public SingleChildTransactionTests() => Root = new ObservableTransactionStateMachine(Comparer);
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private ObservableTransactionStateMachine Root { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private IEqualityComparer<ITransactionStateMachine> Comparer { get; } = TransactionStateMachineEqualityComparer.Instance;
 
-    [TestInitialize]
-    public void Setup() => Root = new ObservableTransactionStateMachine(Comparer);
-
-    [TestMethod]
+    [Fact]
     public async Task AddChildThrowsOnFlushedChild()
     {
         //Arrange
         var child = new ObservableTransactionStateMachine(Comparer);
 
         //Act
-        await child.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child.RequestFlush();
 
         //Assert
-        _ = await Assert.ThrowsExceptionAsync<InvalidOperationException>(async () => await Root.AddChild(child).ConfigureAwait(continueOnCapturedContext: false)).ConfigureAwait(continueOnCapturedContext: false);
+        _ = await Assert.ThrowsAsync<InvalidOperationException>(async () => await Root.AddChild(child));
     }
-    [TestMethod]
+    [Fact]
     public async Task SetParentThrowsOnFlushedChild()
     {
         //Arrange
         var child = new ObservableTransactionStateMachine(Comparer);
 
         //Act
-        await child.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child.RequestFlush();
 
         //Assert
-        _ = await Assert.ThrowsExceptionAsync<InvalidOperationException>(async () => await child.SetParent(Root).ConfigureAwait(continueOnCapturedContext: false)).ConfigureAwait(continueOnCapturedContext: false);
+        _ = await Assert.ThrowsAsync<InvalidOperationException>(async () => await child.SetParent(Root));
     }
-    [TestMethod]
+    [Fact]
     public async Task ChildFlushRequestFlushesToImmutable()
     {
         //Arrange
         var child = new ObservableTransactionStateMachine(Comparer);
-        await Root.AddChild(child).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child);
 
         //Act
-        await child.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child.RequestFlush();
 
         //Assert
-        Assert.AreEqual(TransactionState.Immutable, child.State);
+        Assert.Equal(TransactionState.Immutable, child.State);
     }
-    [TestMethod]
+    [Fact]
     public async Task RootFlushRequestFlushesChild()
     {
         //Arrange
         var child = new ObservableTransactionStateMachine(Comparer);
-        await Root.AddChild(child).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child);
 
         //Act
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await Root.RequestFlush();
 
         //Assert
-        Assert.AreEqual(TransactionState.Flushed, child.State);
+        Assert.Equal(TransactionState.Flushed, child.State);
     }
-    [TestMethod]
+    [Fact]
     public async Task UncommittedRootFlushRequestFlushesToRollbackOnUncommittedChild()
     {
         //Arrange
         var child = new ObservableTransactionStateMachine(Comparer);
-        await Root.AddChild(child).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child);
 
         //Act
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task UncommittedRootFlushRequestFlushesToRollbackOnRolledBackChild()
     {
         //Arrange
         var child = new ObservableTransactionStateMachine(Comparer);
-        await Root.AddChild(child).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child);
 
         //Act
-        await child.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child.Rollback();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task UncommittedRootFlushRequestFlushesToRollbackOnCommittedChild()
     {
         //Arrange
         var child = new ObservableTransactionStateMachine(Comparer);
-        await Root.AddChild(child).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child);
 
         //Act
-        await child.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child.Commit();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task RolledBackRootFlushRequestFlushesToRollbackOnUncommittedChild()
     {
         //Arrange
         var child = new ObservableTransactionStateMachine(Comparer);
-        await Root.AddChild(child).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child);
 
         //Act
-        await Root.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await Root.Rollback();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task RolledBackRootFlushRequestFlushesToRollbackOnRolledBackChild()
     {
         //Arrange
         var child = new ObservableTransactionStateMachine(Comparer);
-        await Root.AddChild(child).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child);
 
         //Act
-        await child.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child.Rollback();
+        await Root.Rollback();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task RolledBackRootFlushRequestFlushesToRollbackOnCommittedChild()
     {
         //Arrange
         var child = new ObservableTransactionStateMachine(Comparer);
-        await Root.AddChild(child).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child);
 
         //Act
-        await child.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child.Commit();
+        await Root.Rollback();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task CommittedRootFlushRequestFlushesToRollbackOnUncommittedChild()
     {
         //Arrange
         var child = new ObservableTransactionStateMachine(Comparer);
-        await Root.AddChild(child).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child);
 
         //Act
-        await Root.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await Root.Commit();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task CommittedRootFlushRequestFlushesToRollbackOnRolledBackChild()
     {
         //Arrange
         var child = new ObservableTransactionStateMachine(Comparer);
-        await Root.AddChild(child).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child);
 
         //Act
-        await child.Rollback().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child.Rollback();
+        await Root.Commit();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsFalse(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.False(condition);
     }
-    [TestMethod]
+    [Fact]
     public async Task CommittedRootFlushRequestFlushesToCommitOnCommittedChild()
     {
         //Arrange
         var child = new ObservableTransactionStateMachine(Comparer);
-        await Root.AddChild(child).ConfigureAwait(continueOnCapturedContext: false);
+        await Root.AddChild(child);
 
         //Act
-        await child.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.Commit().ConfigureAwait(continueOnCapturedContext: false);
-        await Root.RequestFlush().ConfigureAwait(continueOnCapturedContext: false);
+        await child.Commit();
+        await Root.Commit();
+        await Root.RequestFlush();
 
         //Assert
-        var condition = await Root.GetIsCommit().ConfigureAwait(continueOnCapturedContext: false);
-        Assert.IsTrue(condition);
+        var condition = await Root.GetIsCommit();
+        Assert.True(condition);
     }
 }

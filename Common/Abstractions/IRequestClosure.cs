@@ -3,18 +3,14 @@
 using RhoMicro.ApplicationFramework.Common.Results;
 
 /// <summary>
-/// Represents a command whose dependencies are fully captured.
+/// Represents a request execution whose request and service is captured.
 /// </summary>
 public interface IRequestClosure : IRequestClosure<ServiceResult>;
+
 /// <summary>
-/// <para>
-/// Represents a command whose dependencies are fully captured.
-/// </para>
-/// <para>
-/// Attention: Make sure that code utilizing this interface is not violating the CQRS pattern.
-/// </para>
+/// Represents a request execution whose request and service is captured.
 /// </summary>
-/// <typeparam name="TResult">The type of result produced by the command.</typeparam>
+/// <typeparam name="TResult">The type of result produced by the request execution.</typeparam>
 public interface IRequestClosure<TResult>
 {
     /// <summary>

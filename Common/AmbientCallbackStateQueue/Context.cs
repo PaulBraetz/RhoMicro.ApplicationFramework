@@ -9,15 +9,17 @@ public static partial class AmbientCallbackStateQueue<T>
     private sealed partial class Context
     {
         private Context() { }
-        private static readonly AsyncLocal<Context> _local = new()
-        {
-            Value = new Context()
-        };
+        private static readonly AsyncLocal<Context> _local = new();
+        private static readonly SemaphoreSlim _instanceGate = new(1);
         private static Context Instance
         {
             get
             {
-                _local.Value ??= new Context();
+                if(_local.Value == null)
+                {
+                    using var _ = _instanceGate.WaitDisposable();
+                    _local.Value ??= new Context();
+                }
 
                 return _local.Value;
             }

@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<RootNamespace>RMD.Presentation.WebGui</RootNamespace>
+		<AssemblyName>RMD.Presentation.WebGui</AssemblyName>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Hosting.Blazor.WebServerGui\Hosting.Blazor.WebServerGui.csproj" />
+		<ProjectReference Include="..\RMD.Composition\RMD.Composition.csproj" />
+		<ProjectReference Include="..\RMD.Presentation.Views.Blazor\RMD.Presentation.Views.Blazor.csproj" />
+		<ProjectReference Include="..\RMD.Presentation.WebGui.Client\RMD.Presentation.WebGui.Client.csproj" />
+	</ItemGroup>
+
+</Project>

@@ -28,14 +28,18 @@
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="RhoMicro.CodeAnalysis.UtilityGenerators" Version="*">
+		<PackageReference Include="RhoMicro.CodeAnalysis.UtilityGenerators" Version="15.1.5">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="RhoMicro.CodeAnalysis.UnionsGenerator" Version="*">
+		<PackageReference Include="RhoMicro.CodeAnalysis.UnionsGenerator" Version="15.1.5">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="bin\Debug\netstandard2.0\\RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeGenerator.1.0.0.139.dll" />
 	</ItemGroup>
 
 	<ItemGroup>

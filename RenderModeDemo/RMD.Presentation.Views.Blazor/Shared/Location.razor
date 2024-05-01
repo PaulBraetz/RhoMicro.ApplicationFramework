@@ -1,0 +1,25 @@
+﻿@using RhoMicro.ApplicationFramework.Hosting
+@inherits AfComponent
+<span @attributes="Attributes">
+    Location:
+    @(new
+    {
+        Platform = ExecutionEnvironment.DeploymentPlatform,
+        RequestedRenderMode = this.OptionalRenderMode?.GetType().Name ?? "null",
+        ActualRenderMode = _actualRenderMode?.GetType().Name ?? "null",
+    })
+</span>
+
+@code {
+    public Location() => this.ActualRenderModeReceived += (_, rm) => _actualRenderMode = rm;
+    private IComponentRenderMode? _actualRenderMode;
+
+    [Injected]
+    public required NavigationManager NavigationManager { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        EnsureClassNames("px-2", "border border-danger", $"text-{ExecutionEnvironment.DeploymentPlatform switch { DeploymentPlatform.Client => "warning", DeploymentPlatform.Server => "info", DeploymentPlatform.Desktop => "primary" }}");
+    }
+}

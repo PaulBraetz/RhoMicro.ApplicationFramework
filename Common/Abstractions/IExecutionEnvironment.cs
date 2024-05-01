@@ -1,5 +1,7 @@
 ﻿namespace RhoMicro.ApplicationFramework.Common.Abstractions;
 
+using RhoMicro.ApplicationFramework.Common.Environment;
+
 /// <summary>
 /// Provides information on the process execution environment.
 /// </summary>

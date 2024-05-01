@@ -1,0 +1,56 @@
+﻿@page "/optionalrendermodedemos"
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Web
+
+<div class="d-flex flex-column">
+
+    <h1>Demonstrating OptionalRenderMode parameters:</h1>
+    <p>
+        RenderModes that would lead to runtime exceptions are highlighted in red.
+    </p>
+    <OptionalRenderModeDemo RenderModes="@_noop" IllegalRenderModes="[]" Name="NoOp" />
+    @foreach(var (name, renderMode, renderModes, illegalRenderModes) in _items)
+    {
+        <OptionalRenderModeDemo OptionalRenderMode="@renderMode"
+                               Name="@name"
+                               RenderModes="@renderModes"
+                               IllegalRenderModes="illegalRenderModes" />
+    }
+</div>
+
+@code {
+    [Injected]
+    public required IExecutionEnvironment ExecutionEnvironment { get; set; }
+
+    private static String _null = "null";
+    private static String _auto = nameof(RenderMode.InteractiveAuto);
+    private static String _autoPrerender = $"{nameof(RenderMode.InteractiveAuto)} Prerender";
+    private static String _server = nameof(RenderMode.InteractiveServer);
+    private static String _serverPrerender = $"{nameof(RenderMode.InteractiveServer)} Prerender";
+    private static String _wasm = nameof(RenderMode.InteractiveWebAssembly);
+    private static String _wasmPrerender = $"{nameof(RenderMode.InteractiveWebAssembly)} Prerender";
+
+    private static String[] _noop = [_null, _auto, _autoPrerender, _server, _serverPrerender, _wasm, _wasmPrerender];
+
+    private static readonly Dictionary<String, IComponentRenderMode?> _renderModes = new()
+        {
+            [_null] = null,
+            [_auto] = new InteractiveAutoRenderMode(prerender: false),
+            [_autoPrerender] = new InteractiveAutoRenderMode(prerender: true),
+            [_server] = new InteractiveServerRenderMode(prerender: false),
+            [_serverPrerender] = new InteractiveServerRenderMode(prerender: true),
+            [_wasm] = new InteractiveWebAssemblyRenderMode(prerender: false),
+            [_wasmPrerender] = new InteractiveWebAssemblyRenderMode(prerender: true)
+        };
+
+    private static (string, IComponentRenderMode?, String[], String[])[] _items =
+    [
+    (_null, null,                                       [_null, _auto, _autoPrerender, _server, _serverPrerender, _wasm, _wasmPrerender],       []),
+    (_auto, _renderModes[_auto],                        [_null, _auto, _autoPrerender, _wasm, _wasmPrerender],                                  [_server, _serverPrerender]),
+    (_autoPrerender, _renderModes[_autoPrerender],      [_null, _auto, _autoPrerender, _wasm, _wasmPrerender],                                  [_server, _serverPrerender]),
+    (_server, _renderModes[_server],                    [_null, _auto, _autoPrerender, _server, _serverPrerender],                              [_wasm, _wasmPrerender]),
+    (_serverPrerender, _renderModes[_serverPrerender],  [_null, _auto, _autoPrerender, _server, _serverPrerender],                              [_wasm, _wasmPrerender]),
+    (_wasm, _renderModes[_wasm],                        [_null, _auto, _autoPrerender, _wasm, _wasmPrerender],                                  [_server, _serverPrerender]),
+    (_wasmPrerender, _renderModes[_wasmPrerender],      [_null, _auto, _autoPrerender, _wasm, _wasmPrerender],                                  [_server, _serverPrerender])
+    ];
+}

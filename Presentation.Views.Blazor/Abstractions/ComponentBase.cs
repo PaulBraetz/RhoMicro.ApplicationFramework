@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Components;
 
 using RhoMicro.ApplicationFramework.Common;
+using RhoMicro.ApplicationFramework.Hosting;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Exceptions;
 
@@ -22,7 +23,7 @@ public abstract class ComponentBase : ComponentBase<ICssStyle>;
 /// as well as providing automated checking for required parameters in <see cref="OnParametersSet"/>.
 /// Required parameters must be annotated using the <see cref="ParameterAttribute"/> and the <see cref="RequiredAttribute"/>.
 /// Upon encountering a required parameter with value <see langword="null"/>,
-/// a <see cref="ParameterNullException"/> will be thrown.
+/// a <see cref="NullComponentParameterException"/> will be thrown.
 /// </summary>
 /// <typeparam name="TStyle">The type of style received by this component.</typeparam>
 #pragma warning disable CA1063 // Implement IDisposable Correctly
@@ -200,7 +201,7 @@ public abstract class ComponentBase<TStyle> : SimpleInjectorIntegratedComponent,
         var thisTypeExpr = Expression.Constant(componentType);
         //Type
         var propertyTypeExpr = Expression.Constant(info.PropertyType);
-        var exceptionCtor = typeof(ParameterNullException).GetConstructor([typeof(String), typeof(Type), typeof(Type)])!;
+        var exceptionCtor = typeof(NullComponentParameterException).GetConstructor([typeof(String), typeof(Type), typeof(Type)])!;
         //new ParameterNullException("Prop", Type, Type)
         var exceptionExpr = Expression.New(exceptionCtor, paramNameExpr, propertyTypeExpr, thisTypeExpr);
         //throw new ParameterNullException("Prop", Type, Type)

@@ -42,4 +42,4 @@ _ = app.MapRazorComponents<HelloWorld.Presentation.WebGui.Components.App>()
         typeof(EntryPoint).Assembly,
         typeof(HelloWorld.Presentation.Views.Blazor.App).Assembly);
 
-app.Run();
+await app.RunAsync();

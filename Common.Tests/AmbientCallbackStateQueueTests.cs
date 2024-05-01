@@ -5,19 +5,18 @@ using RhoMicro.ApplicationFramework.Common;
 /// <summary>
 /// Contains tests for <see cref="AmbientCallbackStateQueue{T}"/>.
 /// </summary>
-[TestClass]
 public class AmbientCallbackStateQueueTests
 {
     /// <summary>
     /// Asserts that a scope returned from <see cref="AmbientCallbackStateQueue{T}.EnqueueLateConditional(Func{Boolean}, Func{T}, Action{IEnumerable{T}})"/> may not be disposed of twice.
     /// </summary>
     /// <param name="value">The value to enqueue.</param>
-    [TestMethod]
-    [DataRow(6)]
-    [DataRow(-1)]
-    [DataRow(Int32.MaxValue)]
-    [DataRow(Int32.MinValue)]
-    [DataRow(-8)]
+    [Theory]
+    [InlineData(6)]
+    [InlineData(-1)]
+    [InlineData(Int32.MaxValue)]
+    [InlineData(Int32.MinValue)]
+    [InlineData(-8)]
     public void ThrowsODEUponSecondLateConditionalScopeDispose(Int32 value)
     {
         //Arrange
@@ -27,18 +26,18 @@ public class AmbientCallbackStateQueueTests
         scope.Dispose();
 
         //Assert
-        _ = Assert.ThrowsException<ObjectDisposedException>(scope.Dispose);
+        _ = Assert.Throws<ObjectDisposedException>(scope.Dispose);
     }
     /// <summary>
     /// Asserts that a scope returned from <see cref="AmbientCallbackStateQueue{T}.EnqueueLate(Func{T}, Action{IEnumerable{T}})"/> may not be disposed of twice.
     /// </summary>
     /// <param name="value">The value to enqueue.</param>
-    [TestMethod]
-    [DataRow(6)]
-    [DataRow(-1)]
-    [DataRow(Int32.MaxValue)]
-    [DataRow(Int32.MinValue)]
-    [DataRow(-8)]
+    [Theory]
+    [InlineData(6)]
+    [InlineData(-1)]
+    [InlineData(Int32.MaxValue)]
+    [InlineData(Int32.MinValue)]
+    [InlineData(-8)]
     public void ThrowsODEUponSecondLateScopeDispose(Int32 value)
     {
         //Arrange
@@ -48,18 +47,18 @@ public class AmbientCallbackStateQueueTests
         scope.Dispose();
 
         //Assert
-        _ = Assert.ThrowsException<ObjectDisposedException>(scope.Dispose);
+        _ = Assert.Throws<ObjectDisposedException>(scope.Dispose);
     }
     /// <summary>
     /// Asserts that a scope returned from <see cref="AmbientCallbackStateQueue{T}.Enqueue(T, Action{IEnumerable{T}})"/> may not be disposed of twice.
     /// </summary>
     /// <param name="value">The value to enqueue.</param>
-    [TestMethod]
-    [DataRow(6)]
-    [DataRow(-1)]
-    [DataRow(Int32.MaxValue)]
-    [DataRow(Int32.MinValue)]
-    [DataRow(-8)]
+    [Theory]
+    [InlineData(6)]
+    [InlineData(-1)]
+    [InlineData(Int32.MaxValue)]
+    [InlineData(Int32.MinValue)]
+    [InlineData(-8)]
     public void ThrowsODEUponSecondScopeDispose(Int32 value)
     {
         //Arrange
@@ -69,18 +68,18 @@ public class AmbientCallbackStateQueueTests
         scope.Dispose();
 
         //Assert
-        _ = Assert.ThrowsException<ObjectDisposedException>(scope.Dispose);
+        _ = Assert.Throws<ObjectDisposedException>(scope.Dispose);
     }
     /// <summary>
     /// Asserts that calls to <see cref="AmbientCallbackStateQueue{T}.Enqueue(T, Action{IEnumerable{T}})"/> will enqueue values in order of calls.
     /// </summary>
     /// <param name="values">The values to sequentially pass to <see cref="AmbientCallbackStateQueue{T}.Enqueue(T, Action{IEnumerable{T}})"/>.</param>
-    [TestMethod]
-    [DataRow(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 })]
-    [DataRow(new[] { 1, 2, 3, 7, 8, 9, 0 })]
-    [DataRow(new[] { 3, 4, Int32.MaxValue, 6, 7, 8, 9, 0 })]
-    [DataRow(new[] { 1, 4, 5, 6, 7, Int32.MinValue })]
-    [DataRow(new[] { 4, 5, 7, 8, 0 })]
+    [Theory]
+    [InlineData(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 })]
+    [InlineData(new[] { 1, 2, 3, 7, 8, 9, 0 })]
+    [InlineData(new[] { 3, 4, Int32.MaxValue, 6, 7, 8, 9, 0 })]
+    [InlineData(new[] { 1, 4, 5, 6, 7, Int32.MinValue })]
+    [InlineData(new[] { 4, 5, 7, 8, 0 })]
     public void QueueIsClearedAfterCallback(Int32[] values)
     {
         ArgumentNullException.ThrowIfNull(values);
@@ -108,19 +107,19 @@ public class AmbientCallbackStateQueueTests
         }
 
         //Assert
-        Assert.IsTrue(actualFirst.SequenceEqual(expectedFirst));
-        Assert.IsTrue(actualSecond.SequenceEqual(expectedSecond));
+        Assert.True(actualFirst.SequenceEqual(expectedFirst));
+        Assert.True(actualSecond.SequenceEqual(expectedSecond));
     }
     /// <summary>
     /// Asserts that calls to <see cref="AmbientCallbackStateQueue{T}.Enqueue(T, Action{IEnumerable{T}})"/> will enqueue values in order of calls.
     /// </summary>
     /// <param name="values">The values to sequentially pass to <see cref="AmbientCallbackStateQueue{T}.Enqueue(T, Action{IEnumerable{T}})"/>.</param>
-    [TestMethod]
-    [DataRow(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 })]
-    [DataRow(new[] { 1, 2, 3, 7, 8, 9, 0 })]
-    [DataRow(new[] { 3, 4, Int32.MaxValue, 6, 7, 8, 9, 0 })]
-    [DataRow(new[] { 1, 4, 5, 6, 7, Int32.MinValue })]
-    [DataRow(new[] { 4, 5, 7, 8, 0 })]
+    [Theory]
+    [InlineData(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 })]
+    [InlineData(new[] { 1, 2, 3, 7, 8, 9, 0 })]
+    [InlineData(new[] { 3, 4, Int32.MaxValue, 6, 7, 8, 9, 0 })]
+    [InlineData(new[] { 1, 4, 5, 6, 7, Int32.MinValue })]
+    [InlineData(new[] { 4, 5, 7, 8, 0 })]
     public void SynchronousNestedScopesEnqueueInOrder(Int32[] values)
     {
         //Arrange
@@ -136,18 +135,18 @@ public class AmbientCallbackStateQueueTests
         }
 
         //Assert
-        Assert.IsTrue(actual.SequenceEqual(expected));
+        Assert.True(actual.SequenceEqual(expected));
     }
     /// <summary>
     /// Asserts that calls to <see cref="AmbientCallbackStateQueue{T}.EnqueueLate(Func{T}, Action{IEnumerable{T}})"/> will enqueue values in reverse order of calls.
     /// </summary>
     /// <param name="values">The values to sequentially pass to <see cref="AmbientCallbackStateQueue{T}.EnqueueLate(Func{T}, Action{IEnumerable{T}})"/>.</param>
-    [TestMethod]
-    [DataRow(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 })]
-    [DataRow(new[] { 1, 2, 3, 7, 8, 9, 0 })]
-    [DataRow(new[] { 3, 4, Int32.MaxValue, 6, 7, 8, 9, 0 })]
-    [DataRow(new[] { 1, 4, 5, 6, 7, Int32.MinValue })]
-    [DataRow(new[] { 4, 5, 7, 8, 0 })]
+    [Theory]
+    [InlineData(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 })]
+    [InlineData(new[] { 1, 2, 3, 7, 8, 9, 0 })]
+    [InlineData(new[] { 3, 4, Int32.MaxValue, 6, 7, 8, 9, 0 })]
+    [InlineData(new[] { 1, 4, 5, 6, 7, Int32.MinValue })]
+    [InlineData(new[] { 4, 5, 7, 8, 0 })]
     public void SynchronousNestedScopesEnqueueLateInReverseOrder(Int32[] values)
     {
         //Arrange
@@ -164,18 +163,18 @@ public class AmbientCallbackStateQueueTests
         }
 
         //Assert
-        Assert.IsTrue(actual.SequenceEqual(expected));
+        Assert.True(actual.SequenceEqual(expected));
     }
     /// <summary>
     /// Asserts that calls to <see cref="AmbientCallbackStateQueue{T}.EnqueueLateConditional(Func{Boolean}, Func{T}, Action{IEnumerable{T}})"/> will enqueue values in reverse order of calls and respect the confirmation func.
     /// </summary>
     /// <param name="values">The values to sequentially pass to <see cref="AmbientCallbackStateQueue{T}.EnqueueLateConditional(Func{Boolean}, Func{T}, Action{IEnumerable{T}})"/>.</param>
-    [TestMethod]
-    [DataRow(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 })]
-    [DataRow(new[] { 1, 2, 3, 7, 8, 9, 0 })]
-    [DataRow(new[] { 3, 4, Int32.MaxValue, 6, 7, 8, 9, 0 })]
-    [DataRow(new[] { 1, 4, 5, 6, 7, Int32.MinValue })]
-    [DataRow(new[] { 4, 5, 7, 8, 0 })]
+    [Theory]
+    [InlineData(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 })]
+    [InlineData(new[] { 1, 2, 3, 7, 8, 9, 0 })]
+    [InlineData(new[] { 3, 4, Int32.MaxValue, 6, 7, 8, 9, 0 })]
+    [InlineData(new[] { 1, 4, 5, 6, 7, Int32.MinValue })]
+    [InlineData(new[] { 4, 5, 7, 8, 0 })]
     public void SynchronousNestedScopesEnqueueLateConditionalInReverseOrder(Int32[] values)
     {
         //Arrange
@@ -194,6 +193,6 @@ public class AmbientCallbackStateQueueTests
         }
 
         //Assert
-        Assert.IsTrue(actual.SequenceEqual(expected));
+        Assert.True(actual.SequenceEqual(expected));
     }
 }

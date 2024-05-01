@@ -1,5 +1,6 @@
 ﻿namespace RhoMicro.ApplicationFramework.Common;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
+using RhoMicro.ApplicationFramework.Common.Environment;
 
 /// <summary>
 /// Extensions for the <c>RhoMicro.ApplicationFramework.Common</c> namespace.
@@ -30,7 +31,7 @@ public static class Extensions
     /// The <see cref="CancellationToken"/> token to observe.
     /// </param>
     /// <returns></returns>
-    public static async Task<IDisposable> WaitDisposableAsync(this SemaphoreSlim gate, CancellationToken cancellationToken = default)
+    public static async Task<CallbackDisposable> WaitDisposableAsync(this SemaphoreSlim gate, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(gate);
 
@@ -48,7 +49,7 @@ public static class Extensions
     /// The <see cref="CancellationToken"/> token to observe.
     /// </param>
     /// <returns></returns>
-    public static IDisposable WaitDisposable(this SemaphoreSlim gate, CancellationToken cancellationToken = default)
+    public static CallbackDisposable WaitDisposable(this SemaphoreSlim gate, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(gate);
 
@@ -95,22 +96,32 @@ public static class Extensions
         return result;
     }
     /// <summary>
-    /// <para>
-    /// Captures a cqrs command and the service to execute it into a closure command.
-    /// </para>
-    /// <para>
-    /// Attention: Make sure that code utilizing this interface is not violating the CQRS pattern.
-    /// </para>
+    /// Captures a request and the service to execute it into a closure.
     /// </summary>
-    /// <typeparam name="TResult">The type of result produced by the command.</typeparam>
-    /// <typeparam name="TRequest">The type of command to capture.</typeparam>
-    /// <param name="command">The command to capture.</param>
+    /// <typeparam name="TResult">The type of result produced by the request.</typeparam>
+    /// <typeparam name="TRequest">The type of request to capture.</typeparam>
+    /// <param name="request">The request to capture.</param>
     /// <param name="service">The service to capture.</param>
-    /// <returns>A closure command capturing the command and the service using which to execute it.</returns>
-    public static IRequestClosure<TResult> Capture<TRequest, TResult>(this TRequest command, IService<TRequest, TResult> service)
+    /// <returns>A request closure capturing the request and the service using which to execute it.</returns>
+    public static IRequestClosure<TResult> Capture<TRequest, TResult>(this TRequest request, IService<TRequest, TResult> service)
         where TRequest : IServiceRequest<TResult>
     {
-        var result = new RequestClosure<TRequest, TResult>(command, service);
+        var result = new RequestClosure<TRequest, TResult>(request, service);
+
+        return result;
+    }
+    /// <summary>
+    /// Captures a request and the service to execute it into a closure.
+    /// </summary>
+    /// <typeparam name="TResult">The type of result produced by the request.</typeparam>
+    /// <typeparam name="TRequest">The type of request to capture.</typeparam>
+    /// <param name="request">The request to capture.</param>
+    /// <param name="service">The service to capture.</param>
+    /// <returns>A request closure capturing the request and the service using which to execute it.</returns>
+    public static IRequestClosure<TResult> Capture<TRequest, TResult>(this IService<TRequest, TResult> service, TRequest request)
+        where TRequest : IServiceRequest<TResult>
+    {
+        var result = new RequestClosure<TRequest, TResult>(request, service);
 
         return result;
     }
@@ -127,3 +138,13 @@ public static class Extensions
         return result;
     }
 }
+
+/// <summary>
+/// Represents a delegate conforming to the <c>TryXXX</c>-pattern.
+/// </summary>
+/// <typeparam name="TParameter">The type of parameter taken.</typeparam>
+/// <typeparam name="TResult">The type of result produced.</typeparam>
+/// <param name="parameter">The parameter used to produce an instance of <typeparamref name="TResult"/>.</param>
+/// <param name="result">The created result, if one could be created; otherwise, <see langword="default"/>(<typeparamref name="TResult"/>).</param>
+/// <returns><see langword="true"/> if a result could be produced; otherwise, <see langword="false"/>.</returns>
+public delegate Boolean TryFactory<in TParameter, TResult>(TParameter parameter, out TResult result);

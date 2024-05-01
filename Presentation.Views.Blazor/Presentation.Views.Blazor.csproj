@@ -11,7 +11,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.4" />
 	</ItemGroup>
 
 	<PropertyGroup>
@@ -30,10 +30,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Hosting.Blazor\Hosting.Blazor.csproj" />
 		<ProjectReference Include="..\Presentation.Views.Blazor.RenderModeGenerator\Presentation.Views.Blazor.RenderModeGenerator.csproj" OutputItemType="analyzer" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\Common\Common.csproj" />
 		<ProjectReference Include="..\Presentation.Models\Presentation.Models.csproj" />
-		<ProjectReference Include="..\Presentation.Views.Blazor.DependencyInjection.Client\Presentation.Views.Blazor.DependencyInjection.Client.csproj" />
 	</ItemGroup>
 
 </Project>
