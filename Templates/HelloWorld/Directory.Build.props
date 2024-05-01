@@ -1,10 +1,10 @@
 <Project>
 	<PropertyGroup>
-		<AutoIncrementedAssemblyRevision>132</AutoIncrementedAssemblyRevision>
+		<AutoIncrementedAssemblyRevision>0</AutoIncrementedAssemblyRevision>
 	</PropertyGroup>
 
 	<PropertyGroup Label="VersionInfo">
-		<Version>1.0.0</Version>
+		<Version>0.0.0</Version>
 		<ReleaseAssemblyVersion >$(Version)</ReleaseAssemblyVersion>
 		<TestProjectAssemblyVersion >$(ReleaseAssemblyVersion)</TestProjectAssemblyVersion>
 		<DebugAssemblyVersion >$(Version).$(AutoIncrementedAssemblyRevision)</DebugAssemblyVersion>
@@ -30,8 +30,8 @@
 		<Authors>Paul Brätz</Authors>
 		<Copyright>2024</Copyright>
 		<Company>RhoMicro</Company>
-		<PackageId>$(MSBuildProjectName)</PackageId>
-		<PackageId Condition="'$(SolutionName)'!=''">$(SolutionName).$(MSBuildProjectName.Replace(" ", "_"))</PackageId>
+		<PackageId>$(MSBuildProjectName.Replace(" ", "_"))</PackageId>
+		<PackageId Condition="'$(SolutionName)'!=''">$(SolutionName).$(PackageId)</PackageId>
 		<RepositoryUrl>https://github.com/PaulBraetz/$(SolutionName)</RepositoryUrl>
 	</PropertyGroup>
 

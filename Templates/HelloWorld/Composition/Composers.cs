@@ -1,32 +1,43 @@
-﻿namespace HelloWorld.Presentation.Composition;
+﻿namespace HelloWorld.Composition;
 
-using RhoMicro.ApplicationFramework.Common.Abstractions;
+using RhoMicro.ApplicationFramework.Common.Environment;
 using RhoMicro.ApplicationFramework.Composition;
+using RhoMicro.ApplicationFramework.Hosting;
 
 /// <summary>
 /// Contains template composers.
 /// </summary>
 public static class Composers
 {
-    private static IComposer CreateDefault(DeploymentPlatform deploymentPlatform) => Composer.Create(
-        Presentation.Models,
-        BlazorViewComposers.Default,
-#if DEBUG
-        Common.CreateDebug(deploymentPlatform)
-#else
-        Common.CreateRelease(deploymentPlatform)
-#endif
-        );
+    private static IComposer CreateDefault(AppBuilderCapabilities capabilities) => Composer.Create(
+        PresentationComposers.HostingInformation,
+        AspectComposers.Default,
+        BlazorViewComposers.CreateStylesComposer(capabilities.Configuration.Build()));
     /// <summary>
     /// Gets the default composition root for web application servers.
     /// </summary>
-    public static IComposer WebGui { get; } = CreateDefault(DeploymentPlatform.Server);
+    public static IComposer CreateWebGui(AppBuilderCapabilities capabilities)
+    {
+        ArgumentNullException.ThrowIfNull(capabilities);
+
+        return CreateDefault(capabilities);
+    }
     /// <summary>
     /// Gets the default composition root for web application clients.
     /// </summary>
-    public static IComposer WebGuiClient { get; } = CreateDefault(DeploymentPlatform.Server);
+    public static IComposer CreateWebGuiClient(AppBuilderCapabilities capabilities)
+    {
+        ArgumentNullException.ThrowIfNull(capabilities);
+
+        return CreateDefault(capabilities);
+    }
     /// <summary>
     /// Gets the default composition root for local application.
     /// </summary>
-    public static IComposer LocalGui { get; } = CreateDefault(DeploymentPlatform.Desktop);
+    public static IComposer CreateLocalGui(AppBuilderCapabilities capabilities)
+    {
+        ArgumentNullException.ThrowIfNull(capabilities);
+
+        return CreateDefault(capabilities);
+    }
 }

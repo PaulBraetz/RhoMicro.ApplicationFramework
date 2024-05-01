@@ -3,7 +3,10 @@
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
-@using Microsoft.AspNetCore.Components.Web @*this import is required for @onclick etc. handlers to render correctly*@
+
+@*this import is required for @onclick etc. handlers to render correctly*@
+@using Microsoft.AspNetCore.Components.Web
+
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.AspNetCore.Components
 @using Microsoft.JSInterop
@@ -16,6 +19,7 @@
 @using HelloWorld.Presentation.Views.Blazor
 
 @using RhoMicro.ApplicationFramework.Common.Abstractions
+@using RhoMicro.ApplicationFramework.Common.Environment
 @using RhoMicro.ApplicationFramework.Presentation.Views.Blazor
-@using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection
+@using RhoMicro.ApplicationFramework.Hosting
 @using AfComponent = RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions.ComponentBase

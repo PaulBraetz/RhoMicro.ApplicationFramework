@@ -1,19 +1,28 @@
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using RhoMicro.ApplicationFramework.Common;
+using RhoMicro.ApplicationFramework.Hosting;
 
-using RhoMicro.ApplicationFramework.Presentation.WebGui;
-
-using HelloWorld.Presentation.Composition;
-using HelloWorld.Presentation.Views;
+using HelloWorld.Composition;
 using HelloWorld.Presentation.WebGui.Client;
-using HelloWorld.Presentation.Views.Blazor;
 
-var builder = WebAssemblyHostBuilder.CreateDefault(args);
+var app = WebClientGuiApp.CreateBuilder(out var builder, s =>
+    {
+        s.Args = args;
+    })
+    .ConfigureOptions(o =>
+    {
+        o.Composer = Composers.CreateWebGuiClient(builder.Capabilities);
+    })
+    .ConfigureCapabilities(c =>
+    {
+        _ = c.Components
+            .Add(typeof(HelloWorld.Presentation.Views.Blazor.App).Assembly)
+            .Add(typeof(EntryPoint).Assembly);
+    })
+    .Build();
 
-var app = builder.IntegrateSimpleInjectorWeb(
-    Composers.WebGuiClient,
-    [typeof(EntryPoint).Assembly, typeof(App).Assembly],
-    out var containerLifetime);
+Console.WriteLine("Config:");
+app.UnderlyingApp.Configuration.AsEnumerable().ForEach(kvp => Console.WriteLine(new { Path = kvp.Key, kvp.Value }));
 
-using var _ = containerLifetime;
-
-await app.RunAsync();
+await app
+    .RunAsync()
+    .ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);

@@ -4,20 +4,26 @@
 		<TargetFramework>net8.0</TargetFramework>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<SupportedPlatform Include="browser" />
-
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.2" />
-		<PackageReference Include="RhoMicro.ApplicationFramework.Presentation.Views.Blazor" Version="0.0.0-alpha.17" />
-		<PackageReference Include="RhoMicro.ApplicationFramework.Presentation.Views.Blazor.DependencyInjection.Client" Version="0.0.0-alpha.17" />
-		<PackageReference Include="RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeGenerator" Version="0.0.0-alpha.17">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.4" />
+		<PackageReference Include="RhoMicro.ApplicationFramework.Composition.Presentation.Views.Blazor" Version="0.0.0-alpha.44" />
+		<PackageReference Include="RhoMicro.ApplicationFramework.Hosting.Blazor" Version="0.0.0-alpha.44" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeGenerator" Version="0.0.0-alpha.44">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
