@@ -7,21 +7,14 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Description>Contains template composition components.</Description>
-		<PackageTags></PackageTags>
+		<IsPackable>false</IsPackable>
 	</PropertyGroup>
-
+	
 	<ItemGroup>
 		<ProjectReference Include="..\..\Composition.Presentation.Views.Blazor\Composition.Presentation.Views.Blazor.csproj" />
 		<ProjectReference Include="..\RMD.Presentation.Views.Blazor\RMD.Presentation.Views.Blazor.csproj" />
 		<ProjectReference Include="..\..\Composition\Composition.csproj" />
 		<ProjectReference Include="..\..\Common\Common.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="README.md" Pack="true" PackagePath="/" CopyToOutputDirectory="Always" />
-		<None Include="LICENSE.txt" Pack="true" PackagePath="/" CopyToOutputDirectory="Always" />
 	</ItemGroup>
 
 	<ItemGroup>

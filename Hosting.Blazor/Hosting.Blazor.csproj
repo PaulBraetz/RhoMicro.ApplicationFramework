@@ -5,7 +5,6 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Description>Provides base facilities for blazor apps.</Description>
 		<PackageTags></PackageTags>
 	</PropertyGroup>

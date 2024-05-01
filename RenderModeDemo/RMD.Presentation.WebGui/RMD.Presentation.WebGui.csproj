@@ -6,6 +6,10 @@
 		<AssemblyName>RMD.Presentation.WebGui</AssemblyName>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.3" />
 	</ItemGroup>

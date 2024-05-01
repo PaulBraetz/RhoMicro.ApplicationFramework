@@ -8,6 +8,10 @@
 		<AssemblyName>RMD.Presentation.LocalGui</AssemblyName>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Photino.Blazor" Version="2.7.0" />
 	</ItemGroup>
