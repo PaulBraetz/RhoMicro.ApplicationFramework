@@ -47,7 +47,7 @@ public sealed class CliApp(
                         .AddSingleton<IConfiguration>(p => p.GetRequiredService<IConfigurationRoot>()),
             Configuration = configBuilder,
             Logging = new LoggingBuilder(builder.Services),
-            EnvironmentConfiguration = new EnvironmentConfiguration(builderSettings.EnvironmentName ?? "")
+            EnvironmentConfiguration = EnvironmentConfiguration.Create(builderSettings.EnvironmentName)
         };
 
         return result;

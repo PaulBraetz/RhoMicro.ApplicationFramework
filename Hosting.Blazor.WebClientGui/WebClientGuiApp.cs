@@ -70,7 +70,7 @@ public sealed class WebClientGuiApp(
     {
         var clone = new WebClientGuiAppBuilderCreationSettings(builderSettings)
         {
-            EnvironmentConfiguration = new EnvironmentConfiguration(underlyingBuilder.HostEnvironment.Environment)
+            EnvironmentConfiguration = EnvironmentConfiguration.Create(underlyingBuilder.HostEnvironment.Environment)
         };
         configure?.Invoke(clone);
         return clone;
