@@ -55,7 +55,7 @@ public sealed class WebServerGuiApp(
                 .AddSingleton<IConfiguration>(p => p.GetRequiredService<IConfigurationRoot>()),
             Configuration = builder.Configuration,
             Logging = new LoggingBuilder(builder.Services),
-            EnvironmentConfiguration = new EnvironmentConfiguration(builderSettings.EnvironmentName ?? "")
+            EnvironmentConfiguration = EnvironmentConfiguration.Create(builderSettings.EnvironmentName)
         };
         return capabilities;
     }

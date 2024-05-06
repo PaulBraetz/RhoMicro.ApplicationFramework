@@ -9,6 +9,8 @@ using Microsoft.Extensions.Logging.Console;
 
 using NReco.Logging.File;
 
+using RhoMicro.ApplicationFramework.Common.Environment;
+
 /// <summary>
 /// Contains extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.
 /// </summary>
@@ -38,11 +40,14 @@ public static class Extensions
     {
         ArgumentNullException.ThrowIfNull(appBuilder);
 
-#pragma warning disable CA1308 // Normalize strings to uppercase
-        _ = appBuilder.Capabilities.Configuration
-            .AddJsonFile("appsettings.json")
-            .AddJsonFile($"appsettings.{appBuilder.Capabilities.EnvironmentConfiguration.Name}.json");
-#pragma warning restore CA1308 // Normalize strings to uppercase
+        var config = appBuilder.Capabilities.Configuration
+            .AddJsonFile("appsettings.json");
+
+        var environmentConfig = appBuilder.Capabilities.EnvironmentConfiguration;
+        if(!EnvironmentConfiguration.Unknown.Equals(environmentConfig))
+        {
+            _ = config.AddJsonFile($"appsettings.{environmentConfig.Name}.json", optional: true);
+        }
 
         return appBuilder;
     }

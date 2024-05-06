@@ -34,5 +34,5 @@ public sealed class WebClientGuiAppBuilderCreationSettings
     /// Gets the environment configuration using which to create an app builder.
     /// </summary>
     public IEnvironmentConfiguration EnvironmentConfiguration { get; set; }
-        = Common.Environment.EnvironmentConfiguration.CreateFromEnvironmentVariable();
+        = Common.Environment.EnvironmentConfiguration.CreateFromEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 }
