@@ -4,31 +4,14 @@ using RhoMicro.ApplicationFramework.Hosting;
 using HelloWorld.Composition;
 using HelloWorld.Presentation.WebGui.Client;
 
-await WebServerGuiApp.CreateBuilder(out var builder, s =>
-    {
-        s.BuilderSettings = new WebApplicationOptions()
-        {
-            Args = args,
-#if DEBUG
-            EnvironmentName = EnvironmentConfiguration.Development.Name
-#else
-            EnvironmentName = EnvironmentConfiguration.Production.Name
-#endif
-        };
-    })
+await WebServerGuiApp.CreateBuilder(out var builder, s => s.BuilderSettings = new() { Args = args })
     .AddAppSettings()
     .AddConsoleLogging()
-    .ConfigureOptions(o =>
-    {
-        o.Composer = Composers.CreateWebGui(builder.Capabilities);
-    })
+    .ConfigureOptions(o => o.Composer = Composers.CreateWebGui(builder.Capabilities))
     .ConfigureCapabilities(c =>
     {
         _ = c.Services
-            .AddRazorComponents(options =>
-            {
-                options.DetailedErrors = true;
-            })
+            .AddRazorComponents(options => options.DetailedErrors = true)
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
 
