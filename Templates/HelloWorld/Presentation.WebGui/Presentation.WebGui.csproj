@@ -2,15 +2,15 @@
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
-	</PropertyGroup>
-
-	<PropertyGroup>
+		<RootNamespace>Presentation.WebGui</RootNamespace>
+		<AssemblyName>Presentation.WebGui</AssemblyName>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.4" />
-		<PackageReference Include="RhoMicro.ApplicationFramework.Hosting.Blazor.WebServerGui" Version="0.0.0-alpha.46" />
+		<PackageReference Include="RhoMicro.ApplicationFramework.Hosting.Blazor.WebServerGui" Version="0.0.0-alpha.50" />
 	</ItemGroup>
 
 	<ItemGroup>

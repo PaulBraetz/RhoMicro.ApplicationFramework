@@ -1,17 +1,26 @@
 ﻿@page "/counter"
+@using RhoMicro.ApplicationFramework.Presentation.Models
+@using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions
 @attribute [OptionalInteractiveAutoRenderMode]
 
 <h1>Counter</h1>
 
 <p>Current count: @currentCount</p>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<DynamicModelComponent Value="_button" class="btn btn-primary" />
 
 @code {
     private int currentCount = 0;
 
-    private void IncrementCount()
-    {
-        currentCount++;
-    }
+    private readonly IButtonModel _button = new ButtonModel()
+        {
+            Label = "Increment"
+        };
+
+    protected override void OnInitialized() =>
+        _button.Clicked += (_, _) =>
+        {
+            currentCount++;
+            return InvokeAsync(StateHasChanged);
+        };
 }

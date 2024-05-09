@@ -2,10 +2,14 @@
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
+		<RootNamespace>Composition</RootNamespace>
+		<AssemblyName>Composition</AssemblyName>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Presentation.Views.Blazor\Presentation.Views.Blazor.csproj" />
+		<PackageReference Include="RhoMicro.ApplicationFramework.Composition" Version="0.0.0-alpha.50" />
 	</ItemGroup>
 
 </Project>

@@ -4,11 +4,15 @@
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net8.0</TargetFramework>
 		<ApplicationIcon>favicon.ico</ApplicationIcon>
+		<RootNamespace>Presentation.LocalGui</RootNamespace>
+		<AssemblyName>Presentation.LocalGui</AssemblyName>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Photino.Blazor" Version="2.7.0" />
-		<PackageReference Include="RhoMicro.ApplicationFramework.Hosting.Blazor.LocalGui" Version="0.0.0-alpha.46" />
+		<PackageReference Include="RhoMicro.ApplicationFramework.Hosting.Blazor.LocalGui" Version="0.0.0-alpha.50" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -27,5 +31,5 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
-
+	
 </Project>
