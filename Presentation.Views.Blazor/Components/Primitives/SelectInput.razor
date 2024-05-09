@@ -28,7 +28,7 @@
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        EnsureClassNames("select-input");
+        ClassNames = ClassNames.Add("select-input");
         _options = Model.GetOptions().ToDictionary(o => o.Id, o => o);
     }
 

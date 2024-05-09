@@ -1,5 +1,4 @@
 ﻿namespace RhoMicro.ApplicationFramework.Common;
-
 /// <summary>
 /// Represents the unit type.
 /// </summary>

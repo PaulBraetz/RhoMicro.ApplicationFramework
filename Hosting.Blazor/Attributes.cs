@@ -4,8 +4,6 @@ using System;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
-using RhoMicro.CodeAnalysis;
-
 /// <summary>
 /// Marker attribute for generated <c>RenderModeProxy</c> components.
 /// </summary>

@@ -1,14 +1,14 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
-
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
-
+using Microsoft.Extensions.Logging;
 using NReco.Logging.File;
-
 using RhoMicro.ApplicationFramework.Common.Environment;
 
 /// <summary>
@@ -16,19 +16,6 @@ using RhoMicro.ApplicationFramework.Common.Environment;
 /// </summary>
 public static class Extensions
 {
-    /// <summary>
-    /// Adds the <see cref="IConfiguration"/> infrastructure to the service collection.
-    /// </summary>
-    /// <param name="services"></param>
-    /// <param name="configBuilder"></param>
-    /// <returns></returns>
-    public static IServiceCollection AddConfiguration(
-        this IServiceCollection services,
-        IConfigurationBuilder configBuilder) => services
-        .AddSingleton(configBuilder)
-        .AddSingleton(p => p.GetRequiredService<IConfigurationBuilder>().Build())
-        .AddSingleton<IConfiguration>(p => p.GetRequiredService<IConfigurationRoot>());
-
     /// <summary>
     /// Adds appsettings to the app builders capabilities.
     /// </summary>
@@ -51,7 +38,6 @@ public static class Extensions
 
         return appBuilder;
     }
-
     /// <summary>
     /// Adds configuration based file logging to the builders capabilities.
     /// </summary>
@@ -72,7 +58,6 @@ public static class Extensions
 
         return appBuilder;
     }
-
     /// <summary>
     /// Adds configuration based console logging to the builders capabilities.
     /// </summary>

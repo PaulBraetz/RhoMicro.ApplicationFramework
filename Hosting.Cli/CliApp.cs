@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using RhoMicro.ApplicationFramework.Common;
 using RhoMicro.ApplicationFramework.Common.Environment;
 
 using SimpleInjector;

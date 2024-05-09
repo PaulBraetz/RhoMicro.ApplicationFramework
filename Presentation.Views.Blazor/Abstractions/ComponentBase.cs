@@ -16,7 +16,7 @@ using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Exceptions;
 /// <summary>
 /// <inheritdoc/>
 /// </summary>
-public abstract class ComponentBase : ComponentBase<ICssStyle>;
+public abstract class ComponentBase : ComponentBase<ICssStyle>, IComponent;
 
 /// <summary>
 /// Base component providing non captured parameters via <see cref="Attributes"/>
@@ -27,7 +27,7 @@ public abstract class ComponentBase : ComponentBase<ICssStyle>;
 /// </summary>
 /// <typeparam name="TStyle">The type of style received by this component.</typeparam>
 #pragma warning disable CA1063 // Implement IDisposable Correctly
-public abstract class ComponentBase<TStyle> : SimpleInjectorIntegratedComponent, IDisposable
+public abstract class ComponentBase<TStyle> : SimpleInjectorIntegratedComponent, IDisposable, IComponent<TStyle>
     where TStyle : ICssStyle
 #pragma warning restore CA1063 // Implement IDisposable Correctly
 {
@@ -35,19 +35,26 @@ public abstract class ComponentBase<TStyle> : SimpleInjectorIntegratedComponent,
     private readonly CancellationTokenSource _disposalCts = new();
     private Int32 _disposed = BooleanState.FalseState;
     private Dictionary<String, Object?>? _attributes;
+#pragma warning disable CS8618 // required via Style prop
+    private TStyle _style;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-    /// <summary>
-    /// Gets or sets the style to apply to the component.
-    /// </summary>
+    /// <inheritdoc/>
     [Injected]
     [Parameter]
-    public required TStyle Style { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "BL0007:Component parameters should be auto properties", Justification = "Setting ClassNames appropriately is required")]
+    public required TStyle Style
+    {
+        get => _style;
+        set
+        {
+            _style = value;
+            ClassNames = ClassNames.Add(Style.ClassNames);
+        }
+    }
 
-    /// <summary>
-    /// Gets or sets the otherwise unmatched attributes passed to the component.
-    /// </summary>
+    /// <inheritdoc/>
     [Parameter(CaptureUnmatchedValues = true)]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Required for parameter.")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "BL0007:Component parameters should be auto properties", Justification = "Impossible due to EnsureComponentType")]
     public required Dictionary<String, Object?> Attributes
     {
@@ -68,91 +75,28 @@ public abstract class ComponentBase<TStyle> : SimpleInjectorIntegratedComponent,
         }
     }
     /// <summary>
+    /// Gets a representation of the value associated to the <c>class</c> attribute or an empty set if no value is associated.
+    /// </summary>
+    protected CssClassNames ClassNames
+    {
+        get => Attributes.TryGetValue("class", out var classNames) ? CssClassNames.Create(classNames) : CssClassNames.Empty;
+        set => Attributes["class"] = value;
+    }
+    /// <summary>
     /// Gets a cancellation token that will be cancelled upon <see cref="Dispose"/> being called.
     /// </summary>
     protected CancellationToken ComponentDisposalToken => _disposalCts.Token;
 
     private void EnsureComponentTypeAttributes()
     {
-        if(!ExecutionEnvironment.Configuration.IsDevelopment())
+        if(ExecutionEnvironment is null || !ExecutionEnvironment.Configuration.IsDevelopment())
             return;
 
-        _ = Attributes.TryAdd("component-type", ComponentType.FullName);
+        Attributes["development-component-type"] = ComponentType.FullName;
     }
-    /// <summary>
-    /// Ensures that each of the class names provided are removed from the <c>class</c> attribute.
-    /// </summary>
-    /// <param name="classNames">
-    /// The class names ensure are removed from the <c>class</c> attribute.
-    /// </param>
-    protected void RemoveClassNames(params String[] classNames) =>
-        ConfigureClassNames([], classNames);
-    /// <summary>
-    /// Ensures that each of the class names provided are removed from the <c>class</c> attribute.
-    /// </summary>
-    /// <param name="classNames">
-    /// The class names ensure are removed from the <c>class</c> attribute.
-    /// </param>
-    protected void RemoveClassNames(IEnumerable<String> classNames) =>
-        ConfigureClassNames([], classNames);
-    /// <summary>
-    /// Ensures that each of the class names provided are present in the <c>class</c> attribute.
-    /// </summary>
-    /// <param name="classNames">
-    /// The class names ensure are present in the <c>class</c> attribute.
-    /// </param>
-    protected void EnsureClassNames(IEnumerable<String> classNames) =>
-        ConfigureClassNames(classNames, []);
-    /// <summary>
-    /// Ensures that each of the class names provided are present in the <c>class</c> attribute.
-    /// </summary>
-    /// <param name="classNames">
-    /// The class names ensure are present in the <c>class</c> attribute.
-    /// </param>
-    protected void EnsureClassNames(params String[] classNames) =>
-        ConfigureClassNames(classNames, []);
-    /// <summary>
-    /// Configures the class names available in the <c>class</c> attribute.
-    /// </summary>
-    /// <param name="ensure">The class names to ensure.</param>
-    /// <param name="remove">The class names to ensure are not available.</param>
-    protected void ConfigureClassNames(IEnumerable<String> ensure, IEnumerable<String> remove)
-    {
-        var removeSet = remove
-            .Select(n => n.Trim())
-            .ToHashSet();
 
-        var trimmedClassNames = ensure
-            .Select(n => n.Trim())
-            .Where(n => !removeSet.Contains(n));
-
-        if(!Attributes.TryGetValue("class", out var existingClassNames) ||
-            existingClassNames == null ||
-            existingClassNames is not String)
-        {
-            Attributes["class"] = String.Join(' ', trimmedClassNames);
-            return;
-        }
-
-        var classSet = ( existingClassNames as String )!
-            .Split(' ', StringSplitOptions.TrimEntries)
-            .Where(n => !removeSet.Contains(n))
-            .ToHashSet();
-
-        foreach(var className in trimmedClassNames)
-        {
-            _ = classSet.Add(className);
-        }
-
-        var newClassNames = String.Join(' ', classSet);
-        Attributes["class"] = newClassNames;
-    }
     /// <inheritdoc/>
-    protected override void OnParametersSet()
-    {
-        CheckNullParameters();
-        _ = Attributes.TryAdd("class", Style.GetCssClass());
-    }
+    protected override void OnParametersSet() => CheckNullParameters();
 
     private void CheckNullParameters()
     {

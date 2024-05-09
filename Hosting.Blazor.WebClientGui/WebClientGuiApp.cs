@@ -1,11 +1,10 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
 
-using System.Security;
-
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
 
 using RhoMicro.ApplicationFramework.Common.Environment;
+
+using RhoMicro.ApplicationFramework.Composition;
 
 using SimpleInjector;
 

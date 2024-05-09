@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 
 using SimpleInjector;
-using SimpleInjector.Diagnostics;
 
 /// <summary>
 /// Represents a generic app adapter.

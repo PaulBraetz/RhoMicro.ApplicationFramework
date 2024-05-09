@@ -8,6 +8,6 @@
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        EnsureClassNames("text-krtBlack", "bg-alert", "font-mono", "text-center");
+        ClassNames = ClassNames.Add("text-krtBlack", "bg-alert", "font-mono", "text-center");
     }
 }

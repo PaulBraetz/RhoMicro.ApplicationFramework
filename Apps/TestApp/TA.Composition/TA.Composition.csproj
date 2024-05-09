@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<RootNamespace>TA.Composition</RootNamespace>
+		<AssemblyName>TA.Composition</AssemblyName>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\Composition\Composition.csproj" />
+	</ItemGroup>
+
+</Project>

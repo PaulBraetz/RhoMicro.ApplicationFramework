@@ -86,7 +86,7 @@ public partial class InputGroupSpecialized<TInput, TValue, TError> :
         if(String.IsNullOrEmpty(Model.Label))
             return;
         builder.OpenElement(0, "div");
-        builder.AddAttribute(1, "class", Style.LabelStyle.GetCssClass());
+        builder.AddAttribute(1, "class", Style.LabelStyle.ClassNames);
         builder.AddContent(2, Model.Label);
         builder.CloseComponent();
     }
@@ -101,7 +101,7 @@ public partial class InputGroupSpecialized<TInput, TValue, TError> :
         if(String.IsNullOrEmpty(Model.Description))
             return;
         builder.OpenElement(0, "div");
-        builder.AddAttribute(1, "class", Style.DescriptionStyle.GetCssClass());
+        builder.AddAttribute(1, "class", Style.DescriptionStyle.ClassNames);
         builder.AddContent(2, Model.Description);
         builder.CloseComponent();
     }

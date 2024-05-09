@@ -10,13 +10,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Hosting.Blazor\Hosting.Blazor.csproj" />
-		<ProjectReference Include="..\Hosting\Hosting.csproj" />
+		<ProjectReference Include="..\Hosting.Blazor.Extensions\Hosting.Blazor.Extensions.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
-		<PackageReference Include="SimpleInjector" Version="5.4.4" />
+		<PackageReference Include="SimpleInjector" Version="5.4.5" />
 	</ItemGroup>
 
 	<ItemGroup>

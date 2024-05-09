@@ -2,6 +2,8 @@
 
 using System;
 
+using NReco.Logging.File;
+
 using RhoMicro.ApplicationFramework.Common;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 using RhoMicro.ApplicationFramework.Common.Environment;
@@ -14,21 +16,18 @@ class Program
 {
     [STAThread]
     static void Main(String[] args) =>
-        LocalGuiApp.CreateBuilder(out var builder, s =>
-        {
-            s.Args = args;
-#if DEBUG
-            s.EnvironmentConfiguration = EnvironmentConfiguration.Development;
-#else
-            s.EnvironmentConfiguration = EnvironmentConfiguration.Production;
-#endif
-        })
-        .AddAppSettings()
+        LocalGuiApp.CreateBuilder(out var builder, s => s.Args = args)
+        .AddBlazor()
         .ConfigureBuilder(b => b.RootComponents.Add<EntryPoint>("app"))
-        .ConfigureOptions(o => o.Composer = Composers.CreateLocalGui(builder.Capabilities))
-        .ConfigureCapabilities(c => c.Components
-            .Add(typeof(App).Assembly)
-            .Add(typeof(EntryPoint)))
+        .ConfigureOptions(o => o.Composer += Composers.LocalGui)
+        .ConfigureCapabilities(c =>
+        {
+            var loggingSection = c.Configuration.Build().GetSection("Logging");
+            _ = c.Logging.AddFile(loggingSection);
+            _ = c.Components
+                .Add(typeof(App).Assembly)
+                .Add(typeof(EntryPoint));
+        })
         .Build()
         .ConfigureUnderlyingApp((app, container) =>
         {
@@ -37,7 +36,7 @@ class Program
 
             _ = app.MainWindow
                 .SetIconFile("favicon.ico")
-                .SetTitle("Photino Blazor Sample")
+                .SetTitle("Render Mode Demo Local")
                 .SetDevToolsEnabled(isDevToolsEnabled);
 
             AppDomain.CurrentDomain.FirstChanceException += (sender, args) =>

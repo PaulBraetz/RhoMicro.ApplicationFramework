@@ -12,4 +12,11 @@ public interface IComposer
     /// </summary>
     /// <param name="container">The container which to register definitions to.</param>
     void Compose(Container container);
+    /// <summary>
+    /// Concatenates two composer instances into a combined composer.
+    /// </summary>
+    /// <param name="a">The first composer to concatenate.</param>
+    /// <param name="b">The second composer to concatenate.</param>
+    /// <returns>A concatenation of the two composers passed.</returns>
+    public static IComposer operator +(IComposer a, IComposer b) => Composer.Create(a, b);
 }

@@ -1,10 +1,7 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
 using System;
-using System.Reflection;
 
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.Extensions.Logging;
 
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 using RhoMicro.ApplicationFramework.Common.Environment;

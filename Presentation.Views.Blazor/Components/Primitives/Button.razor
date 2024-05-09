@@ -1,4 +1,5 @@
 @inherits ModelComponentBase<IButtonModel>
+
 @if(Model.Disabled)
 {
     <button @attributes="@Attributes" disabled>@GetContent()</button>
@@ -11,5 +12,5 @@
     [Parameter]
     public RenderFragment<IButtonModel>? ChildContent { get; set; }
 
-    private RenderFragment? GetContent() => ChildContent?.Invoke(Model);
+    private RenderFragment? GetContent() => ChildContent?.Invoke(Model) ?? (RenderFragment)( b => b.AddContent(0, Model.Label) );
 }

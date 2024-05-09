@@ -1,5 +1,4 @@
-﻿@using RhoMicro.ApplicationFramework.Hosting
-@inherits AfComponent
+﻿@inherits AfComponent
 <span @attributes="Attributes">
     Location:
     @(new
@@ -20,6 +19,6 @@
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        EnsureClassNames("px-2", "border border-danger", $"text-{ExecutionEnvironment.DeploymentPlatform switch { DeploymentPlatform.Client => "warning", DeploymentPlatform.Server => "info", DeploymentPlatform.Desktop => "primary" }}");
+        ClassNames = ClassNames.Add("px-2", "border border-danger", $"text-{ExecutionEnvironment.DeploymentPlatform switch { DeploymentPlatform.Client => "warning", DeploymentPlatform.Server => "info", DeploymentPlatform.Desktop => "primary" }}");
     }
 }

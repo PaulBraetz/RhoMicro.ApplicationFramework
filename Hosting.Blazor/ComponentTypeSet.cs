@@ -123,10 +123,8 @@ public sealed class ComponentTypeSet : ISet<Type>
         ArgumentNullException.ThrowIfNull(item);
         if(!IsValidComponentType(item))
         {
-            throw new ArgumentOutOfRangeException(
-                nameof(item),
-                item,
-                $"{nameof(item)} is not a valid compoennt type.");
+            //throw new ArgumentOutOfRangeException(nameof(item),item,$"{nameof(item)} is not a valid component type.");
+            return;
         }
 
         _ = _componentTypes.Add(item);

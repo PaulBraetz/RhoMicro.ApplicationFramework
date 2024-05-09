@@ -5,7 +5,6 @@ using SimpleInjector;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleInjector.Integration.ServiceCollection;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
-using RhoMicro.ApplicationFramework.Common;
 using RhoMicro.ApplicationFramework.Common.Environment;
 
 /// <summary>
@@ -158,7 +157,7 @@ public abstract class AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp
 
     private void OnSimpleInjectorAddCore(SimpleInjectorAddOptions options)
     {
-        Options.OnContainerAdd?.Invoke(options);
+        Options.InvokeOnContainerAdd(options);
         OnSimpleInjectorAdd(options);
     }
 
@@ -181,7 +180,7 @@ public abstract class AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp
 
         OnBeforeContainerComposed(container);
 
-        Options.OnBeforeContainerComposed?.Invoke(container.Options);
+        Options.InvokeOnBeforeContainerComposed(container.Options);
         Options.Composer.Compose(container);
 
         OnContainerComposed(container);

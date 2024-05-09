@@ -135,8 +135,8 @@ public partial class InputControl<TValue, TError> : ModelComponentBase<IInputMod
             InputValidityType.Invalid => Style.InvalidStyle,
             InputValidityType.Valid => Style.ValidStyle,
             _ => Style.NoneValidityStyle
-        } ).Classes;
+        } ).ClassNames;
 
-        EnsureClassNames(validityClasses);
+        ClassNames = ClassNames.Add(validityClasses);
     }
 }

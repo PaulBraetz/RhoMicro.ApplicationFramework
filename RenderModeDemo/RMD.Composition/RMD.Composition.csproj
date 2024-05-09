@@ -11,14 +11,11 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<ProjectReference Include="..\..\Composition.Presentation.Views.Blazor\Composition.Presentation.Views.Blazor.csproj" />
-		<ProjectReference Include="..\RMD.Presentation.Views.Blazor\RMD.Presentation.Views.Blazor.csproj" />
 		<ProjectReference Include="..\..\Composition\Composition.csproj" />
-		<ProjectReference Include="..\..\Common\Common.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="SimpleInjector" Version="5.4.4" />
+	  <PackageReference Include="SimpleInjector" Version="5.4.5" />
 	</ItemGroup>
 
 </Project>

@@ -3,7 +3,7 @@
 using System.Diagnostics.CodeAnalysis;
 
 /// <summary>
-/// Strategy based implementatio of <see cref="IEqualityComparer{T}"/>.
+/// Strategy based implementation of <see cref="IEqualityComparer{T}"/>.
 /// </summary>
 /// <typeparam name="T">The type of objects to compare.</typeparam>
 /// <remarks>

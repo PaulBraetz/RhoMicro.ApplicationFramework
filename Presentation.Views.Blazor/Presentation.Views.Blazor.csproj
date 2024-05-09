@@ -26,6 +26,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="RhoMicro.CodeAnalysis.UnionsGenerator" Version="15.1.5">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="System.Reactive" Version="6.0.0" />
 	</ItemGroup>
 

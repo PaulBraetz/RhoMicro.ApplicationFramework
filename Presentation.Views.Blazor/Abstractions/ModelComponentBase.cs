@@ -11,14 +11,14 @@ using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Exceptions;
 /// <inheritdoc/>
 /// </summary>
 /// <typeparam name="TModel">The type of model to render a component for.</typeparam>
-public abstract class ModelComponentBase<TModel> : ModelComponentBase<TModel, ICssStyle>;
+public abstract class ModelComponentBase<TModel> : ModelComponentBase<TModel, ICssStyle>, IModelComponent<TModel>;
 
 /// <summary>
 /// Base component view for a model of <typeparamref name="TModel"/>.
 /// </summary>
 /// <typeparam name="TModel">The type of model to render a component for.</typeparam>
 /// <typeparam name="TStyle">The type of style received by this component.</typeparam>
-public abstract class ModelComponentBase<TModel, TStyle> : ComponentBase<TStyle>
+public abstract class ModelComponentBase<TModel, TStyle> : ComponentBase<TStyle>, IModelComponent<TModel, TStyle>
     where TStyle : ICssStyle
 {
     /// <summary>
@@ -26,9 +26,7 @@ public abstract class ModelComponentBase<TModel, TStyle> : ComponentBase<TStyle>
     /// </summary>
     protected TModel Model => Value;
 #pragma warning disable BL0007 // Component parameters should be auto properties
-    /// <summary>
-    /// Gets or sets the component model.
-    /// </summary>
+    /// <inheritdoc/>
     [Parameter]
     public virtual TModel Value
     {
@@ -70,9 +68,7 @@ public abstract class ModelComponentBase<TModel, TStyle> : ComponentBase<TStyle>
     protected virtual Boolean ValuesAreEqual(TModel oldValue, TModel newValue) =>
         EqualityComparer<TModel>.Default.Equals(oldValue, newValue);
 
-    /// <summary>
-    /// Gets or sets the callback invoked on <see cref="Value"/> changing.
-    /// </summary>
+    /// <inheritdoc/>
     [Parameter]
     public EventCallback<TModel> ValueChanged { get; set; }
 

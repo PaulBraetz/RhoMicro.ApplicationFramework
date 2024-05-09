@@ -36,7 +36,7 @@ public partial class DynamicMultiControlItem<TSubControlModel> : ModelComponentB
         void result(RenderTreeBuilder b)
         {
             b.OpenElement(0, "div");
-            b.AddAttribute(1, "class", Style.RemoveButtonStyle.GetCssClass());
+            b.AddAttribute(1, "class", Style.RemoveButtonStyle.ClassNames);
             b.OpenComponent<Button>(2);
             b.AddAttribute(3, "Value", button);
             b.CloseComponent();

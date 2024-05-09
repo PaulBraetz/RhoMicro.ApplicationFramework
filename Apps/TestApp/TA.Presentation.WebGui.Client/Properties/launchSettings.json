@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Presentation.WebGui.Client": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

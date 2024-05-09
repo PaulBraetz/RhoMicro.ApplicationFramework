@@ -7,6 +7,29 @@ using RhoMicro.ApplicationFramework.Common.Environment;
 /// </summary>
 public static class Extensions
 {
+#pragma warning disable CS1573 // docs are inherited
+    /// <inheritdoc cref="IIndexableSet{TSelf, T}.Remove(IEnumerable{T})"/>
+    /// <param name="set">The set to remove elements from.</param>
+    public static TSelf Remove<TSelf, T>(this IIndexableSet<TSelf, T> set, params T[] elements)
+        where T : notnull
+        where TSelf : IIndexableSet<TSelf, T>
+    {
+        ArgumentNullException.ThrowIfNull(set);
+
+        return set.Remove(elements);
+    }
+    /// <inheritdoc cref="IIndexableSet{TSelf, T}.Add(IEnumerable{T})"/>
+    /// <param name="set">The set to add elements to.</param>
+    public static TSelf Add<TSelf, T>(this IIndexableSet<TSelf, T> set, params T[] elements)
+        where T : notnull
+        where TSelf : IIndexableSet<TSelf, T>
+    {
+        ArgumentNullException.ThrowIfNull(set);
+
+        return set.Add(elements);
+    }
+#pragma warning restore CS1573 // docs are inherited
+
     /// <summary>
     /// Gets a value indicating whether the specified runtime configuration is the debug ("DEBUG") configuration.
     /// </summary>

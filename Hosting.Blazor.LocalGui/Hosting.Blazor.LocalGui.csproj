@@ -10,15 +10,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Hosting.Blazor\Hosting.Blazor.csproj" />
-		<ProjectReference Include="..\Hosting\Hosting.csproj" />
+		<ProjectReference Include="..\Hosting.Blazor.Extensions\Hosting.Blazor.Extensions.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
 		<PackageReference Include="Photino.Blazor" Version="2.7.0" />
-		<PackageReference Include="SimpleInjector" Version="5.4.4" />
+		<PackageReference Include="SimpleInjector" Version="5.4.5" />
 	</ItemGroup>
 
 	<ItemGroup>

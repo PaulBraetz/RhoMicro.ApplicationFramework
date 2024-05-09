@@ -2,8 +2,6 @@
 
 using Microsoft.AspNetCore.Builder;
 
-using RhoMicro.ApplicationFramework.Common.Environment;
-
 /// <summary>
 /// Options for creating web server gui app builders.
 /// </summary>

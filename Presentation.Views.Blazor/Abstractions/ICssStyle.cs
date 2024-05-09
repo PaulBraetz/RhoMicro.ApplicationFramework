@@ -8,5 +8,5 @@ public interface ICssStyle
     /// <summary>
     /// Gets the class names to apply to the top level component element.
     /// </summary>
-    IReadOnlyList<String> Classes { get; }
+    CssClassNames ClassNames { get; }
 }

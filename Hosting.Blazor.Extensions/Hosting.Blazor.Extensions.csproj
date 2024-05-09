@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aspects\Aspects.csproj" />
+    <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Hosting.Blazor\Hosting.Blazor.csproj" />
+    <ProjectReference Include="..\Hosting\Hosting.csproj" />
+    <ProjectReference Include="..\Presentation.Views.Blazor\Presentation.Views.Blazor.csproj" />
+  </ItemGroup>
+
+</Project>

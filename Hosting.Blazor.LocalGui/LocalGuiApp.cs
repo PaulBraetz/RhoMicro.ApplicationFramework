@@ -6,6 +6,8 @@ using Photino.Blazor;
 
 using SimpleInjector;
 
+using RhoMicro.ApplicationFramework.Composition;
+
 /// <summary>
 /// Represents a local photino blazor app adapter.
 /// </summary>

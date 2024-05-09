@@ -2,7 +2,6 @@
 namespace RhoMicro.ApplicationFramework.Common;
 
 using RhoMicro.ApplicationFramework.Common.Abstractions;
-using RhoMicro.ApplicationFramework.Common.Exceptions;
 
 /// <summary>
 /// A closure around a request and the service using which it should be executed.

@@ -1,5 +1,4 @@
 ﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
-using System.Collections.Generic;
 
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;
 
@@ -9,5 +8,9 @@ using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;
 public class CssStyle : ICssStyle
 {
     /// <inheritdoc/>
-    public IReadOnlyList<String> Classes { get; } = [];
+    public CssClassNames ClassNames { get; } = CssClassNames.Empty;
+    /// <summary>
+    /// Gets an instance of <see cref="CssStyle"/>.
+    /// </summary>
+    public static CssStyle Instance { get; } = new();
 }

@@ -1,7 +1,4 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
-
-using SimpleInjector;
-
 /// <summary>
 /// Options for the <see cref="SimpleInjectorComponentActivator"/>.
 /// </summary>
@@ -13,5 +10,5 @@ public sealed record ComponentActivatorOptions(IUnregisteredComponentActivationB
     /// <summary>
     /// Initializes a new instance with default options.
     /// </summary>
-    public ComponentActivatorOptions() : this(new AspNetCoreActivationBehavior()) { }
+    public ComponentActivatorOptions() : this(new DefaultActivationBehavior()) { }
 }
