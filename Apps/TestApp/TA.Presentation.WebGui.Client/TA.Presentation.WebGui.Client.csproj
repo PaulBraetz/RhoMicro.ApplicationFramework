@@ -9,9 +9,7 @@
 		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
 		<RootNamespace>TA.Presentation.WebGui.Client</RootNamespace>
 		<AssemblyName>TA.Presentation.WebGui.Client</AssemblyName>
-	</PropertyGroup>
-
-	<PropertyGroup>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 

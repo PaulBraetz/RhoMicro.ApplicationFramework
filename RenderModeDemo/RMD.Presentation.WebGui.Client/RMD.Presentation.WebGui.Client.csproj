@@ -9,9 +9,8 @@
 		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
 		<RootNamespace>RMD.Presentation.WebGui.Client</RootNamespace>
 		<AssemblyName>RMD.Presentation.WebGui.Client</AssemblyName>
-	</PropertyGroup>
 
-	<PropertyGroup>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 

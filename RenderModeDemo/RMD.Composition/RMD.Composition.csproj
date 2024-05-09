@@ -4,12 +4,11 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<RootNamespace>RMD.Composition</RootNamespace>
 		<AssemblyName>RMD.Composition</AssemblyName>
-	</PropertyGroup>
 
-	<PropertyGroup>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\..\Composition\Composition.csproj" />
 	</ItemGroup>

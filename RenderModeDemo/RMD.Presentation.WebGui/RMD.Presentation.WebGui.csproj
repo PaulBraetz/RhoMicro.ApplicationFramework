@@ -4,9 +4,8 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<RootNamespace>RMD.Presentation.WebGui</RootNamespace>
 		<AssemblyName>RMD.Presentation.WebGui</AssemblyName>
-	</PropertyGroup>
-
-	<PropertyGroup>
+		
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 

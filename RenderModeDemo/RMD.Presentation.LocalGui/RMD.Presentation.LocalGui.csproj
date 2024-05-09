@@ -6,12 +6,11 @@
 		<ApplicationIcon>favicon.ico</ApplicationIcon>
 		<RootNamespace>RMD.Presentation.LocalGui</RootNamespace>
 		<AssemblyName>RMD.Presentation.LocalGui</AssemblyName>
-	</PropertyGroup>
 
-	<PropertyGroup>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
-
+	
 	<ItemGroup>
 		<PackageReference Include="Photino.Blazor" Version="2.7.0" />
 	</ItemGroup>

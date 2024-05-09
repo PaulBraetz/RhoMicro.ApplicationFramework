@@ -4,9 +4,8 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<RootNamespace>RMD.Presentation.Views.Blazor</RootNamespace>
 		<AssemblyName>RMD.Presentation.Views.Blazor</AssemblyName>
-	</PropertyGroup>
 
-	<PropertyGroup>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 

@@ -4,9 +4,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<RootNamespace>TA.Presentation.Views.Blazor</RootNamespace>
 		<AssemblyName>TA.Presentation.Views.Blazor</AssemblyName>
-	</PropertyGroup>
-
-	<PropertyGroup>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
