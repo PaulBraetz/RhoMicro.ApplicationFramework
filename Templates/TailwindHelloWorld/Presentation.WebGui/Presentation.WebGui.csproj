@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<RootNamespace>TailwindHelloWorld.Presentation.WebGui</RootNamespace>
+		<AssemblyName>TailwindHelloWorld.Presentation.WebGui</AssemblyName>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.4" />
+		<PackageReference Include="RhoMicro.ApplicationFramework.Hosting.Blazor.WebServerGui" Version="0.0.0-alpha.50" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Composition\Composition.csproj" />
+		<ProjectReference Include="..\Presentation.Views.Blazor\Presentation.Views.Blazor.csproj" />
+		<ProjectReference Include="..\Presentation.WebGui.Client\Presentation.WebGui.Client.csproj" />
+	</ItemGroup>
+
+</Project>

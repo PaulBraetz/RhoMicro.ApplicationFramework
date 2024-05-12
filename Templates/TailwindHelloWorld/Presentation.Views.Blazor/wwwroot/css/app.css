@@ -1,0 +1,9 @@
+﻿@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer components{
+    .page{
+        @apply border-red-600 overflow-auto border-4 /*h-full w-full*/
+    }
+}

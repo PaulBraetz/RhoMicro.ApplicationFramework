@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<RootNamespace>TailwindHelloWorld.Presentation.Views.Blazor</RootNamespace>
+		<AssemblyName>TailwindHelloWorld.Presentation.Views.Blazor</AssemblyName>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<SupportedPlatform Include="browser" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<SupportedPlatform Include="browser" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.4" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="RhoMicro.ApplicationFramework.Presentation.Views.Blazor" Version="0.0.0-alpha.50" />
+	  <PackageReference Include="RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeGenerator" Version="0.0.0-alpha.50">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	</ItemGroup>
+
+	<Target Name="CustomOnInnerBuild" BeforeTargets="BeforeBuild">
+		<Exec Command="tailwindcss -i wwwroot/css/app.css -o wwwroot/css/app.min.css -c tailwind.config.js -m" ConsoleToMSBuild="True">
+			<Output TaskParameter="ConsoleOutput" PropertyName="OutputOfExec" />
+		</Exec>
+	</Target>
+	
+</Project>

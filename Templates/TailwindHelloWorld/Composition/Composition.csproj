@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<RootNamespace>TailwindHelloWorld.Composition</RootNamespace>
+		<AssemblyName>TailwindHelloWorld.Composition</AssemblyName>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="RhoMicro.ApplicationFramework.Composition" Version="0.0.0-alpha.50" />
+	</ItemGroup>
+
+</Project>

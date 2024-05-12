@@ -1,0 +1,27 @@
+{
+    "$schema": "http://json.schemastore.org/template",
+    "author": "Paul Brätz",
+    "classifications": [ "ASP.NET", "Blazor", "Desktop", "Website", "SPA", "WebApp", "Solution" ],
+    "identity": "RhoMicro.Templates.BlazorApp",
+    "name": "RhoMicro Blazor Tailwind Application",
+    "sourceName": "Tailwind",
+    "preferNameDirectory": true,
+    "shortName": "rm_blazor_tw",
+    "symbols": {
+    },
+    "sources": [
+      {
+        "modifiers": [
+          {
+            "exclude": [
+              "\\*\\*/.git/\\*\\*",
+              "\\*\\*/.vs/\\*\\*",
+              "\\*\\*/bin/\\*\\*",
+              "\\*\\*/obj/\\*\\*",
+              "install.bat"
+            ]
+          }
+        ]
+      }
+    ]
+  }

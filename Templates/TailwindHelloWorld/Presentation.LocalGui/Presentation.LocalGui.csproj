@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ApplicationIcon>favicon.ico</ApplicationIcon>
+		<RootNamespace>TailwindHelloWorld.Presentation.LocalGui</RootNamespace>
+		<AssemblyName>TailwindHelloWorld.Presentation.LocalGui</AssemblyName>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Photino.Blazor" Version="2.7.0" />
+		<PackageReference Include="RhoMicro.ApplicationFramework.Hosting.Blazor.LocalGui" Version="0.0.0-alpha.50" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Presentation.Views.Blazor\Presentation.Views.Blazor.csproj" />
+		<ProjectReference Include="..\Composition\Composition.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Update="wwwroot\**">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="favicon.ico">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+	
+</Project>

@@ -1,0 +1,1 @@
+tailwindcss tailwind.config.js -w -i wwwroot/css/app.css -o wwwroot/css/app.min.css -m
