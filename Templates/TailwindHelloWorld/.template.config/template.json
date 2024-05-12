@@ -4,7 +4,7 @@
     "classifications": [ "ASP.NET", "Blazor", "Desktop", "Website", "SPA", "WebApp", "Solution" ],
     "identity": "RhoMicro.Templates.BlazorApp",
     "name": "RhoMicro Blazor Tailwind Application",
-    "sourceName": "Tailwind",
+    "sourceName": "TailwindHelloWorld",
     "preferNameDirectory": true,
     "shortName": "rm_blazor_tw",
     "symbols": {
