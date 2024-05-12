@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Xml.Linq;
 
+using RhoMicro.ApplicationFramework.Common.Abstractions;
+
 /// <summary>
 /// Represents a set of elements that are accessible via index.
 /// </summary>

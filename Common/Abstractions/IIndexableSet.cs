@@ -1,4 +1,4 @@
-﻿namespace RhoMicro.ApplicationFramework.Common;
+﻿namespace RhoMicro.ApplicationFramework.Common.Abstractions;
 
 using System.Collections.Generic;
 

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using RhoMicro.ApplicationFramework.Common;
+using RhoMicro.ApplicationFramework.Common.Abstractions;
 
 /// <summary>
 /// Represents a set of css class names.
