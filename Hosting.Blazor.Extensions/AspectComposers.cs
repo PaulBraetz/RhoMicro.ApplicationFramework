@@ -32,6 +32,14 @@ internal static class AspectComposers
         {
             RegisterCoreAspects(c);
         });
+    /// <summary>
+    /// Gets a composer adding the <see cref="SynchronizationContextDiscardingDecorator{TRequest, TResult}"/> to the container.
+    /// </summary>
+    public static IComposer SynchronizationContextDiscardingDecoratorComposer { get; } =
+        Composer.Create(c =>
+        {
+            c.RegisterDecorator(typeof(IService<,>), typeof(SynchronizationContextDiscardingDecorator<,>), Lifestyle.Scoped);
+        });
 #pragma warning restore IDE0200 // Remove unnecessary lambda expression
 #pragma warning restore IDE0053 // Use expression body for lambda expression
     private static void RegisterCoreAspects(Container c)
