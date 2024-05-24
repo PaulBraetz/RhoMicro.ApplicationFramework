@@ -39,14 +39,10 @@ internal static class AspectComposers
         RegisterFormatters(c);
         RegisterLoggingService(c);
 
-        RegisterServiceCancellationDecorators(c);
         //Consider enabling this in contexts where the Ui sync context only allows for a single thread.
         //RegisterSyncContextInterceptionProxies(c);
         RegisterLoggingDecorators(c);
     }
-    private static void RegisterServiceCancellationDecorators(Container c) =>
-        c.RegisterDecorator(typeof(IService<>), typeof(ServiceCancellationDecorator<>), Lifestyle.Scoped);
-
     private static void RegisterLoggingDecorators(Container c)
     {
         //timestamp->execution->thread->exception->time->service
@@ -55,6 +51,7 @@ internal static class AspectComposers
         c.RegisterDecorator(typeof(IService<,>), typeof(ExceptionLoggingServiceDecorator<,>), Lifestyle.Scoped);
         c.RegisterDecorator(typeof(IService<,>), typeof(ThreadIdLoggingServiceDecorator<,>), Lifestyle.Scoped);
         c.RegisterDecorator(typeof(IService<,>), typeof(ExecutionLoggingServiceDecorator<,>), Lifestyle.Scoped);
+        c.RegisterDecorator(typeof(IService<,>), typeof(ServiceCancellationDecorator<,>), Lifestyle.Scoped);
         c.RegisterDecorator(typeof(IService<,>), ctx =>
         {
             var implementationType = ctx.ImplementationType;
