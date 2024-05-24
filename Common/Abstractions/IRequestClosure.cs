@@ -1,12 +1,5 @@
 ﻿namespace RhoMicro.ApplicationFramework.Common.Abstractions;
 
-using RhoMicro.ApplicationFramework.Common.Results;
-
-/// <summary>
-/// Represents a request execution whose request and service is captured.
-/// </summary>
-public interface IRequestClosure : IRequestClosure<ServiceResult>;
-
 /// <summary>
 /// Represents a request execution whose request and service is captured.
 /// </summary>

@@ -1,7 +1,5 @@
 ﻿namespace RhoMicro.ApplicationFramework.Common.Abstractions;
 
-using RhoMicro.ApplicationFramework.Common.Results;
-
 /// <summary>
 /// Represents a request parameter object whose execution must result in a specific result type.
 /// </summary>
@@ -13,8 +11,3 @@ public interface IServiceRequest<TResult>
     /// </summary>
     CancellationToken CancellationToken { get; }
 }
-
-/// <summary>
-/// Represents a request parameter object whose execution must result in a result of type <see cref="ServiceResult"/>.
-/// </summary>
-public interface IServiceRequest : IServiceRequest<ServiceResult>;

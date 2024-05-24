@@ -1,7 +1,5 @@
 ﻿namespace RhoMicro.ApplicationFramework.Common.Abstractions;
 
-using RhoMicro.ApplicationFramework.Common.Results;
-
 /// <summary>
 /// Service implementing the request object pattern.
 /// </summary>
@@ -17,11 +15,3 @@ public interface IService<TRequest, TResult>
     /// <returns>The result of the execution.</returns>
     ValueTask<TResult> Execute(TRequest request);
 }
-
-/// <summary>
-/// Service implementing the request object pattern.
-/// </summary>
-/// <typeparam name="TRequest">The type of request to execute.</typeparam>
-public interface IService<TRequest>
-    : IService<TRequest, ServiceResult>
-    where TRequest : IServiceRequest;
