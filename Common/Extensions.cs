@@ -119,6 +119,29 @@ public static class Extensions
         return result;
     }
     /// <summary>
+    /// <para>
+    /// Executes a command on the service provided.
+    /// </para>
+    /// <para>
+    /// Attention: Make sure that code utilizing this interface is not violating the CQRS pattern.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TRequest">The type of command to execute.</typeparam>
+    /// <typeparam name="TSuccess">The type of success produced by the command.</typeparam>
+    /// <typeparam name="TFailure">The type of failure produced by the command.</typeparam>
+    /// <param name="request">The command to execute.</param>
+    /// <param name="service">The service to execute the command on.</param>
+    /// <returns>A task representing the commands execution.</returns>
+    public static ValueTask<Result<TSuccess, TFailure>> Using<TRequest, TSuccess, TFailure>(this TRequest request, IService<TRequest, TSuccess, TFailure> service)
+        where TRequest : IServiceRequest<TSuccess, TFailure>
+    {
+        ArgumentNullException.ThrowIfNull(service);
+
+        var result = service.Execute(request);
+
+        return result;
+    }
+    /// <summary>
     /// Captures a request and the service to execute it into a closure.
     /// </summary>
     /// <typeparam name="TResult">The type of result produced by the request.</typeparam>
