@@ -9,7 +9,18 @@ public readonly struct Success;
 /// <summary>
 /// Represents a generic failure result.
 /// </summary>
-public readonly struct Failure;
+public readonly record struct Failure(Optional<String> Reason)
+{
+    /// <summary>
+    /// Initializes a new instance that does not present a reason for the failure.
+    /// </summary>
+    public Failure() : this(Optional<String>.None()) { }
+    /// <summary>
+    /// Initializes a new instance that presents a reason for the failure.
+    /// </summary>
+    /// <param name="reason">The reason the failure occurred.</param>
+    public Failure(String reason) : this(Optional<String>.Some(reason)) { }
+}
 /// <summary>
 /// Represents a generic result capable of representing either a success or a failure.
 /// </summary>
