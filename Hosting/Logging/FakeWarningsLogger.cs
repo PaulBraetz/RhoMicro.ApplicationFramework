@@ -1,7 +1,11 @@
 ﻿#pragma warning disable CA1848 // Use the LoggerMessage delegates
 namespace RhoMicro.ApplicationFramework.Hosting;
 
+using System.Reflection;
+
 using Microsoft.Extensions.Logging;
+
+using RhoMicro.ApplicationFramework.Composition;
 
 using SimpleInjector;
 
@@ -18,6 +22,7 @@ public sealed class FakeWarningsLogger : IContainerLogger
 
         var fakes = container.GetCurrentRegistrations()
             .Where(r =>
+                r.ImplementationType.GetCustomAttribute<FakeServiceAttribute>() != null ||
                 r.ImplementationType.Name.Contains("fake", StringComparison.InvariantCultureIgnoreCase) ||
                 r.ImplementationType.Namespace != null &&
                 r.ImplementationType.Namespace.Contains("fake", StringComparison.InvariantCultureIgnoreCase));

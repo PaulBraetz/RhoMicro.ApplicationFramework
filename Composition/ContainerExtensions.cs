@@ -1,5 +1,8 @@
 ﻿namespace RhoMicro.ApplicationFramework.Composition;
 
+using System.Collections.Generic;
+using System.Reflection;
+
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 
 using SimpleInjector;
@@ -34,5 +37,41 @@ public static class ContainerExtensions
         ArgumentNullException.ThrowIfNull(container);
 
         container.Register<IService<TRequest, TResult>, TService>(lifestyle);
+    }
+    /// <summary>
+    /// Conventionally registers all implementations of <see cref="IService{TRequest, TResult}"/> to the container.
+    /// </summary>
+    /// <param name="container">The container to register services to.</param>
+    /// <param name="assembly">The assembly to query for implementations of <see cref="IService{TRequest, TResult}"/>.</param>
+    /// <param name="options">The optional options to use when registering services.</param>
+    public static void RegisterServices(this Container container, Assembly assembly, ConventionalServiceRegistrationOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(container);
+        ArgumentNullException.ThrowIfNull(assembly);
+
+        options ??= ConventionalServiceRegistrationOptions.Default;
+
+        var registrations = assembly.GetTypes()
+            .Select(t => (implementationType: t, serviceType: t.GetInterface(typeof(IService<,>).Name)))
+            .Where(t => t.serviceType is { })
+            .Select(t => new ConventionalServiceRegistrationContext(ServiceType: t.serviceType!, ImplementationType: t.implementationType))
+            .Where(options.RegistrationPredicate.Invoke)
+            .GroupBy(t => t.ServiceType)
+            .ToDictionary(g => g.Key!, g => g.Select(t => t.ImplementationType).ToList());
+
+        foreach(var (serviceType, implementationTypes) in registrations)
+        {
+            if(implementationTypes is not [{ } implementationType])
+            {
+                if(options.IgnoreDuplicates)
+                    continue;
+
+                throw new ConventionalServiceRegistrationDuplicateException(serviceType, implementationTypes);
+            }
+
+            var lifestyle = options.LifestyleFactory.Invoke(new(ServiceType: serviceType, ImplementationType: implementationType));
+
+            container.Register(serviceType, implementationType, lifestyle);
+        }
     }
 }
