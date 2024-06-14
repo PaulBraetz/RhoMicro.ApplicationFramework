@@ -11,6 +11,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\Composition\Composition.csproj" />
+		<ProjectReference Include="..\TA.Presentation.Views.Blazor\TA.Presentation.Views.Blazor.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -1,5 +1,7 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
 
+using Microsoft.Extensions.Hosting;
+
 using Photino.Blazor;
 
 /// <summary>
@@ -8,6 +10,11 @@ using Photino.Blazor;
 public static class Extensions
 {
     /// <summary>
+    /// Adds appsettings to the app builder.
+    /// </summary>
+    public static LocalGuiAppBuilder AddAppSettings(this LocalGuiAppBuilder appBuilder) =>
+        appBuilder.AddAppSettings<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>();
+    /// <summary>
     /// Adds blazor to the local app builder.
     /// </summary>
     /// <param name="appBuilder"></param>
@@ -15,6 +22,14 @@ public static class Extensions
     public static LocalGuiAppBuilder AddBlazor(this LocalGuiAppBuilder appBuilder) =>
         appBuilder.AddBlazor<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>();
 
+    /// <summary>
+    /// Adds api services to the app builder.
+    /// </summary>
+    /// <param name="appBuilder">The builder to add api services to.</param>
+    /// <param name="configureClients">Callback for configuring which kinds of api clients to register.</param>
+    /// <returns>A reference to the builder, for chaining of further method calls.</returns>
+    public static LocalGuiAppBuilder AddApiServiceClients(this LocalGuiAppBuilder appBuilder, Action<IApiServiceClientsOptions>? configureClients = null) =>
+        appBuilder.AddApiServiceClients<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>(configureClients);
     ///// <summary>
     ///// Adds default component models to the app builders capabilities.
     ///// </summary>

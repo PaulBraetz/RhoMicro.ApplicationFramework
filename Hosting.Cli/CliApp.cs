@@ -80,16 +80,14 @@ public sealed class CliApp(
     }
 
     /// <inheritdoc/>
-    protected override IServiceProvider GetServiceProvider(IHost underlyingApp)
+    protected override IServiceProvider GetServiceProvider()
     {
-        ArgumentNullException.ThrowIfNull(underlyingApp);
-
         return underlyingApp.Services;
     }
 
     /// <inheritdoc/>
-    protected override Task RunUnderlyingApplicationAsync(IHost underlyingApp, CancellationToken cancellationToken)
+    protected override Task RunUnderlyingApplicationAsync(CancellationToken cancellationToken)
         => underlyingApp.RunAsync(cancellationToken);
     /// <inheritdoc/>
-    protected override void RunUnderlyingApplication(IHost underlyingApp, CancellationToken cancellationToken) => underlyingApp.Run();
+    protected override void RunUnderlyingApplication(CancellationToken cancellationToken) => underlyingApp.Run();
 }

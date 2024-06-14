@@ -1,7 +1,5 @@
 ﻿namespace RhoMicro.ApplicationFramework.Composition;
 
-using Microsoft.Extensions.Configuration;
-
 using RhoMicro.ApplicationFramework.Common;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 using RhoMicro.ApplicationFramework.Presentation.Models;

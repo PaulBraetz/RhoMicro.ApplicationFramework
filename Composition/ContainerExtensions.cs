@@ -1,6 +1,5 @@
 ﻿namespace RhoMicro.ApplicationFramework.Composition;
 
-using System.Collections.Generic;
 using System.Reflection;
 
 using RhoMicro.ApplicationFramework.Common.Abstractions;

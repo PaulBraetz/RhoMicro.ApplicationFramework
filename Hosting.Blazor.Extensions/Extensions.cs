@@ -1,7 +1,5 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
 
-using System.Runtime.CompilerServices;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
@@ -11,16 +9,11 @@ using RhoMicro.ApplicationFramework.Composition.Presentation.Models.Blazor;
 using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;
-using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Components.Primitives;
 
 using SimpleInjector;
-using SimpleInjector.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging.Console;
-using Microsoft.Extensions.Logging;
-using NReco.Logging.File;
-using RhoMicro.ApplicationFramework.Common.Environment;
-using System.Reflection;
+using RhoMicro.ApplicationFramework.Common.Abstractions;
+using System.Text.Json;
 
 /// <summary>
 /// Extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.
@@ -31,7 +24,7 @@ public static partial class Extensions
     /// Creates a composer combining the composer provided with default composers for blazor applications
     /// </summary>
     /// <param name="appBuilder"></param>
-    /// <returns>A new combined composer.</returns>
+    /// <returns>A reference to the builder, for chaining of further method calls.</returns>
     public static TSelf AddBlazor<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(
         this TSelf appBuilder)
         where TSelf : AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>
@@ -104,6 +97,59 @@ public static partial class Extensions
                 c.RegisterInstance(settingsType, settingsInstance);
             }
         });
+    }
+
+    sealed class ApiServiceClientsOptions : IApiServiceClientsOptions
+    {
+        public JsonSerializerOptions SerializerOptions { get; set; } = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+    }
+    /// <summary>
+    /// Adds api services to the app builder.
+    /// </summary>
+    /// <param name="appBuilder">The builder to add api services to.</param>
+    /// <param name="configureClients">Callback for configuring client settings.</param>
+    /// <returns>A reference to the builder, for chaining of further method calls.</returns>
+    public static TSelf AddApiServiceClients<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(
+        this TSelf appBuilder, Action<IApiServiceClientsOptions>? configureClients = null)
+        where TSelf : AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>
+        where TApp : App<TApp, TUnderlyingApp>
+        where TCapabilities : BlazorAppBuilderCapabilities
+    {
+        ArgumentNullException.ThrowIfNull(appBuilder);
+
+        _ = appBuilder.ConfigureOptions(o =>
+        {
+            o.OnContainerAdd += (o) =>
+            {
+                var clientsOptions = new ApiServiceClientsOptions();
+                configureClients?.Invoke(clientsOptions);
+
+                _ = o.Services
+                    .AddHttpClient()
+                    .AddTransient(sp => sp.GetRequiredService<IOptions<ApiServicesSettings>>().Value)
+                    .AddOptions<ApiServicesSettings>()
+                    .BindConfiguration("ApiServicesSettings")
+                    .Validate(
+                        s => s.GetIsValid(ignoreBaseUri: false),
+                        "Endpoints with invalid request type or request uri detected. Service endpoint uris must be well-formed relative uris.  The base uri must be a well-formed absolute uri.")
+                    .ValidateOnStart();
+
+                o.Container.Register(() => new ApiServiceSettingsFactory(o.Container.GetInstance<ApiServicesSettings>(), clientsOptions.SerializerOptions));
+
+                var settings = new ApiServicesSettings() { BaseUri = "" };
+                appBuilder.Capabilities.Configuration.Build().Bind("ApiServicesSettings", settings);
+
+                foreach(var (settingsType, serviceType, implementationType) in
+                        settings.Services.Select(s => (s.SettingsType, s.ServiceType, s.ImplementationType)))
+                {
+                    o.Container.Register(settingsType, () => o.Container.GetInstance<ApiServiceSettingsFactory>().Create(settingsType));
+                    o.Container.Register(serviceType, implementationType);
+                    _ = o.Services.AddHttpClient(implementationType.FullName!);
+                }
+            };
+        });
+
+        return appBuilder;
     }
 
     /// <summary>

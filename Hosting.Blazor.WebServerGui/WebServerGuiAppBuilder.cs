@@ -40,6 +40,8 @@ public sealed class WebServerGuiAppBuilder
 
         base.OnSimpleInjectorAdd(options);
 
+        _ = options.AddAspNetCore();
+
         _ = options.Services
             .AddTransient(
                 typeof(Microsoft.AspNetCore.Components.Server.CircuitOptions)

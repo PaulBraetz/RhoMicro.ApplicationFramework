@@ -47,22 +47,20 @@ public abstract class App<TSelf, TUnderlyingApp>(
     /// <summary>
     /// Gets the service provider attached to the underlying app.
     /// </summary>
-    /// <param name="underlyingApp">The app whose service provider to get.</param>
     /// <returns>The service provider attached to the underlying app.</returns>
-    protected abstract IServiceProvider GetServiceProvider(TUnderlyingApp underlyingApp);
+    protected abstract IServiceProvider GetServiceProvider();
     /// <summary>
     /// Runs the underlying app asynchronously.
     /// </summary>
-    /// <param name="underlyingApp">The app to run.</param>
     /// <param name="cancellationToken">The token used to signal app execution to be cancelled (cooperatively).</param>
     /// <returns>A task representing the app execution.</returns>
-    protected abstract Task RunUnderlyingApplicationAsync(TUnderlyingApp underlyingApp, CancellationToken cancellationToken);
+    protected abstract Task RunUnderlyingApplicationAsync(CancellationToken cancellationToken);
     /// <summary>
     /// Runs the underlying app.
     /// </summary>
     /// <param name="underlyingApp">The app to run.</param>
     /// <param name="cancellationToken">The token used to signal app execution to be cancelled (cooperatively).</param>
-    protected abstract void RunUnderlyingApplication(TUnderlyingApp underlyingApp, CancellationToken cancellationToken);
+    protected abstract void RunUnderlyingApplication(CancellationToken cancellationToken);
     /// <summary>
     /// Runs the app adapter asynchronously.
     /// </summary>
@@ -70,9 +68,9 @@ public abstract class App<TSelf, TUnderlyingApp>(
     /// <returns>A task representing the app execution.</returns>
     public Task RunAsync(CancellationToken cancellationToken = default)
     {
-        VerifyAndConfigure(underlyingApp, container, cancellationToken);
+        VerifyAndConfigure(cancellationToken);
 
-        var result = RunUnderlyingApplicationAsync(underlyingApp, cancellationToken);
+        var result = RunUnderlyingApplicationAsync(cancellationToken);
 
         return result;
     }
@@ -82,12 +80,12 @@ public abstract class App<TSelf, TUnderlyingApp>(
     /// <param name="cancellationToken">The token used to signal app execution to be cancelled (cooperatively).</param>
     public void Run(CancellationToken cancellationToken = default)
     {
-        VerifyAndConfigure(underlyingApp, container, cancellationToken);
+        VerifyAndConfigure(cancellationToken);
 
-        RunUnderlyingApplication(underlyingApp, cancellationToken);
+        RunUnderlyingApplication(cancellationToken);
     }
 
-    private void VerifyAndConfigure(TUnderlyingApp underlyingApp, Container container, CancellationToken cancellationToken)
+    private void VerifyAndConfigure(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -108,7 +106,7 @@ public abstract class App<TSelf, TUnderlyingApp>(
     }
     private void Verify()
     {
-        var services = GetServiceProvider(underlyingApp);
+        var services = GetServiceProvider();
         _ = services.UseSimpleInjector(container);
 
         var service = services.GetService<ILoggerFactory>();

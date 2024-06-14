@@ -7,6 +7,7 @@ await WebServerGuiApp.CreateBuilder(
     out var builder, 
     s => s.BuilderSettings = new() { Args = args })
     .AddBlazor()
+    .AddApiServiceEndpoints()
     .ConfigureOptions(o => o.Composer += Composers.WebGui)
     .ConfigureCapabilities(c =>
     {
@@ -47,5 +48,6 @@ await WebServerGuiApp.CreateBuilder(
                 typeof(EntryPoint).Assembly,
                 typeof(TA.Presentation.Views.Blazor.App).Assembly);
     })
+    .MapApiServiceEndpoints()
     .RunAsync()
     .ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);

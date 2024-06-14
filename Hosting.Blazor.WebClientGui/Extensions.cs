@@ -13,7 +13,14 @@ public static class Extensions
     /// <returns>A new combined composer.</returns>
     public static WebClientGuiAppBuilder AddBlazor(this WebClientGuiAppBuilder appBuilder) =>
         appBuilder.AddBlazor<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>();
-
+    /// <summary>
+    /// Adds api services to the app builder.
+    /// </summary>
+    /// <param name="appBuilder">The builder to add api services to.</param>
+    /// <param name="configureClients">Callback for configuring which kinds of api clients to register.</param>
+    /// <returns>A reference to the builder, for chaining of further method calls.</returns>
+    public static WebClientGuiAppBuilder AddApiServiceClients(this WebClientGuiAppBuilder appBuilder, Action<IApiServiceClientsOptions>? configureClients = null) =>
+        appBuilder.AddApiServiceClients<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>(configureClients);
     ///// <summary>
     ///// Adds default component models to the app builders capabilities.
     ///// </summary>

@@ -1,7 +1,4 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
-
-using System.Reflection;
-
 /// <summary>
 /// Implementation of <see cref="IUnregisteredComponentActivationBehavior"/> that defines 
 /// the following components as activatable without registration:

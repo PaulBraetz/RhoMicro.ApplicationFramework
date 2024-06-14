@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
-using RhoMicro.ApplicationFramework.Hosting;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;
 
 /// <summary>

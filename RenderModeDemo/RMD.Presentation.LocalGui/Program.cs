@@ -6,7 +6,6 @@ using NReco.Logging.File;
 
 using RhoMicro.ApplicationFramework.Common;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
-using RhoMicro.ApplicationFramework.Common.Environment;
 using RhoMicro.ApplicationFramework.Hosting;
 
 using RMD.Composition;

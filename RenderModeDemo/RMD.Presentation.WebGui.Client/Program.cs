@@ -1,4 +1,3 @@
-using RhoMicro.ApplicationFramework.Common;
 using RhoMicro.ApplicationFramework.Hosting;
 
 using RMD.Composition;

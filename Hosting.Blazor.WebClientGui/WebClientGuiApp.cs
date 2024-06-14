@@ -82,23 +82,19 @@ public sealed class WebClientGuiApp(
     }
 
     /// <inheritdoc/>
-    protected override IServiceProvider GetServiceProvider(WebAssemblyHost underlyingApp)
+    protected override IServiceProvider GetServiceProvider()
     {
-        ArgumentNullException.ThrowIfNull(underlyingApp);
-
         return underlyingApp.Services;
     }
 
     /// <inheritdoc/>
-    protected override Task RunUnderlyingApplicationAsync(WebAssemblyHost underlyingApp, CancellationToken cancellationToken)
+    protected override Task RunUnderlyingApplicationAsync(CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(underlyingApp);
-
         cancellationToken.ThrowIfCancellationRequested();
 
         return underlyingApp.RunAsync();
     }
     /// <inheritdoc/>
-    protected override void RunUnderlyingApplication(WebAssemblyHost underlyingApp, CancellationToken cancellationToken) =>
+    protected override void RunUnderlyingApplication(CancellationToken cancellationToken) =>
         throw new NotSupportedException($"{nameof(WebAssemblyHost)} does not support synchronous execution.");
 }

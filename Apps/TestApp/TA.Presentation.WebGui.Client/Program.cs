@@ -1,10 +1,14 @@
+using System.Linq.Expressions;
+
 using RhoMicro.ApplicationFramework.Hosting;
 
 using TA.Composition;
+using TA.Presentation.Views.Blazor;
 using TA.Presentation.WebGui.Client;
 
 await WebClientGuiApp.CreateBuilder(out var builder, s => s.Args = args)
     .AddBlazor()
+    .AddApiServiceClients()
     .ConfigureOptions(o => o.Composer += Composers.WebGuiClient)
     .ConfigureCapabilities(c =>
     {

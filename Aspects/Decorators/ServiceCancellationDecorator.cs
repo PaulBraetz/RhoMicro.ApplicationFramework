@@ -1,6 +1,5 @@
 ﻿namespace RhoMicro.ApplicationFramework.Aspects.Decorators;
 
-using RhoMicro.ApplicationFramework.Common;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 
 /// <summary>

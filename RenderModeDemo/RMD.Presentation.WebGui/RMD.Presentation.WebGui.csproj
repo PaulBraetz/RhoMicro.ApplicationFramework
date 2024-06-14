@@ -10,11 +10,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.6" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Hosting.Blazor.WebServerGui\Hosting.Blazor.WebServerGui.csproj" />
+		<ProjectReference Include="..\..\Hosting\Hosting.csproj" />
 		<ProjectReference Include="..\RMD.Composition\RMD.Composition.csproj" />
 		<ProjectReference Include="..\RMD.Presentation.Views.Blazor\RMD.Presentation.Views.Blazor.csproj" />
 		<ProjectReference Include="..\RMD.Presentation.WebGui.Client\RMD.Presentation.WebGui.Client.csproj" />

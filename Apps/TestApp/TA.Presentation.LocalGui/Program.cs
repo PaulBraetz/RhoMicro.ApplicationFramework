@@ -1,7 +1,6 @@
 ﻿namespace TA.Presentation.LocalGui;
 
 using System;
-using System.Collections.Specialized;
 
 using NReco.Logging.File;
 
@@ -17,7 +16,9 @@ class Program
     [STAThread]
     static void Main(String[] args) =>
         LocalGuiApp.CreateBuilder(out var builder, s => s.Args = args)
+        .AddAppSettings()
         .AddBlazor()
+        .AddApiServiceClients()
         .ConfigureBuilder(b => b.RootComponents.Add<EntryPoint>("app"))
         .ConfigureOptions(o => o.Composer += Composers.LocalGui)
         .ConfigureCapabilities(c =>
@@ -39,8 +40,6 @@ class Program
                 .SetTitle("Photino Blazor Sample")
                 .SetDevToolsEnabled(isDevToolsEnabled);
 
-            AppDomain.CurrentDomain.FirstChanceException += (sender, args) =>
-                app.MainWindow.ShowMessage("Exception", args.Exception.ToString());
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
                 app.MainWindow.ShowMessage("Fatal exception", args.ExceptionObject.ToString());
         })

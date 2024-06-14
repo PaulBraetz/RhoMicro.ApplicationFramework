@@ -66,20 +66,22 @@ public sealed class WebServerGuiApp(
     }
 
     /// <inheritdoc/>
-    protected override IServiceProvider GetServiceProvider(WebApplication underlyingApp)
+    protected override IServiceProvider GetServiceProvider()
     {
-        ArgumentNullException.ThrowIfNull(underlyingApp);
-
         return underlyingApp.Services;
     }
 
     /// <inheritdoc/>
-    protected override Task RunUnderlyingApplicationAsync(WebApplication underlyingApp, CancellationToken cancellationToken) => underlyingApp.RunAsync(cancellationToken);
-    /// <inheritdoc/>
-    protected override void RunUnderlyingApplication(WebApplication underlyingApp, CancellationToken cancellationToken)
+    protected override Task RunUnderlyingApplicationAsync(CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(underlyingApp);
+        var result = underlyingApp.RunAsync(cancellationToken);
 
+        return result;
+    }
+
+    /// <inheritdoc/>
+    protected override void RunUnderlyingApplication(CancellationToken cancellationToken)
+    {
         underlyingApp.Run();
     }
 }

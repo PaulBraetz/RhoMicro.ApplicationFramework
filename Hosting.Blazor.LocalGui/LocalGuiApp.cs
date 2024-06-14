@@ -66,25 +66,21 @@ public sealed class LocalGuiApp(
     }
 
     /// <inheritdoc/>
-    protected override IServiceProvider GetServiceProvider(PhotinoBlazorApp underlyingApp)
+    protected override IServiceProvider GetServiceProvider()
     {
-        ArgumentNullException.ThrowIfNull(underlyingApp);
-
         return underlyingApp.Services;
     }
 
     /// <inheritdoc/>
-    protected override Task RunUnderlyingApplicationAsync(PhotinoBlazorApp underlyingApp, CancellationToken cancellationToken)
+    protected override Task RunUnderlyingApplicationAsync(CancellationToken cancellationToken)
     {
-        RunUnderlyingApplication(underlyingApp, cancellationToken);
+        RunUnderlyingApplication(cancellationToken);
 
         return Task.CompletedTask;
     }
     /// <inheritdoc/>
-    protected override void RunUnderlyingApplication(PhotinoBlazorApp underlyingApp, CancellationToken cancellationToken)
+    protected override void RunUnderlyingApplication(CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(underlyingApp);
-
         cancellationToken.ThrowIfCancellationRequested();
 
         underlyingApp.Run();
