@@ -11,7 +11,7 @@ public sealed class ConventionalServiceRegistrationOptions
     /// <summary>
     /// Gets or sets a callback invoked to determine the lifestyle of registered service implementations.
     /// </summary>
-    public Func<ConventionalServiceRegistrationContext, Lifestyle> LifestyleFactory { get; set; } = ctx => Lifestyle.Singleton;
+    public Func<ConventionalServiceRegistrationContext, Lifestyle> LifestyleFactory { get; set; } = ctx => Lifestyle.Scoped;
     /// <summary>
     /// Gets or sets a value determining the behavior upon encountering duplicate service implementations.
     /// If set to <see langword="true"/>, duplicate implementations will be ignored; otherwise, an exception will be thrown.
