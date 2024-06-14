@@ -21,4 +21,8 @@ public sealed class ConventionalServiceRegistrationOptions
     /// Gets or sets a predicate determining whether to register a given service implementation.
     /// </summary>
     public ConventionalServiceRegistrationPredicate RegistrationPredicate { get; set; } = ConventionalServiceRegistrationPredicates.RegisterAll;
+    /// <summary>
+    /// Gets or sets a projection determining the actual implementation type to register given a service type.
+    /// </summary>
+    public ConventionalServiceRegistrationProjection RegistrationProjection { get; set; } = ConventionalServiceRegistrationProjections.Default;
 }

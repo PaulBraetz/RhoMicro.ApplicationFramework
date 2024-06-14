@@ -55,6 +55,7 @@ public static class ContainerExtensions
             .Where(t => t.serviceType is { })
             .Select(t => new ConventionalServiceRegistrationContext(ServiceType: t.serviceType!, ImplementationType: t.implementationType))
             .Where(options.RegistrationPredicate.Invoke)
+            .Select(ctx => ctx with { ImplementationType = options.RegistrationProjection.Invoke(ctx) })
             .GroupBy(t => t.ServiceType)
             .ToDictionary(g => g.Key!, g => g.Select(t => t.ImplementationType).ToList());
 
