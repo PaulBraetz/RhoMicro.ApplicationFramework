@@ -1,1 +1,1 @@
-﻿[assembly: RootNamespace("RMD.Presentation.Views.Blazor")]
+﻿[assembly: RhoMicro.ApplicationFramework.Hosting.RootNamespace("RMD.Presentation.Views.Blazor")]
