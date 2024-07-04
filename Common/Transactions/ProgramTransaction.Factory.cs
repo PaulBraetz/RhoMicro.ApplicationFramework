@@ -31,7 +31,7 @@ public sealed class ProgramTransactionFactory(
 
         var stateMachine = CreateStateMachine();
         var result = new ProgramTransaction(stateMachine);
-        await parent.Attach(result, cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        await parent.Attach(result, cancellationToken);
 
         return result;
     }

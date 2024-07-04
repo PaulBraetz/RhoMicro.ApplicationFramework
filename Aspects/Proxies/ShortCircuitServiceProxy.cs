@@ -19,12 +19,12 @@ public sealed class ShortCircuitServiceProxy<TRequest, TResult, TException>(
     IService<TRequest, TResult> decorated,
     ICache<TRequest, ShortCircuitCacheEntry<TException>> cache)
     : IService<TRequest, TResult>
-    where TRequest : IServiceRequest<TResult>
+    where TRequest : IRequest<TResult>
     where TException : Exception
 {
 
     /// <inheritdoc/>
-    public async ValueTask<TResult> Execute(TRequest request)
+    public async ValueTask<TResult> Execute(TRequest request, CancellationToken cancellationToken)
     {
         var entry = cache.GetOrAdd(request, k => new ShortCircuitCacheEntry<TException>());
         if(entry.IsSet)
@@ -33,7 +33,7 @@ public sealed class ShortCircuitServiceProxy<TRequest, TResult, TException>(
         try
         {
             //await to force exception
-            var result = await decorated.Execute(request).ConfigureAwait(continueOnCapturedContext: false);
+            var result = await decorated.Execute(request, cancellationToken);
 
             return result;
         } catch(TException ex)

@@ -1,6 +1,6 @@
 <Project>
 	<PropertyGroup>
-		<AutoIncrementedAssemblyRevision>231</AutoIncrementedAssemblyRevision>
+		<AutoIncrementedAssemblyRevision>244</AutoIncrementedAssemblyRevision>
 	</PropertyGroup>
 
 	<PropertyGroup Label="VersionInfo">
@@ -16,7 +16,7 @@
 	<PropertyGroup Label="AnalysisInfo">
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<AnalysisMode>All</AnalysisMode>
-		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+		<!--<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>-->
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>

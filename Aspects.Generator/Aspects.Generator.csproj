@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<!--AutoUpdateAssemblyName-->
+	
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<developmentDependency>true</developmentDependency>
+		<NoPackageAnalysis>true</NoPackageAnalysis>
+		<IsRoslynComponent>true</IsRoslynComponent>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Description>Generates apect oriented programming utilities.</Description>
+		<PackageTags>AOP</PackageTags>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DefineConstants>$(DefineConstants);GENERATOR</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Update="NETStandard.Library" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.10.0" />
+		<PackageReference Include="PolySharp" Version="*">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="RhoMicro.CodeAnalysis.UtilityGenerators" Version="*">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="RhoMicro.CodeAnalysis.UnionsGenerator" Version="*">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="bin\Debug\netstandard2.0\\RhoMicro.ApplicationFramework.Aspects.RhoMicro.ApplicationFramework.Aspects.Generator.0.0.0.0.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\Common\Abstractions\IRequest.cs" Link="IRequest.cs" />
+		<Compile Include="..\Common\Abstractions\IService.cs" Link="IService.cs" />
+		<Compile Include="..\Common\ServiceInjectionInfoAttribute.cs" Link="ServiceInjectionInfoAttribute.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+		<None Include="README.md" Pack="true" PackagePath="/" CopyToOutputDirectory="Always" />
+		<None Include="LICENSE.txt" Pack="true" PackagePath="/" CopyToOutputDirectory="Always" />
+	</ItemGroup>
+
+</Project>

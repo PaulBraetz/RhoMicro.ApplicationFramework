@@ -1,12 +1,14 @@
 ﻿@typeparam TValue
 @typeparam TError
 @inherits ModelComponentBase<ISelectInputGroupModel<TValue, TError>, ISelectInputGroupCssStyle>
+@attribute [ConfigurableStyle<ISelectInputGroupCssStyle, SelectInputGroupCssStyleSettings>]
 
 <InputGroupSpecialized @attributes="Attributes"
-                       TValue="IOptionModel<TValue>"
-                       TError="TError"
+                       Value="Model"
+                       TInputGroup="ISelectInputGroupModel<TValue, TError>"
                        TInput="ISelectInputModel<TValue, TError>"
-                       Value="Model">
+                       TValue="IOptionModel<TValue>"
+                       TError="TError">
     <Input>
     <SelectInput Style="Style.SelectInputStyle"
                  Value="Model.Input"

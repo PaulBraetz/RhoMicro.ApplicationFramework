@@ -2,6 +2,7 @@
 
 using System.Reflection;
 
+using RhoMicro.ApplicationFramework.Common;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 
 using SimpleInjector;
@@ -20,7 +21,7 @@ public static class ContainerExtensions
     /// <param name="container">The container to register the service to.</param>
     public static void RegisterService<TService, TRequest, TResult>(this Container container)
         where TService : class, IService<TRequest, TResult>
-        where TRequest : IServiceRequest<TResult> => container.RegisterService<TService, TRequest, TResult>(Lifestyle.Transient);
+        where TRequest : IRequest<TResult> => container.RegisterService<TService, TRequest, TResult>(Lifestyle.Transient);
     /// <summary>
     /// Registers a service to the container.
     /// </summary>
@@ -31,17 +32,17 @@ public static class ContainerExtensions
     /// <param name="lifestyle">The lifestyle to register the service with.</param>
     public static void RegisterService<TService, TRequest, TResult>(this Container container, Lifestyle lifestyle)
         where TService : class, IService<TRequest, TResult>
-        where TRequest : IServiceRequest<TResult>
+        where TRequest : IRequest<TResult>
     {
         ArgumentNullException.ThrowIfNull(container);
 
         container.Register<IService<TRequest, TResult>, TService>(lifestyle);
     }
     /// <summary>
-    /// Conventionally registers all implementations of <see cref="IService{TRequest, TResult}"/> to the container.
+    /// Conventionally registers all generated implementations of <see cref="IService{TRequest, TResult}"/> to the container.
     /// </summary>
     /// <param name="container">The container to register services to.</param>
-    /// <param name="assembly">The assembly to query for implementations of <see cref="IService{TRequest, TResult}"/>.</param>
+    /// <param name="assembly">The assembly to query for generated implementations of <see cref="IService{TRequest, TResult}"/>.</param>
     /// <param name="options">The optional options to use when registering services.</param>
     public static void RegisterServices(this Container container, Assembly assembly, ConventionalServiceRegistrationOptions? options = null)
     {
@@ -51,27 +52,43 @@ public static class ContainerExtensions
         options ??= ConventionalServiceRegistrationOptions.Default;
 
         var registrations = assembly.GetTypes()
-            .Select(t => (implementationType: t, serviceType: t.GetInterface(typeof(IService<,>).Name)))
-            .Where(t => t.serviceType is { })
-            .Select(t => new ConventionalServiceRegistrationContext(ServiceType: t.serviceType!, ImplementationType: t.implementationType))
-            .Where(options.RegistrationPredicate.Invoke)
-            .Select(ctx => ctx with { ImplementationType = options.RegistrationProjection.Invoke(ctx) })
-            .GroupBy(t => t.ServiceType)
-            .ToDictionary(g => g.Key!, g => g.Select(t => t.ImplementationType).ToList());
+            .Select(t => t.GetCustomAttribute<ServiceInjectionInfoAttribute>())
+            .Where(a => a != null)
+            .Select(a =>
+            {
+                var aopServiceType = typeof(IService<,>).MakeGenericType(a!.RequestType, a.ResultType);
 
-        foreach(var (serviceType, implementationTypes) in registrations)
+                var value = new
+                {
+                    TraditionalServiceType = a.ServiceType,
+                    TraditionalImplementationType = a.AdapterType,
+                    ImplementationTypes = new List<Type>() { a.ImplementationType }
+                };
+
+                return (aopServiceType, value);
+            }).ToDictionary(t => t.aopServiceType, t => t.value);
+
+        foreach(var (serviceType, data) in registrations)
         {
-            if(implementationTypes is not [{ } implementationType])
+            if(data.ImplementationTypes is not [{ } implementationType])
             {
                 if(options.IgnoreDuplicates)
                     continue;
 
-                throw new ConventionalServiceRegistrationDuplicateException(serviceType, implementationTypes);
+                throw new ConventionalServiceRegistrationDuplicateException(serviceType, data.ImplementationTypes);
             }
 
-            var lifestyle = options.LifestyleFactory.Invoke(new(ServiceType: serviceType, ImplementationType: implementationType));
+            var context = new ConventionalServiceRegistrationContext(ServiceType: serviceType, ImplementationType: implementationType);
 
-            container.Register(serviceType, implementationType, lifestyle);
+            var lifestyle = options.LifestyleFactory.Invoke(context);
+
+            if(options.RegistrationPredicate.Invoke(context))
+            {
+                var actualImplementationType = options.RegistrationProjection.Invoke(context);
+                container.Register(serviceType, actualImplementationType, lifestyle);
+            }
+
+            container.Register(data.TraditionalServiceType, data.TraditionalImplementationType, lifestyle);
         }
     }
 }

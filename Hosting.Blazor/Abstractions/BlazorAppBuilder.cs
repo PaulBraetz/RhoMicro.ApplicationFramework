@@ -9,6 +9,9 @@ using RhoMicro.CodeAnalysis;
 using SimpleInjector;
 using SimpleInjector.Diagnostics;
 using SimpleInjector.Integration.ServiceCollection;
+using System.Linq.Expressions;
+using Microsoft.Extensions.Options;
+using RhoMicro.RequiredPropertyValidation;
 
 /// <summary>
 /// Represents an app builder for local or web blazor apps.
@@ -63,8 +66,30 @@ public abstract partial class BlazorAppBuilder<TSelf, TApp, TUnderlyingBuilder, 
 
         AddBlazor(options);
         RegisterBlazorComponents(options);
+        AddStyles(options);
     }
+    private void AddStyles(SimpleInjectorAddOptions options)
+    {
+        var addMethod = typeof(InjectionUtils).GetMethod(nameof(InjectionUtils.AddStyle))!;
+        var addValidatableMethod = typeof(InjectionUtils).GetMethod(nameof(InjectionUtils.AddValidatableStyle))!;
 
+        var optionsExpr = Expression.Constant(options);
+        var bodyExprs = Capabilities.Components
+            .Select(c => (componentType: c, attribute: c.GetCustomAttribute<ConfigurableStyleAttribute>()))
+            .Where(t => t.attribute != null)
+            .DistinctBy(t => t.componentType)
+            .Select(t => Expression.Call(
+                ( t.attribute!.StyleSettingsType.IsAssignableTo(typeof(IValidateRequiredProperties<>).MakeGenericType(t.attribute.StyleSettingsType))
+                ? addValidatableMethod
+                : addMethod)
+                .MakeGenericMethod(t.attribute!.StyleType, t.attribute.StyleSettingsType),
+                optionsExpr,
+                Expression.Constant(t.componentType)));
+        var body = Expression.Block(bodyExprs);
+        var lambda = Expression.Lambda<Action>(body);
+
+        lambda.Compile().Invoke();
+    }
     private static void AddBlazor(SimpleInjectorAddOptions options)
     {
         var services = options.Services;
@@ -85,20 +110,24 @@ public abstract partial class BlazorAppBuilder<TSelf, TApp, TUnderlyingBuilder, 
         {
             var componentImplementation = componentType;
 
-            if(implementationInfo.TryAsHelperComponents(out var helperComponents))
-            {
-                //intercept component type registration if helper attribute is detected (custom render mode was used)
-                var proxyType = helperComponents.OpenProxyType;
-                //register proxy separately for resolution in wrapper
-                RegisterBlazorComponent(container, proxyType, proxyType);
-                var wrapperType = helperComponents.OpenWrapperType;
-                //register wrapper as implementation for component <- interception
-                componentImplementation = wrapperType;
-            }
-
+            RegisterInterception(container, implementationInfo, ref componentImplementation);
             RegisterBlazorComponent(container, componentType, componentImplementation);
         }
     }
+    private static void RegisterInterception(Container container, ImplementationInfo implementationInfo, ref Type componentImplementation)
+    {
+        if(!implementationInfo.TryAsHelperComponents(out var helperComponents))
+            return;
+
+        //intercept component type registration if helper attribute is detected (custom render mode was used)
+        var proxyType = helperComponents.OpenProxyType;
+        //register proxy separately for resolution in wrapper
+        RegisterBlazorComponent(container, proxyType, proxyType);
+        var wrapperType = helperComponents.OpenWrapperType;
+        //register wrapper as implementation for component <- interception
+        componentImplementation = wrapperType;
+    }
+
     private static void RegisterBlazorComponent(Container container, Type componentType, Type componentImplementation)
     {
         container.Register(componentType, componentImplementation, Lifestyle.Transient);
@@ -125,4 +154,42 @@ public abstract partial class BlazorAppBuilder<TSelf, TApp, TUnderlyingBuilder, 
     [UnionType<Type>(Alias = "DeclaredComponent")]
     [UnionType<RenderModeHelperComponentsAttribute>(Alias = "HelperComponents")]
     private readonly partial struct ImplementationInfo;
+}
+
+file static class InjectionUtils
+{
+    //keep component type param around in case we do conditional registration later
+#pragma warning disable IDE0060 // Remove unused parameter
+    public static void AddStyle<TStyle, TStyleSettings>(SimpleInjectorAddOptions options, Type componentType)
+#pragma warning restore IDE0060 // Remove unused parameter
+        where TStyleSettings : class, TStyle
+        where TStyle : class
+    {
+        _ = options.Services
+            .AddTransient<TStyle>(sp => sp.GetRequiredService<IOptions<TStyleSettings>>().Value)
+            .AddOptions<TStyleSettings>()
+            .BindConfiguration($"Styles:{typeof(TStyleSettings).FullName}")
+            .ValidateOnStart();
+    }
+#pragma warning disable IDE0060 // Remove unused parameter
+    public static void AddValidatableStyle<TStyle, TStyleSettings>(SimpleInjectorAddOptions options, Type componentType)
+#pragma warning restore IDE0060 // Remove unused parameter
+        where TStyleSettings : class, TStyle, IValidateRequiredProperties<TStyleSettings>
+        where TStyle : class
+    {
+        AddStyle<TStyle, TStyleSettings>(options, componentType);
+        _ = options.Services.AddSingleton<IValidateOptions<TStyleSettings>>(
+            new ValidatableValidation<TStyleSettings>());
+    }
+    sealed class ValidatableValidation<TStyleSettings> : IValidateOptions<TStyleSettings>
+        where TStyleSettings : class, IValidateRequiredProperties<TStyleSettings>
+    {
+        public ValidateOptionsResult Validate(String? name, TStyleSettings options)
+        {
+            if(RequiredPropertyValidation.TryValidate(options, out var nullProperties))
+                return ValidateOptionsResult.Success;
+
+            return ValidateOptionsResult.Fail(nullProperties.Select(propName => $"Property '{propName}' on options '{name}' cannot be null."));
+        }
+    }
 }

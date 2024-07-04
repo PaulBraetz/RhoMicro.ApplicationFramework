@@ -7,3 +7,4 @@ using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix", Justification = "<Pending>")]
 [assembly: SuppressMessage("RhoMicro.CodeAnalysis.UnionsGenerator", "RUG0008:Union Type Option Ignored", Justification = "<Pending>")]
+[assembly: SuppressMessage("Reliability", "CA2007:Consider calling ConfigureAwait on the awaited task")]

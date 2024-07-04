@@ -18,6 +18,10 @@ public static class ConventionalServiceRegistrationPredicates
     /// </summary>
     public static ConventionalServiceRegistrationPredicate RegisterAll { get; } = ctx => true;
     /// <summary>
+    /// Gets a predicate that filters all service implementations.
+    /// </summary>
+    public static ConventionalServiceRegistrationPredicate RegisterNone { get; } = ctx => false;
+    /// <summary>
     /// Gets a predicate that filters all implementations that are annotated with the <see cref="FakeServiceAttribute"/>.
     /// </summary>
     public static ConventionalServiceRegistrationPredicate IgnoreAttributeFakes { get; } =

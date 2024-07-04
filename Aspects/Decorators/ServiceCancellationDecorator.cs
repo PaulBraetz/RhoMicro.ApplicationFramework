@@ -13,14 +13,14 @@ using RhoMicro.ApplicationFramework.Common.Abstractions;
 /// <param name="decorated">The decorated service.</param>
 public sealed class ServiceCancellationDecorator<TRequest, TResult>(IService<TRequest, TResult> decorated)
     : IService<TRequest, TResult>
-    where TRequest : IServiceRequest<TResult>
+    where TRequest : IRequest<TResult>
 {
 
     /// <inheritdoc/>
-    public ValueTask<TResult> Execute(TRequest request)
+    public ValueTask<TResult> Execute(TRequest request, CancellationToken cancellationToken)
     {
-        request.CancellationToken.ThrowIfCancellationRequested();
+        cancellationToken.ThrowIfCancellationRequested();
 
-        return decorated.Execute(request);
+        return decorated.Execute(request, cancellationToken);
     }
 }

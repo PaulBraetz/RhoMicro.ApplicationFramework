@@ -46,15 +46,13 @@ internal static class AspectComposers
     {
         RegisterFormatters(c);
         RegisterLoggingService(c);
-
-        //Consider enabling this in contexts where the Ui sync context only allows for a single thread.
-        //RegisterSyncContextInterceptionProxies(c);
         RegisterLoggingDecorators(c);
     }
     private static void RegisterLoggingDecorators(Container c)
     {
         //timestamp->execution->thread->exception->time->service
 
+        c.RegisterDecorator(typeof(IService<,>), typeof(TimestampLoggingServiceDecorator<,>), Lifestyle.Scoped);
         c.RegisterDecorator(typeof(IService<,>), typeof(ExecutionTimeLoggingServiceDecorator<,>), Lifestyle.Scoped);
         c.RegisterDecorator(typeof(IService<,>), typeof(ExceptionLoggingServiceDecorator<,>), Lifestyle.Scoped);
         c.RegisterDecorator(typeof(IService<,>), typeof(ThreadIdLoggingServiceDecorator<,>), Lifestyle.Scoped);

@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 public static class Extensions
 {
     /// <summary>
+    /// Adds timeout aspects and related configuration to the application.
+    /// </summary>
+    public static WebClientGuiAppBuilder AddTimeout(this WebClientGuiAppBuilder appBuilder) =>
+        appBuilder.AddTimeout<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>();
+    /// <summary>
     /// Adds blazor to the web client app builder.
     /// </summary>
     /// <param name="appBuilder"></param>

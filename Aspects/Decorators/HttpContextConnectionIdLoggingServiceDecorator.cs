@@ -22,10 +22,10 @@ public sealed class HttpContextConnectionIdLoggingServiceDecorator<TRequest, TRe
     IHttpContextAccessor contextAccessor,
     ILoggingService logger) :
     IService<TRequest, TResult>
-    where TRequest : IServiceRequest<TResult>
+    where TRequest : IRequest<TResult>
 {
     /// <inheritdoc/>
-    public ValueTask<TResult> Execute(TRequest request)
+    public ValueTask<TResult> Execute(TRequest request, CancellationToken cancellationToken)
     {
         ILogEntry log = contextAccessor.HttpContext != null ?
             new HttpContextConnectionIdLogEntry(contextAccessor.HttpContext.Connection.Id) :
@@ -33,7 +33,7 @@ public sealed class HttpContextConnectionIdLoggingServiceDecorator<TRequest, TRe
 
         using(_ = Logs.Log(log, logger))
         {
-            return decorated.Execute(request);
+            return decorated.Execute(request, cancellationToken);
         }
     }
 }

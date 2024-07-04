@@ -29,7 +29,7 @@ public readonly struct TransactionFlushingDisposable<TTransaction>(TTransaction 
     public async ValueTask DisposeAsync()
     {
         if(Transaction != null)
-            await Transaction.Flush(default).ConfigureAwait(continueOnCapturedContext: false);
+            await Transaction.Flush(default);
     }
     /// <inheritdoc/>
     public override Boolean Equals(Object? obj) => throw Throw.NotSupportedException.TransactionFlushingDisposableEquals;

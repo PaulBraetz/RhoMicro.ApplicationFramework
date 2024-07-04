@@ -1,7 +1,5 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
 
-using Microsoft.Extensions.Hosting;
-
 using Photino.Blazor;
 
 /// <summary>
@@ -9,6 +7,11 @@ using Photino.Blazor;
 /// </summary>
 public static class Extensions
 {
+    /// <summary>
+    /// Adds timeout aspects and related configuration to the application.
+    /// </summary>
+    public static LocalGuiAppBuilder AddTimeout(this LocalGuiAppBuilder appBuilder) =>
+        appBuilder.AddTimeout<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>();
     /// <summary>
     /// Adds appsettings to the app builder.
     /// </summary>

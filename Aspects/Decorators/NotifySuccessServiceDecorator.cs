@@ -16,13 +16,13 @@ public sealed class NotifySuccessServiceDecorator<TRequest, TResult>(
     IService<TRequest, TResult> decorated,
     IObserver<TRequest> observer)
     : IService<TRequest, TResult>
-    where TRequest : IServiceRequest<TResult>
+    where TRequest : IRequest<TResult>
 {
 
     /// <inheritdoc/>
-    public async ValueTask<TResult> Execute(TRequest request)
+    public async ValueTask<TResult> Execute(TRequest request, CancellationToken cancellationToken)
     {
-        var result = await decorated.Execute(request).ConfigureAwait(continueOnCapturedContext: false);
+        var result = await decorated.Execute(request, cancellationToken);
         observer.Notify(request);
 
         return result;

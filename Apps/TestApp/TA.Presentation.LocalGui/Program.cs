@@ -29,6 +29,7 @@ class Program
                 .Add(typeof(App).Assembly)
                 .Add(typeof(EntryPoint));
         })
+        .AddTimeout()
         .Build()
         .ConfigureUnderlyingApp((app, container) =>
         {

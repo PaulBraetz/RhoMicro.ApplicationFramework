@@ -7,11 +7,11 @@
 /// <typeparam name="TResult">The type of result produced by executing this request.</typeparam>
 /// <typeparam name="TRequestDto">The type of dto transferred to the api.</typeparam>
 /// <typeparam name="TResultDto">The type of dto received from the api.</typeparam>
-public interface IApiServiceRequest<TRequest, TResult, TRequestDto, TResultDto> : IServiceRequest<TResult>
-    where TRequest : IServiceRequest<TResult>
-    where TRequestDto : IApiServiceRequestDto<TRequest, TResult>
-    where TResult : IApiServiceResult<TResult, TResultDto>
-    where TResultDto : IApiServiceResultDto<TResult>
+public interface IApiRequest<TRequest, TResult, TRequestDto, TResultDto> : IRequest<TResult>
+    where TRequest : IRequest<TResult>
+    where TRequestDto : IApiRequestDto<TRequest, TResult>
+    where TResult : IApiResult<TResult, TResultDto>
+    where TResultDto : IApiResultDto<TResult>
 {
     /// <summary>
     /// Gets the dto required to transfer the request.

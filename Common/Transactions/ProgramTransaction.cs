@@ -18,5 +18,5 @@ public sealed partial class ProgramTransaction(ITransactionStateMachine stateMac
 
     /// <inheritdoc/>
     public override async Task Flush(CancellationToken cancellationToken) =>
-        await StateMachine.RequestFlush(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        await StateMachine.RequestFlush(cancellationToken);
 }

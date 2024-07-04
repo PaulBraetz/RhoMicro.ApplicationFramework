@@ -22,14 +22,14 @@ using RhoMicro.ApplicationFramework.Common.Abstractions;
 public sealed class ServiceTypeLoggingDecorator<TRequest, TResult, TService>(
     ILoggingService logger,
     IService<TRequest, TResult> decorated) : IService<TRequest, TResult>
-    where TRequest : IServiceRequest<TResult>
+    where TRequest : IRequest<TResult>
 {
 
     /// <inheritdoc/>
-    public ValueTask<TResult> Execute(TRequest request)
+    public ValueTask<TResult> Execute(TRequest request, CancellationToken cancellationToken)
     {
         var entry = new ServiceTypeLogEntry(typeof(TService));
         using var _ = Logs.Log(entry, logger);
-        return decorated.Execute(request);
+        return decorated.Execute(request, cancellationToken);
     }
 }

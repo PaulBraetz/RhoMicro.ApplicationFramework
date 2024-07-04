@@ -47,5 +47,4 @@ await WebServerGuiApp.CreateBuilder(
                 typeof(EntryPoint).Assembly,
                 typeof(RMD.Presentation.Views.Blazor.App).Assembly);
     })
-    .RunAsync()
-    .ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
+    .RunAsync();

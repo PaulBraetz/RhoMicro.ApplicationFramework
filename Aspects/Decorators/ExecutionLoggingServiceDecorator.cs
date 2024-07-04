@@ -22,18 +22,18 @@ public sealed class ExecutionLoggingServiceDecorator<TRequest, TResult>(
     IStaticFormatter<TRequest> formatter,
     IStaticFormatter<TResult> resultFormatter)
     : IService<TRequest, TResult>
-    where TRequest : IServiceRequest<TResult>
+    where TRequest : IRequest<TResult>
 {
     private static readonly AsyncLocal<(Boolean set, TResult? result)> _localResult = new();
 
     /// <inheritdoc/>
-    public async ValueTask<TResult> Execute(TRequest request)
+    public async ValueTask<TResult> Execute(TRequest request, CancellationToken cancellationToken)
     {
         using(_ = Logs.Log(new BeforeExecutionLogEntry<TRequest>(request, formatter), logger))
         {
             using(_ = Logs.LogLateConditional(confirmSecondLog, createSecondLog, logger))
             {
-                var result = await decorated.Execute(request).ConfigureAwait(continueOnCapturedContext: false);
+                var result = await decorated.Execute(request, cancellationToken);
 
                 _localResult.Value = (true, result);
 

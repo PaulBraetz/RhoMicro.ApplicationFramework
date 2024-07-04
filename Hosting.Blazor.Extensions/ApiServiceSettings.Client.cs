@@ -93,7 +93,7 @@ partial class ApiServiceSettings
 }
 
 sealed class ApiServiceClientSettings<TRequest, TResult>(Uri requestUri, JsonSerializerOptions serializerOptions)
-    where TRequest : IServiceRequest<TResult>
+    where TRequest : IRequest<TResult>
 {
     public JsonSerializerOptions SerializerOptions { get; } = serializerOptions;
     public Uri RequestUri { get; } = requestUri;

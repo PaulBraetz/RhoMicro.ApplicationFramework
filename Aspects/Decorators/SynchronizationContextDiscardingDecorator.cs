@@ -16,16 +16,16 @@ using RhoMicro.ApplicationFramework.Common.Abstractions;
 public sealed class SynchronizationContextDiscardingDecorator<TRequest, TResult>(
     IService<TRequest, TResult> decorated)
     : IService<TRequest, TResult>
-    where TRequest : IServiceRequest<TResult>
+    where TRequest : IRequest<TResult>
 {
     /// <inheritdoc/>
-    public async ValueTask<TResult> Execute(TRequest request)
+    public async ValueTask<TResult> Execute(TRequest request, CancellationToken cancellationToken)
     {
         var previousContext = SynchronizationContext.Current;
         SynchronizationContext.SetSynchronizationContext(null);
         try
         {
-            var resultTask = decorated.Execute(request);
+            var resultTask = decorated.Execute(request, cancellationToken);
             var result = resultTask.IsCompleted ?
                 resultTask.Result :
                 await resultTask;

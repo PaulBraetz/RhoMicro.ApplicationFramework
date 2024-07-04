@@ -58,7 +58,7 @@ public static class Extensions
     {
         ArgumentNullException.ThrowIfNull(gate);
 
-        await gate.WaitAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        await gate.WaitAsync(cancellationToken);
 
         var result = new CallbackDisposable(() => gate.Release());
 
@@ -108,13 +108,14 @@ public static class Extensions
     /// <typeparam name="TRequest">The type of command to execute.</typeparam>
     /// <param name="request">The command to execute.</param>
     /// <param name="service">The service to execute the command on.</param>
+    /// <param name="cancellationToken">The token used to signal execution to be cancelled.</param>
     /// <returns>A task representing the commands execution.</returns>
-    public static ValueTask<TResult> Using<TRequest, TResult>(this TRequest request, IService<TRequest, TResult> service)
-        where TRequest : IServiceRequest<TResult>
+    public static ValueTask<TResult> Using<TRequest, TResult>(this TRequest request, IService<TRequest, TResult> service, CancellationToken cancellationToken)
+        where TRequest : IRequest<TResult>
     {
         ArgumentNullException.ThrowIfNull(service);
 
-        var result = service.Execute(request);
+        var result = service.Execute(request, cancellationToken);
 
         return result;
     }
@@ -133,7 +134,7 @@ public static class Extensions
     /// <param name="service">The service to execute the command on.</param>
     /// <returns>A task representing the commands execution.</returns>
     public static ValueTask<Result<TSuccess, TFailure>> Using<TRequest, TSuccess, TFailure>(this TRequest request, IService<TRequest, TSuccess, TFailure> service)
-        where TRequest : IServiceRequest<TSuccess, TFailure>
+        where TRequest : IRequest<TSuccess, TFailure>
     {
         ArgumentNullException.ThrowIfNull(service);
 
@@ -150,7 +151,7 @@ public static class Extensions
     /// <param name="service">The service to capture.</param>
     /// <returns>A request closure capturing the request and the service using which to execute it.</returns>
     public static IRequestClosure<TResult> Capture<TRequest, TResult>(this TRequest request, IService<TRequest, TResult> service)
-        where TRequest : IServiceRequest<TResult>
+        where TRequest : IRequest<TResult>
     {
         var result = new RequestClosure<TRequest, TResult>(request, service);
 
@@ -165,7 +166,7 @@ public static class Extensions
     /// <param name="service">The service to capture.</param>
     /// <returns>A request closure capturing the request and the service using which to execute it.</returns>
     public static IRequestClosure<TResult> Capture<TRequest, TResult>(this IService<TRequest, TResult> service, TRequest request)
-        where TRequest : IServiceRequest<TResult>
+        where TRequest : IRequest<TResult>
     {
         var result = new RequestClosure<TRequest, TResult>(request, service);
 

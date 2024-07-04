@@ -18,15 +18,15 @@ public sealed class ThreadIdLoggingServiceDecorator<TRequest, TResult>(
     IService<TRequest, TResult> decorated,
     ILoggingService logger) :
     IService<TRequest, TResult>
-    where TRequest : IServiceRequest<TResult>
+    where TRequest : IRequest<TResult>
 {
 
     /// <inheritdoc/>
-    public ValueTask<TResult> Execute(TRequest request)
+    public ValueTask<TResult> Execute(TRequest request, CancellationToken cancellationToken)
     {
         using(_ = Logs.Log(ThreadIdLogEntry.Current, logger))
         {
-            return decorated.Execute(request);
+            return decorated.Execute(request, cancellationToken);
         }
     }
 }

@@ -18,19 +18,19 @@ public sealed class ExceptionLoggingServiceDecorator<TRequest, TResult>(
     ILoggingService logger,
     IService<TRequest, TResult> decorated)
     : IService<TRequest, TResult>
-    where TRequest : IServiceRequest<TResult>
+    where TRequest : IRequest<TResult>
 {
     private static readonly AsyncLocal<Exception?> _localException = new();
 
     /// <inheritdoc/>
-    public async ValueTask<TResult> Execute(TRequest request)
+    public async ValueTask<TResult> Execute(TRequest request, CancellationToken cancellationToken)
     {
         using(_ = Logs.LogLateConditional(confirmPush, createLog, logger))
         {
             try
             {
                 //await in order to force exception
-                var result = await decorated.Execute(request).ConfigureAwait(continueOnCapturedContext: false);
+                var result = await decorated.Execute(request, cancellationToken);
 
                 return result;
             } catch(Exception ex)

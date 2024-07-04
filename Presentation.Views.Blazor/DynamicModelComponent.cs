@@ -12,7 +12,15 @@ using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;
 /// </summary>
 /// <typeparam name="TModel">The type of model to render a component for.</typeparam>
 /// <param name="settings">The settings informing rendering of the underlying component.</param>
-public sealed class DynamicModelComponent<TModel>(DynamicModelComponentSettings<TModel> settings) : DynamicStyledModelComponent<TModel, ICssStyle>(settings);
+public sealed class DynamicModelComponent<TModel>(DynamicModelComponentSettings<TModel> settings) : DynamicStyledModelComponent<TModel, ICssStyle>(settings)
+{
+    internal static RenderFragment<TModel> Fragment { get; } = model => builder =>
+    {
+        builder.OpenComponent<DynamicModelComponent<TModel>>(0);
+        builder.AddComponentParameter(1, nameof(Value), model);
+        builder.CloseComponent();
+    };
+}
 
 /// <summary>
 /// Dynamic component able to render a component based on the type of model and style it should receive.

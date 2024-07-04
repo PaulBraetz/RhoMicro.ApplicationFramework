@@ -18,6 +18,11 @@ using System.Text.Json;
 public static class Extensions
 {
     /// <summary>
+    /// Adds timeout aspects and related configuration to the application.
+    /// </summary>
+    public static WebServerGuiAppBuilder AddTimeout(this WebServerGuiAppBuilder appBuilder) =>
+        appBuilder.AddTimeout<WebServerGuiAppBuilder, WebServerGuiApp, WebApplicationBuilder, WebApplication, BlazorAppBuilderCapabilities>();
+    /// <summary>
     /// Adds blazor to the web server app builder.
     /// </summary>
     /// <param name="appBuilder"></param>

@@ -1,9 +1,6 @@
-using System.Linq.Expressions;
-
 using RhoMicro.ApplicationFramework.Hosting;
 
 using TA.Composition;
-using TA.Presentation.Views.Blazor;
 using TA.Presentation.WebGui.Client;
 
 await WebClientGuiApp.CreateBuilder(out var builder, s => s.Args = args)
@@ -16,6 +13,7 @@ await WebClientGuiApp.CreateBuilder(out var builder, s => s.Args = args)
             .Add(typeof(TA.Presentation.Views.Blazor.App).Assembly)
             .Add(typeof(EntryPoint).Assembly);
     })
+    .AddTimeout()
     .Build()
     .RunAsync()
     .ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);

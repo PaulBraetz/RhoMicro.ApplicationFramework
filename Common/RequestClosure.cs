@@ -17,10 +17,10 @@ public sealed class RequestClosure<TRequest, TResult>(
     TRequest request,
     IService<TRequest, TResult> service)
     : IRequestClosure<TResult>
-    where TRequest : IServiceRequest<TResult>
+    where TRequest : IRequest<TResult>
 {
     /// <summary>
     /// Executes the captured request using the captured service.
     /// </summary>
-    public ValueTask<TResult> Execute() => service.Execute(request);
+    public ValueTask<TResult> Execute(CancellationToken cancellationToken) => service.Execute(request, cancellationToken);
 }

@@ -13,7 +13,7 @@ using RhoMicro.ApplicationFramework.Common.Abstractions;
 /// <param name="decorated">The decorated service.</param>
 public abstract class ExecutionPreActionServiceDecoratorBase<TRequest, TResult>(IService<TRequest, TResult> decorated)
     : IService<TRequest, TResult>
-    where TRequest : IServiceRequest<TResult>
+    where TRequest : IRequest<TResult>
 {
 
     /// <summary>
@@ -22,10 +22,10 @@ public abstract class ExecutionPreActionServiceDecoratorBase<TRequest, TResult>(
     protected virtual ValueTask ExecutePreAction(TRequest request) => ValueTask.CompletedTask;
 
     /// <inheritdoc/>
-    public async ValueTask<TResult> Execute(TRequest request)
+    public async ValueTask<TResult> Execute(TRequest request, CancellationToken cancellationToken)
     {
-        await ExecutePreAction(request).ConfigureAwait(continueOnCapturedContext: false);
-        var result = await decorated.Execute(request).ConfigureAwait(continueOnCapturedContext: false);
+        await ExecutePreAction(request);
+        var result = await decorated.Execute(request, cancellationToken);
 
         return result;
     }

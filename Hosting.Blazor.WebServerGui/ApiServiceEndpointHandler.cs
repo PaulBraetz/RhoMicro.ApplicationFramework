@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.Http;
 
 sealed class ApiServiceEndpointHandler<TRequest, TResult, TRequestDto, TResultDto>
     (IService<TRequest, TResult> service, ApiServiceEndpointHandlerSettings settings)
-    where TRequest : IApiServiceRequest<TRequest, TResult, TRequestDto, TResultDto>, IServiceRequest<TResult>
-    where TResult : IApiServiceResult<TResult, TResultDto>
-    where TRequestDto : IApiServiceRequestDto<TRequest, TResult>
-    where TResultDto : IApiServiceResultDto<TResult>
+    where TRequest : IApiRequest<TRequest, TResult, TRequestDto, TResultDto>, IRequest<TResult>
+    where TResult : IApiResult<TResult, TResultDto>
+    where TRequestDto : IApiRequestDto<TRequest, TResult>
+    where TResultDto : IApiResultDto<TResult>
 {
     public async Task Handle(HttpContext context)
     {
@@ -21,10 +21,9 @@ sealed class ApiServiceEndpointHandler<TRequest, TResult, TRequestDto, TResultDt
         var requestDto = await JsonSerializer.DeserializeAsync<TRequestDto>(context.Request.Body, settings.SerializerOptions)
             ?? throw new InvalidOperationException("Unable to deserialize request dto.");
 
-        var ct = context.RequestAborted;
-        var request = requestDto.ToRequest(ct);
-        var result = await service.Execute(request).ConfigureAwait(false);
+        var request = requestDto.ToRequest();
+        var result = await service.Execute(request, context.RequestAborted);
         var resultDto = result.ToDto();
-        await JsonSerializer.SerializeAsync(context.Response.Body, resultDto, settings.SerializerOptions, ct).ConfigureAwait(false);
+        await JsonSerializer.SerializeAsync(context.Response.Body, resultDto, settings.SerializerOptions, context.RequestAborted);
     }
 }

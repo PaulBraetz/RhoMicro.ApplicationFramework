@@ -42,7 +42,7 @@ public abstract class ModelComponentBase<TModel, TStyle> : ComponentBase<TStyle>
 #pragma warning restore BL0007 // Component parameters should be auto properties
     private async Task InvokeValueChanged(TModel newValue)
     {
-        await ValueChanged.InvokeAsync(newValue).ConfigureAwait(false);
+        await ValueChanged.InvokeAsync(newValue);
         OnValueChanged();
     }
     /// <summary>

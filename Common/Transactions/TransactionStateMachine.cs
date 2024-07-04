@@ -53,7 +53,7 @@ public class TransactionStateMachine(IEqualityComparer<ITransactionStateMachine>
         EnsureMutableSelf("add child");
         EnsureMutableChild(child, "add");
 
-        using var _0 = await WaitFamily(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        using var _0 = await WaitFamily(cancellationToken);
         if(_children.Contains(child))
             return;
 
@@ -61,7 +61,7 @@ public class TransactionStateMachine(IEqualityComparer<ITransactionStateMachine>
         EnsureMutableChild(child, "add");
 
         _ = _children.Add(child);
-        await child.SetParent(this, cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        await child.SetParent(this, cancellationToken);
     }
     /// <inheritdoc/>
     public async ValueTask RemoveChild(ITransactionStateMachine child, CancellationToken cancellationToken = default)
@@ -74,7 +74,7 @@ public class TransactionStateMachine(IEqualityComparer<ITransactionStateMachine>
         EnsureMutableSelf("add child");
         EnsureMutableChild(child, "remove");
 
-        using var _0 = await WaitFamily(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        using var _0 = await WaitFamily(cancellationToken);
 
         if(!_children.Contains(child))
             return;
@@ -83,7 +83,7 @@ public class TransactionStateMachine(IEqualityComparer<ITransactionStateMachine>
         EnsureMutableChild(child, "remove");
 
         _ = _children.Remove(child);
-        await child.RemoveParent(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        await child.RemoveParent(cancellationToken);
     }
     /// <inheritdoc/>
     public async ValueTask SetParent(ITransactionStateMachine parent, CancellationToken cancellationToken = default)
@@ -99,7 +99,7 @@ public class TransactionStateMachine(IEqualityComparer<ITransactionStateMachine>
         EnsureMutableSelf("set parent");
         EnsureMutableParent(parent, "set");
 
-        using var _0 = await WaitFamily(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        using var _0 = await WaitFamily(cancellationToken);
 
         if(EqualityComparer<ITransactionStateMachine>.Default.Equals(_parent, parent))
             return;
@@ -108,7 +108,7 @@ public class TransactionStateMachine(IEqualityComparer<ITransactionStateMachine>
         EnsureMutableParent(parent, "set");
 
         _parent = parent;
-        await parent.AddChild(this, cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        await parent.AddChild(this, cancellationToken);
     }
     /// <inheritdoc/>
     public async ValueTask RemoveParent(CancellationToken cancellationToken = default)
@@ -119,7 +119,7 @@ public class TransactionStateMachine(IEqualityComparer<ITransactionStateMachine>
         EnsureMutableSelf("remove parent");
         EnsureMutableParent(_parent, "set");
 
-        using var _0 = await WaitFamily(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        using var _0 = await WaitFamily(cancellationToken);
 
         if(_parent == null)
             return;
@@ -129,12 +129,12 @@ public class TransactionStateMachine(IEqualityComparer<ITransactionStateMachine>
 
         var parent = _parent;
         _parent = null;
-        await parent.RemoveChild(this, cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        await parent.RemoveChild(this, cancellationToken);
     }
 
     private async ValueTask<IDisposable> WaitFamily(CancellationToken cancellationToken = default)
     {
-        var entered = await _gate.WaitAsync(FamilySynchronizationTimeout, cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        var entered = await _gate.WaitAsync(FamilySynchronizationTimeout, cancellationToken);
 
         var result = entered ?
             new CallbackDisposable(() => _gate.Release()) :
@@ -158,7 +158,7 @@ public class TransactionStateMachine(IEqualityComparer<ITransactionStateMachine>
     /// <inheritdoc/>
     public async Task Commit(CancellationToken cancellationToken = default)
     {
-        using var _0 = await _gate.WaitDisposableAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        using var _0 = await _gate.WaitDisposableAsync(cancellationToken);
 
         if(State is not TransactionState.Mutable)
             throw new InvalidOperationException($"Unable to commit while in the '{State}' state.");
@@ -168,7 +168,7 @@ public class TransactionStateMachine(IEqualityComparer<ITransactionStateMachine>
     /// <inheritdoc/>
     public async Task Rollback(CancellationToken cancellationToken = default)
     {
-        using var _0 = await _gate.WaitDisposableAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        using var _0 = await _gate.WaitDisposableAsync(cancellationToken);
 
         if(State is not TransactionState.Mutable)
             throw new InvalidOperationException($"Unable to rollback while in the '{State}' state.");
@@ -179,7 +179,7 @@ public class TransactionStateMachine(IEqualityComparer<ITransactionStateMachine>
     /// <inheritdoc/>
     public async ValueTask RequestFlush(CancellationToken cancellationToken = default)
     {
-        using var _0 = await _gate.WaitDisposableAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        using var _0 = await _gate.WaitDisposableAsync(cancellationToken);
 
         if(State > TransactionState.Immutable)
             return;
@@ -188,16 +188,16 @@ public class TransactionStateMachine(IEqualityComparer<ITransactionStateMachine>
 
         if(_parent == null)
         {
-            var forceRollback = !await GetIsCommitInternal(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
-            await FlushInternal(forceRollback, cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+            var forceRollback = !await GetIsCommitInternal(cancellationToken);
+            await FlushInternal(forceRollback, cancellationToken);
         }
     }
     /// <inheritdoc/>
     public async Task Flush(Boolean forceRollback, CancellationToken cancellationToken = default)
     {
-        using var _0 = await _gate.WaitDisposableAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        using var _0 = await _gate.WaitDisposableAsync(cancellationToken);
 
-        await FlushInternal(forceRollback, cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        await FlushInternal(forceRollback, cancellationToken);
     }
 
     private async ValueTask FlushInternal(Boolean forceRollback, CancellationToken cancellationToken = default)
@@ -217,13 +217,13 @@ public class TransactionStateMachine(IEqualityComparer<ITransactionStateMachine>
         {
             var forceChildrenRollback = !_isCommit;
             var childFlushes = _children.Select(c => c.Flush(forceChildrenRollback, cancellationToken));
-            await Task.WhenAll(childFlushes).ConfigureAwait(continueOnCapturedContext: false);
+            await Task.WhenAll(childFlushes);
 
             var isConsistent = _children.Count == 0;
             foreach(var child in _children)
             {
                 isConsistent = child.State == TransactionState.Flushed &&
-                               _isCommit == await child.GetIsCommit(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+                               _isCommit == await child.GetIsCommit(cancellationToken);
                 if(!isConsistent)
                     break;
             }
@@ -236,7 +236,7 @@ public class TransactionStateMachine(IEqualityComparer<ITransactionStateMachine>
                 OnCommit(cancellationToken) :
                 OnRollback(cancellationToken);
 
-            await action.ConfigureAwait(continueOnCapturedContext: false);
+            await action;
         } catch
         {
             State = TransactionState.Faulted;
@@ -247,9 +247,9 @@ public class TransactionStateMachine(IEqualityComparer<ITransactionStateMachine>
     /// <inheritdoc/>
     public async ValueTask<Boolean> GetIsCommit(CancellationToken cancellationToken = default)
     {
-        using var _0 = await _gate.WaitDisposableAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        using var _0 = await _gate.WaitDisposableAsync(cancellationToken);
 
-        var result = await GetIsCommitInternal(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        var result = await GetIsCommitInternal(cancellationToken);
 
         return result;
     }
@@ -261,7 +261,7 @@ public class TransactionStateMachine(IEqualityComparer<ITransactionStateMachine>
 
         foreach(var child in _children)
         {
-            var childIsCommit = await child.GetIsCommit(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+            var childIsCommit = await child.GetIsCommit(cancellationToken);
             if(!childIsCommit)
                 return false;
         }

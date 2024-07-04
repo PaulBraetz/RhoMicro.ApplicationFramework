@@ -7,16 +7,16 @@ using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;
 
 /// <summary>
-/// Represents the style of an <see cref="InputGroupSpecialized{TInput, TValue, TError}"/> component.
+/// Represents the style of an <see cref="InputGroupSpecialized{TInputGroup ,TInput, TValue, TError}"/> component.
 /// </summary>
 public interface IInputGroupSpecializedCssStyle : ICssStyle
 {
     /// <summary>
-    /// Gets the style to apply to the default <see cref="InputGroupSpecialized{TInput, TValue, TError}.Label"/>.
+    /// Gets the style to apply to the default <see cref="InputGroupSpecialized{TInputGroup ,TInput, TValue, TError}.Label"/>.
     /// </summary>
     ICssStyle LabelStyle { get; }
     /// <summary>
-    /// Gets the style to apply to the default <see cref="InputGroupSpecialized{TInput, TValue, TError}.Description"/>.
+    /// Gets the style to apply to the default <see cref="InputGroupSpecialized{TInputGroup ,TInput, TValue, TError}.Description"/>.
     /// </summary>
     ICssStyle DescriptionStyle { get; }
 }
@@ -35,11 +35,13 @@ public sealed class InputGroupSpecializedCssStyleSettings : CssStyleSettings, II
 /// <summary>
 /// Base class for input controls that provide a label, description and error.
 /// </summary>
+/// <typeparam name="TInputGroup">The type of input group model used.</typeparam>
+/// <typeparam name="TInput">The type of input used by <typeparamref name="TInputGroup"/> to obtain inputs.</typeparam>
 /// <typeparam name="TValue">The type of value obtained by the model.</typeparam>
 /// <typeparam name="TError">The type of error displayed by the model.</typeparam>
-/// <typeparam name="TInput">The type of input model used to obtain input.</typeparam>
-public partial class InputGroupSpecialized<TInput, TValue, TError> :
-    ModelComponentBase<IInputGroupModel<TInput, TValue, TError>, IInputGroupSpecializedCssStyle>
+public partial class InputGroupSpecialized<TInputGroup, TInput, TValue, TError>
+    : ModelComponentBase<TInputGroup, IInputGroupSpecializedCssStyle>
+    where TInputGroup : IInputGroupModel<TInput, TValue, TError>
     where TInput : IInputModel<TValue, TError>
 {
     private RenderFragment? _label;

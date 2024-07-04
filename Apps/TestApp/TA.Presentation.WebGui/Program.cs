@@ -4,7 +4,7 @@ using TA.Composition;
 using TA.Presentation.WebGui.Client;
 
 await WebServerGuiApp.CreateBuilder(
-    out var builder, 
+    out var builder,
     s => s.BuilderSettings = new() { Args = args })
     .AddBlazor()
     .AddApiServiceEndpoints()
@@ -21,6 +21,7 @@ await WebServerGuiApp.CreateBuilder(
             .Add(typeof(TA.Presentation.WebGui.Client.EntryPoint).Assembly)
             .Add(typeof(TA.Presentation.WebGui.Components.App).Assembly);
     })
+    .AddTimeout()
     .Build()
     .ConfigureUnderlyingApp((app, container) =>
     {

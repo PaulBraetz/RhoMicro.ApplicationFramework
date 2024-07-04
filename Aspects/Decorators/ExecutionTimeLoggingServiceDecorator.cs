@@ -19,17 +19,17 @@ public sealed class ExecutionTimeLoggingServiceDecorator<TRequest, TResult>(
     ILoggingService logger,
     IService<TRequest, TResult> decorated)
     : IService<TRequest, TResult>
-    where TRequest : IServiceRequest<TResult>
+    where TRequest : IRequest<TResult>
 {
 
     /// <inheritdoc/>
-    public async ValueTask<TResult> Execute(TRequest request)
+    public async ValueTask<TResult> Execute(TRequest request, CancellationToken cancellationToken)
     {
         var stopWatch = new Stopwatch();
         stopWatch.Start();
         using(_ = Logs.LogLate(createLog, logger))
         {
-            var result = await decorated.Execute(request).ConfigureAwait(continueOnCapturedContext: false);
+            var result = await decorated.Execute(request, cancellationToken);
 
             return result;
         }

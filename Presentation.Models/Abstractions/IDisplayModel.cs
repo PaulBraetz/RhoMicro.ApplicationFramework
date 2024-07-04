@@ -7,7 +7,7 @@
 public interface IDisplayModel<TValue>
 {
     /// <summary>
-    /// Gets or sets the value to diplay.
+    /// Gets or sets the value to display.
     /// </summary>
     TValue Value { get; set; }
     /// <summary>

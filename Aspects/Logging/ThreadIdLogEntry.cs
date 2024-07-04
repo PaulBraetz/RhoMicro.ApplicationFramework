@@ -21,7 +21,9 @@ public sealed class ThreadIdLogEntry(
     /// <summary>
     /// Gets a log entry that has been initialized with the current thread id.
     /// </summary>
+#pragma warning disable RS1035 // Do not use APIs banned for analyzers
     public static ThreadIdLogEntry Current => new(Environment.CurrentManagedThreadId);
+#pragma warning restore RS1035 // Do not use APIs banned for analyzers
     /// <inheritdoc/>
     public String Evaluate() => $"ThreadId: {threadId}";
 }

@@ -20,27 +20,22 @@ public sealed partial class ResultCacheServiceProxy<TRequest, TResult>(
     ICache<TRequest, Task<TResult>> cache,
     ILoggingService logger)
     : IService<TRequest, TResult>
-    where TRequest : IServiceRequest<TResult>
+    where TRequest : IRequest<TResult>
 {
 
     /// <inheritdoc/>
-    public async ValueTask<TResult> Execute(TRequest request)
+    public async ValueTask<TResult> Execute(TRequest request, CancellationToken cancellationToken)
     {
-        var factory = new ValueFactory(CreateResult);
+        var factory = new ValueFactory((key) => decorated.Execute(key, cancellationToken).AsTask());
 
         using(_ = Logs.LogLate(createLog, logger))
         {
-            return await cache.GetOrAdd(request, factory.CreateValue).ConfigureAwait(continueOnCapturedContext: false);
+            return await cache.GetOrAdd(request, factory.CreateValue);
         }
 
         ILogEntry createLog() =>
             factory!.FactoryCalled ?
             new ResultCacheMissLogEntry<TRequest>() :
             new ResultCacheHitLogEntry<TRequest>();
-    }
-    private async Task<TResult> CreateResult(TRequest request)
-    {
-        var result = await decorated.Execute(request).ConfigureAwait(continueOnCapturedContext: false);
-        return result;
     }
 }

@@ -1,7 +1,10 @@
-﻿@typeparam TInput where TInput : IInputModel<TValue, TError>
+﻿@typeparam TInputGroup where TInputGroup : IInputGroupModel<TInput, TValue, TError>
+@typeparam TInput where TInput : IInputModel<TValue, TError>
 @typeparam TValue
 @typeparam TError
-@inherits ModelComponentBase<IInputGroupModel<TInput,TValue, TError>, IInputGroupSpecializedCssStyle>
+@inherits ModelComponentBase<TInputGroup, IInputGroupSpecializedCssStyle>
+@attribute [ConfigurableStyle<IInputGroupSpecializedCssStyle, InputGroupSpecializedCssStyleSettings>]
+
 
 <div @attributes="Attributes">
     @Label

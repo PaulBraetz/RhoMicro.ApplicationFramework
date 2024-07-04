@@ -22,6 +22,7 @@ public abstract class DisposableBase : IDisposable
     private void Dispose(Boolean disposing)
 #pragma warning restore CA1063 // Implement IDisposable Correctly
     {
+        //TODO: spin while parallel disposing, return early only if already disposed
         if(Interlocked.CompareExchange(ref _disposedValue, _disposingState, _nonDisposedState) != _nonDisposedState)
             return;
 

@@ -25,7 +25,7 @@ public abstract class ServiceTestBase<TService>
     public virtual async Task Setup()
     {
         if(Container != null)
-            await Cleanup().ConfigureAwait(continueOnCapturedContext: false);
+            await Cleanup();
 
         var container = new Container();
         container.Options.AllowOverridingRegistrations = true;
@@ -50,13 +50,13 @@ public abstract class ServiceTestBase<TService>
     {
         if(Service is IAsyncDisposable asyncDisposable)
         {
-            await asyncDisposable.DisposeAsync().ConfigureAwait(continueOnCapturedContext: false);
+            await asyncDisposable.DisposeAsync();
         } else if(Service is IDisposable disposable)
         {
             disposable.Dispose();
         }
 
-        await Container!.DisposeAsync().ConfigureAwait(continueOnCapturedContext: false);
+        await Container!.DisposeAsync();
     }
     /// <summary>
     /// Configures the container used for instantiating the service under test.

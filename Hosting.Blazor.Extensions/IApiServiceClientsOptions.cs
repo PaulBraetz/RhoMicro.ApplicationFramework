@@ -2,10 +2,8 @@
 
 using System.Text.Json;
 
-using RhoMicro.ApplicationFramework.Common.Abstractions;
-
 /// <summary>
-/// used to configure api client services.
+/// Used to configure api client services.
 /// </summary>
 public interface IApiServiceClientsOptions
 {

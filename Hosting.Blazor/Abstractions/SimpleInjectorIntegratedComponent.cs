@@ -63,8 +63,7 @@ public abstract class SimpleInjectorIntegratedComponent : ComponentBase, IHandle
     {
         try
         {
-            // explicitly continue on captured context, as that context is the ui context
-            await task.ConfigureAwait(continueOnCapturedContext: true);
+            await task;
         } catch
         {
             if(task.IsCanceled)

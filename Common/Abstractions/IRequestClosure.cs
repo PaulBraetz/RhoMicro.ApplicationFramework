@@ -10,5 +10,5 @@ public interface IRequestClosure<TResult>
     /// Executes a command.
     /// </summary>
     /// <returns>The result of executing the captured command.</returns>
-    ValueTask<TResult> Execute();
+    ValueTask<TResult> Execute(CancellationToken cancellationToken);
 }

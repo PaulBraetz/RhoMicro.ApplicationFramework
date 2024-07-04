@@ -16,16 +16,16 @@ public sealed class NotifyExceptionServiceDecorator<TRequest, TResult>(
     IService<TRequest, TResult> decorated,
     IObserver<Exception> observer)
     : IService<TRequest, TResult>
-    where TRequest : IServiceRequest<TResult>
+    where TRequest : IRequest<TResult>
 {
 
     /// <inheritdoc/>
-    public async ValueTask<TResult> Execute(TRequest request)
+    public async ValueTask<TResult> Execute(TRequest request, CancellationToken cancellationToken)
     {
         try
         {
             //await to force exception
-            var result = await decorated.Execute(request).ConfigureAwait(continueOnCapturedContext: false);
+            var result = await decorated.Execute(request, cancellationToken);
 
             return result;
         } catch(Exception ex)

@@ -12,7 +12,6 @@ using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;
 
 using SimpleInjector;
 using Microsoft.Extensions.DependencyInjection;
-using RhoMicro.ApplicationFramework.Common.Abstractions;
 using System.Text.Json;
 
 /// <summary>
@@ -98,7 +97,7 @@ public static partial class Extensions
             }
         });
     }
-
+    
     sealed class ApiServiceClientsOptions : IApiServiceClientsOptions
     {
         public JsonSerializerOptions SerializerOptions { get; set; } = new JsonSerializerOptions(JsonSerializerDefaults.Web);
@@ -137,7 +136,8 @@ public static partial class Extensions
                 o.Container.Register(() => new ApiServiceSettingsFactory(o.Container.GetInstance<ApiServicesSettings>(), clientsOptions.SerializerOptions));
 
                 var settings = new ApiServicesSettings() { BaseUri = "" };
-                appBuilder.Capabilities.Configuration.Build().Bind("ApiServicesSettings", settings);
+                var config = appBuilder.Capabilities.Configuration.Build();
+                config.Bind("ApiServicesSettings", settings);
 
                 foreach(var (settingsType, serviceType, implementationType) in
                         settings.Services.Select(s => (s.SettingsType, s.ServiceType, s.ImplementationType)))

@@ -1,5 +1,6 @@
-﻿@inherits ModelComponentBase<IDynamicMultiControlItemModel<TSubControlModel>, IDynamicMultiControlItemCssStyle>
-@typeparam TSubControlModel
+﻿@typeparam TSubControlModel
+@inherits ModelComponentBase<IDynamicMultiControlItemModel<TSubControlModel>, IDynamicMultiControlItemCssStyle>
+@attribute [ConfigurableStyle<IDynamicMultiControlItemCssStyle, DynamicMultiControlItemCssStyleSettings>]
 
 <div @attributes="Attributes">
     @RemoveButton(Model.Remove)

@@ -13,5 +13,4 @@ await WebClientGuiApp.CreateBuilder(out var builder, s => s.Args = args)
             .Add(typeof(EntryPoint).Assembly);
     })
     .Build()
-    .RunAsync()
-    .ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
+    .RunAsync();

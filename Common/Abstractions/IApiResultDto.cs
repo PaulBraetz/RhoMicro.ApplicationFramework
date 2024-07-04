@@ -4,7 +4,7 @@
 /// Represents a dto used to trasfer a service result.
 /// </summary>
 /// <typeparam name="TResult">The type of result represented.</typeparam>
-public interface IApiServiceResultDto<TResult>
+public interface IApiResultDto<TResult>
 {
     /// <summary>
     /// Gets the result represented by this dto.

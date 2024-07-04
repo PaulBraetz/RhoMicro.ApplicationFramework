@@ -3,7 +3,7 @@
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 
 public sealed partial class ResultCacheServiceProxy<TRequest, TResult>
-    where TRequest : IServiceRequest<TResult>
+    where TRequest : IRequest<TResult>
 {
     private sealed class ValueFactory(Func<TRequest, Task<TResult>> factory)
     {

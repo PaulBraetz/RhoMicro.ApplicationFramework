@@ -1,6 +1,5 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
 using System;
-using System.Collections.Concurrent;
 
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 
@@ -16,7 +15,7 @@ sealed partial class ApiServiceSettings
             .Where(t =>
                 t.FullName is [.., { }] &&
                 t.GetInterfaces()
-                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IApiServiceRequest<,,,>))
+                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IApiRequest<,,,>))
                 .Count() == 1)
             .ToDictionary(t => t.FullName!, t => t);
 
@@ -36,7 +35,7 @@ sealed partial class ApiServiceSettings
                 ?? throw new InvalidOperationException($"Invalid request name provided. Unable to locate request type for '{value}'.");
 
             var interfaceTypes = requestType.GetInterfaces()
-                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IApiServiceRequest<,,,>))
+                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IApiRequest<,,,>))
                 .ToArray();
 
             var (resultType, requestDtoType, resultDtoType) = interfaceTypes switch
