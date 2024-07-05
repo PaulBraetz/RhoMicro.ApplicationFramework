@@ -86,9 +86,8 @@ public static class ContainerExtensions
             {
                 var actualImplementationType = options.RegistrationProjection.Invoke(context);
                 container.Register(serviceType, actualImplementationType, lifestyle);
+                container.Register(data.TraditionalServiceType, data.TraditionalImplementationType, lifestyle);
             }
-
-            container.Register(data.TraditionalServiceType, data.TraditionalImplementationType, lifestyle);
         }
     }
 }
