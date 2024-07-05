@@ -176,7 +176,7 @@ public sealed class Generator : IIncrementalGenerator
                 CloseBlock();
 
                 var source = builder.ToString();
-                var hintName = $"{serviceModel.ImplementationType.Signature.HintName}_{source.GetHashCode()}";
+                var hintName = $"{serviceModel.ImplementationType.Signature.HintName}_{serviceModel.RequestTypeName}";
 
                 return (hintName, source);
             });
