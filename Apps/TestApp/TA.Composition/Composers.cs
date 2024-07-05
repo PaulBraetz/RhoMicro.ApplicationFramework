@@ -20,24 +20,19 @@ public static class Composers
         c.RegisterServices(typeof(ToLowerService).Assembly);
         c.RegisterInstance<ITimeoutSettings<ToLower>>(TimeoutSettings.Create<ToLower>(TimeSpan.FromSeconds(2)));
     });
+    private static IComposer Client { get; } = Composer.Create(c =>
+    {
+        c.RegisterServices(typeof(ToLowerService).Assembly, new ConventionalServiceRegistrationOptions()
+        {
+            RegistrationPredicate = ConventionalServiceRegistrationPredicates.RegisterAlLExceptApiImplementations
+        });
+    });
     /// <summary>
     /// Gets the default composition root for web application clients.
     /// </summary>
-    public static IComposer WebGuiClient { get; } = Default + Composer.Create(c =>
-    {
-        c.RegisterServices(typeof(ToLowerService).Assembly, new ConventionalServiceRegistrationOptions()
-        {
-            RegistrationPredicate = ConventionalServiceRegistrationPredicates.RegisterNone
-        });
-    });
+    public static IComposer WebGuiClient { get; } = Default + Client;
     /// <summary>
     /// Gets the default composition root for local application.
     /// </summary>
-    public static IComposer LocalGui { get; } = Default + Composer.Create(c =>
-    {
-        c.RegisterServices(typeof(ToLowerService).Assembly, new ConventionalServiceRegistrationOptions()
-        {
-            RegistrationPredicate = ConventionalServiceRegistrationPredicates.RegisterNone
-        });
-    });
+    public static IComposer LocalGui { get; } = Default + Client;
 }

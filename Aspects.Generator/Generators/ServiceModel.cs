@@ -30,14 +30,16 @@ sealed record ServiceModel(
 
         var implementationType = TypeModel.Create(method.ContainingType, ct);
 
+        var @namespace = attribute!.Namespace ?? implementationType.Namespace;
+
         var requestTypeName = method.Name;
-        var requestTypeFullName = attribute!.Namespace is [.., { }]
-            ? $"global::{attribute!.Namespace}.{requestTypeName}"
-            : $"global::{requestTypeName}";
+        var requestTypeFullName = @namespace is []
+            ? $"global::{requestTypeName}"
+            : $"global::{@namespace}.{requestTypeName}";
 
         var serviceInterfaceName = $"I{implementationType.Signature.Name}";
-        var serviceInterfaceFullName = attribute!.Namespace is [.., { }]
-            ? $"global::{attribute!.Namespace}.{serviceInterfaceName}"
+        var serviceInterfaceFullName = @namespace is [.., { }]
+            ? $"global::{@namespace}.{serviceInterfaceName}"
             : $"global::{serviceInterfaceName}";
 
         ParameterModel? cancellationTokenParameter = null;
@@ -78,7 +80,7 @@ sealed record ServiceModel(
 
         var result = new ServiceModel(
             ImplementationType: implementationType,
-            Namespace: attribute!.Namespace,
+            Namespace: @namespace,
             Visibility: attribute.Visibility,
             RequestTypeName: requestTypeName,
             RequestTypeFullName: requestTypeFullName,

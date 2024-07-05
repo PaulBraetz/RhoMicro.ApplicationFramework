@@ -19,7 +19,7 @@ public sealed partial class ServiceMethodAttribute : Attribute
     /// <summary>
     /// Gets or sets the namespace to generate the request and service interface type into.
     /// </summary>
-    public String Namespace { get; set; } = String.Empty;
+    public String? Namespace { get; set; } = null;
     /// <summary>
     /// Gets or sets the visibility to generate the request and service interface types with.
     /// </summary>

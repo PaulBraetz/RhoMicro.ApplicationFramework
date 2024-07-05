@@ -2,6 +2,8 @@
 
 using System.Reflection;
 
+using RhoMicro.ApplicationFramework.Common.Abstractions;
+
 /// <summary>
 /// Determines whether a given implementation should be registered for a given service type.
 /// </summary>
@@ -21,6 +23,14 @@ public static class ConventionalServiceRegistrationPredicates
     /// Gets a predicate that filters all service implementations.
     /// </summary>
     public static ConventionalServiceRegistrationPredicate RegisterNone { get; } = ctx => false;
+    /// <summary>
+    /// Gets a predicate that registers all services except those implementing an api request execution.
+    /// This predicate is useful for registering services to clients (as they should receive api handlers).
+    /// </summary>
+    public static ConventionalServiceRegistrationPredicate RegisterAlLExceptApiImplementations { get; } = 
+        ctx => !ctx.ServiceType.GenericTypeArguments[0].GetInterfaces()
+                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IApiRequest<,,,>))
+                .Any();
     /// <summary>
     /// Gets a predicate that filters all implementations that are annotated with the <see cref="FakeServiceAttribute"/>.
     /// </summary>

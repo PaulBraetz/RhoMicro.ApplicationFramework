@@ -23,7 +23,7 @@ public partial record struct ToLower :
 
 public sealed partial class ToLowerService
 {
-    [ServiceMethod(Namespace = "TA.Presentation.Views.Blazor", RequestTypeKind = RequestTypeKind.RecordStruct, Visibility = ServiceVisibility.Public)]
+    [ServiceMethod(Namespace = "", RequestTypeKind = RequestTypeKind.RecordStruct, Visibility = ServiceVisibility.Public)]
     public async ValueTask<ToLower.Result> ToLower(String value, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(value);
