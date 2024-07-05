@@ -22,6 +22,7 @@ public sealed partial class ServiceMethodAttribute : Attribute
     public String? Namespace { get; set; } = null;
     /// <summary>
     /// Gets or sets the visibility to generate the request and service interface types with.
+    /// If set to <see langword="null"/>, a default visibility from settings will be used.
     /// </summary>
-    public ServiceVisibility Visibility { get; set; } = ServiceVisibility.Public;
+    public ServiceVisibility? Visibility { get; set; } = null;
 }

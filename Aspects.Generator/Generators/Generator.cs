@@ -71,7 +71,7 @@ public sealed class Generator : IIncrementalGenerator
                             return;
 
                         _ = b.Operators +
-                        Append(serviceModel.Visibility) + ' ' +
+                        Append(serviceModel.Visibility ?? settingsModel!.DefaultVisibility) + ' ' +
                         Append(serviceModel.RequestTypeKind) + ' ' +
                         serviceModel.RequestTypeName + '(' +
                             Append(b =>
@@ -87,7 +87,7 @@ public sealed class Generator : IIncrementalGenerator
                             }) + ')' +
                             " : " + settingsModel!.RequestInterfaceTypeName + '<' + serviceModel.ResultTypeFullName + '>' + ';' + NewLine;
                     }) +
-                    Append(serviceModel!.Visibility) + " interface " + serviceModel.ServiceInterfaceName +
+                    Append(serviceModel!.Visibility ?? settingsModel!.DefaultVisibility) + " interface " + serviceModel.ServiceInterfaceName +
                     OpenBracesBlock() +
                         AppendImplementationSignature(serviceModel) + ';' +
                     CloseBlock() +

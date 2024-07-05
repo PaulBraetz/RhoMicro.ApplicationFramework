@@ -12,7 +12,7 @@ sealed record ServiceModel(
     ParameterModel? CancellationTokenParameter,
     Boolean ReturnsTask,
     Boolean ReturnsValueTask,
-    ServiceVisibility Visibility,
+    ServiceVisibility? Visibility,
     RequestTypeKind RequestTypeKind,
     String RequestTypeName,
     TypeModel ImplementationType,

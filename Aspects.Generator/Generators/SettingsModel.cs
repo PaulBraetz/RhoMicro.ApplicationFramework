@@ -8,12 +8,14 @@ sealed record SettingsModel(
     String RequestInterfaceTypeName,
     String ServiceInterfaceTypeName,
     String ExecuteName,
+    ServiceVisibility DefaultVisibility,
     String ServiceInjectionInfoAttributeTypeName)
 {
     public static SettingsModel Default { get; } = new(
             RequestInterfaceTypeName: Constants.DefaultRequestInterfaceTypeName,
             ServiceInterfaceTypeName: Constants.DefaultServiceInterfaceTypeName,
             ExecuteName: Constants.DefaultExecuteName,
+            DefaultVisibility: Constants.DefaultVisibility,
             ServiceInjectionInfoAttributeTypeName: Constants.DefaultServiceInjectionInfoAttributeType);
 
     static Boolean TryGetRequestInterfaceTypeName(ServiceSettingsAttribute attribute, [NotNullWhen(true)] out String? requestInterfaceTypeName)
@@ -104,10 +106,13 @@ sealed record SettingsModel(
             return null;
         }
 
+        var defaultVisibility = attribute!.DefaultVisibility;
+
         var result = new SettingsModel(
             RequestInterfaceTypeName: requestInterfaceTypeName,
             ServiceInterfaceTypeName: serviceInterfaceTypeName,
             ExecuteName: executeName,
+            DefaultVisibility: defaultVisibility,
             ServiceInjectionInfoAttributeTypeName: serviceInjectionInfoAttributeTypeName);
 
         return result;

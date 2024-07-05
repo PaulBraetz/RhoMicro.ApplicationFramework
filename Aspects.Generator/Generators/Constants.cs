@@ -14,4 +14,5 @@ static class Constants
     public static readonly String DefaultServiceInjectionInfoAttributeType = $"global::{typeof(ServiceInjectionInfoAttribute).FullName}";
     public static readonly String DefaultServiceInterfaceTypeName = $"global::{typeof(IService<,>).Namespace}.{nameof(IService<R, R>)}";
     public const String DefaultExecuteName = nameof(IService<R, R>.Execute);
+    public const ServiceVisibility DefaultVisibility = ServiceVisibility.Internal;
 }

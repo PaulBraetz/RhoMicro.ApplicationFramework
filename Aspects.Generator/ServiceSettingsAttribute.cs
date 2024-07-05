@@ -32,4 +32,8 @@ public sealed partial class ServiceSettingsAttribute : Attribute
     /// </list>
     /// </summary>
     public Type? ServiceInjectionInfoAttributeType { get; set; }
+    /// <summary>
+    /// Gets or sets the default visibility of generated members.
+    /// </summary>
+    public ServiceVisibility DefaultVisibility { get; set; } = ServiceVisibility.Internal;
 }
