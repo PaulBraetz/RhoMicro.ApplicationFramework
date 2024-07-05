@@ -52,8 +52,7 @@ partial class IndentedStringBuilder
 
         if(serviceModel.CancellationTokenParameter.HasValue)
         {
-            Append(", ").Append(serviceModel.CancellationTokenParameter.Value.Name).Append(": ")
-                .AppendCore(serviceModel.CancellationTokenParameter.Value.Name);
+            Append(", ").Append(serviceModel.CancellationTokenParameter.Value.Name).AppendCore(": cancellationToken");
         }
 
         AppendCore(')');

@@ -32,4 +32,13 @@ public sealed partial class ToLowerService
 
         return new(value.ToLowerInvariant());
     }
+    [ServiceMethod]
+    public async ValueTask<ToLower.Result> ToUpper(String value, CancellationToken ct)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+
+        await Task.Delay(( new[] { 10, 100, 1500, 2500 } )[Random.Shared.Next(0, 4)], ct);
+
+        return new(value.ToLowerInvariant());
+    }
 }
