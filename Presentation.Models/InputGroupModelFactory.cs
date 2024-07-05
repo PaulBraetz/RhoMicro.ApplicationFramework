@@ -12,7 +12,7 @@ using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 /// Initializes a new instance.
 /// </remarks>
 /// <param name="inputFactory">The factory to use when initializing the input model for results.</param>
-public sealed class InputGroupModelFactory<TInput, TValue, TError>(IFactory<TInput> inputFactory)
+public class InputGroupModelFactory<TInput, TValue, TError>(IFactory<TInput> inputFactory)
     : IFactory<IInputGroupModel<TInput, TValue, TError>>
     where TInput : IInputModel<TValue, TError>
 {
@@ -25,3 +25,14 @@ public sealed class InputGroupModelFactory<TInput, TValue, TError>(IFactory<TInp
         return result;
     }
 }
+/// <summary>
+/// Factory for producing instances of <see cref="InputGroupModel{TInput, TValue, TError}"/>.
+/// </summary>
+/// <typeparam name="TValue">The type of value obtained by this model.</typeparam>
+/// <typeparam name="TError">The type of error displayed by this model.</typeparam>
+/// <remarks>
+/// Initializes a new instance.
+/// </remarks>
+/// <param name="inputFactory">The factory to use when initializing the input model for results.</param>
+public sealed class InputGroupModelFactory<TValue, TError>(IFactory<IInputModel<TValue, TError>> inputFactory)
+    : InputGroupModelFactory<IInputModel<TValue, TError>, TValue, TError>(inputFactory);

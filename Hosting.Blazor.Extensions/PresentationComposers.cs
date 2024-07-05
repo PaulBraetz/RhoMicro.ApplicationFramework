@@ -43,6 +43,7 @@ internal static class PresentationComposers
 
         RegisterLevel1DoubleArgFactory(c, typeof(ISelectInputGroupModel<,>), typeof(SelectInputGroupModelFactory<,>));
         RegisterLevel1DoubleArgFactory(c, typeof(ISelectInputModel<,>), typeof(SelectInputModelFactory<,>));
+        RegisterLevel1DoubleArgFactory(c, typeof(IInputGroupModel<,>), typeof(InputGroupModelFactory<,>));
         RegisterLevel1DoubleArgFactory(c, typeof(IInputGroupModel<,,>), typeof(InputGroupModelFactory<,,>));
         RegisterLevel1DoubleArgFactory(c, typeof(IInputModel<,>), typeof(InputModelFactory<,>));
 
@@ -101,6 +102,7 @@ internal static class PresentationComposers
             var result = new DefaultValueProvider<String>(() => String.Empty);
             return result;
         }, Lifestyle.Singleton);
+        c.Register(typeof(IInputGroupModel<,>), typeof(InputGroupModel<,>));
         c.Register(typeof(IInputGroupModel<,,>), typeof(InputGroupModel<,,>));
 
         c.Register(typeof(IMultiControlModel<>), typeof(MultiControlModel<>));

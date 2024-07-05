@@ -42,3 +42,14 @@ public class InputGroupModel<TInput, TValue, TError> : HasObservableProperties, 
     /// <inheritdoc/>
     public TInput Input { get; }
 }
+/// <summary>
+/// Generic implementation of input models.
+/// </summary>
+/// <typeparam name="TValue">The type of value obtained by this model.</typeparam>
+/// <typeparam name="TError">The type of error displayed by this model.</typeparam>
+/// <remarks>
+/// Initializes a new instance.
+/// </remarks>
+/// <param name="input">The input control to use.</param>
+public class InputGroupModel<TValue, TError>(IInputModel<TValue, TError> input)
+    : InputGroupModel<IInputModel<TValue, TError>, TValue, TError>(input), IInputGroupModel<TValue, TError>;

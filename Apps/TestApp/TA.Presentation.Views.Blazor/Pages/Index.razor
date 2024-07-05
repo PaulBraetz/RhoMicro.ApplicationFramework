@@ -10,20 +10,35 @@ Welcome to your new app.
 <SurveyPrompt Title="How is Blazor working for you?" />
 <SurveyPrompt Title="How is Blazor working for you!" />
 
-@* <DynamicStyledModelComponent Value="Model" Style="Style" /> *@
+<InputGroup TValue="String"
+            TError="String"
+            Value="Model">
+    <Input>
+    <TextInput Value="Model.Input"
+               ErrorTitleParse="static s => s"
+               TError="String" />
+    </Input>
+    <Error>
+        @context
+    </Error>
+</InputGroup>
+
+<Display Value="Display" />
 
 @code {
     private String _value = "HELLO, WORLD!";
     //TODO: fix dynamic components m8
-    // [Injected]
-    // public required IInputGroupModel<IInputModel<String, String>, String, String> Model { get; set; }
-    // [Injected]
-    // public required IInputGroupSpecializedCssStyle Style { get; set; }
+    [Injected]
+    public required IInputGroupModel<String, String> Model { get; set; }
+    [Injected]
+    public required IDisplayModel<String> Display { get; set; }
     [Injected]
     public required IToLowerService Service { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
         _value = (await Service.ToLower(_value, default)).Value;
+        Model.Input.PropertyValueChanged += (_, args) =>
+            Display.Value = args.As<String>()?.NewValue ?? String.Empty;
     }
 }

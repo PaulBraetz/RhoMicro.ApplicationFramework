@@ -6,4 +6,4 @@ using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 /// </summary>
 /// <typeparam name="TValue">The type of value obtained by the model.</typeparam>
 /// <typeparam name="TError">The type of error displayed by the model.</typeparam>
-public class InputGroup<TValue, TError> : InputGroupSpecialized<IInputGroupModel<IInputModel<TValue, TError>, TValue, TError>, IInputModel<TValue, TError>, TValue, TError>;
+public class InputGroup<TValue, TError> : InputGroupSpecialized<IInputGroupModel<TValue, TError>, IInputModel<TValue, TError>, TValue, TError>;
