@@ -9,7 +9,7 @@ using RhoMicro.ApplicationFramework.Common.Abstractions;
 /// </summary>
 /// <param name="context">The service and implementation type to check.</param>
 /// <returns><see langword="true"/> if the implementation type in <paramref name="context"/> should be registered; otherwise, <see langword="false"/>.</returns>
-public delegate Boolean ConventionalServiceRegistrationPredicate(ConventionalServiceRegistrationContext context);
+public delegate Boolean ConventionalServiceRegistrationPredicate(ConventionalServiceRegistrationInfo context);
 /// <summary>
 /// Contains common <see cref="ConventionalServiceRegistrationPredicate"/> instances.
 /// </summary>

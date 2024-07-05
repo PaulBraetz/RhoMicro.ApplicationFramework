@@ -78,15 +78,16 @@ public static class ContainerExtensions
                 throw new ConventionalServiceRegistrationDuplicateException(serviceType, data.ImplementationTypes);
             }
 
-            var context = new ConventionalServiceRegistrationContext(ServiceType: serviceType, ImplementationType: implementationType);
+            var info = new ConventionalServiceRegistrationInfo(
+                ServiceType: serviceType,
+                ImplementationType: implementationType,
+                TraditionalServiceType: data.TraditionalServiceType,
+                TraditionalServiceAdapterType: data.TraditionalImplementationType);
 
-            var lifestyle = options.LifestyleFactory.Invoke(context);
-
-            if(options.RegistrationPredicate.Invoke(context))
+            if(options.RegistrationPredicate.Invoke(info))
             {
-                var actualImplementationType = options.RegistrationProjection.Invoke(context);
-                container.Register(serviceType, actualImplementationType, lifestyle);
-                container.Register(data.TraditionalServiceType, data.TraditionalImplementationType, lifestyle);
+                var context = new ConventionalServiceRegistrationCallbackContext(info, container);
+                options.RegistrationCallback.Invoke(context);
             }
         }
     }

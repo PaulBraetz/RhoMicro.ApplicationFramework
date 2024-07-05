@@ -1,8 +1,11 @@
 ﻿namespace RhoMicro.ApplicationFramework.Composition;
+
+using SimpleInjector;
+
 /// <summary>
-/// Communicates the service and implementation type for which to determine a lifestyle.
+/// Provides detected service and implementation types, as well as the container to optionally register them to.
 /// </summary>
-/// <param name="ServiceType">The type of service to register.</param>
-/// <param name="ImplementationType">The type of implementation to register for the service.</param>
-public readonly record struct ConventionalServiceRegistrationContext(Type ServiceType, Type ImplementationType);
+/// <param name="RegistrationInfo">Information on the service types to register.</param>
+/// <param name="Container">The container to register services to.</param>
+public sealed record ConventionalServiceRegistrationCallbackContext(ConventionalServiceRegistrationInfo RegistrationInfo, Container Container);
 
