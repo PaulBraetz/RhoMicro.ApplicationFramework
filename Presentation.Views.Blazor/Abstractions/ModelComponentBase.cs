@@ -5,6 +5,7 @@ using System.ComponentModel;
 
 using Microsoft.AspNetCore.Components;
 
+using RhoMicro.ApplicationFramework.Common.Abstractions;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Exceptions;
 
 /// <summary>
@@ -92,9 +93,12 @@ public abstract class ModelComponentBase<TModel, TStyle> : ComponentBase<TStyle>
     }
     private void RegisterModelPropertyChangedHandler()
     {
-        if(Model is INotifyPropertyChanged observable)
+        if(Model is INotifyPropertyValueChanged customObservable)
         {
-            observable.PropertyChanged += (s, e) => InvokeAsync(StateHasChanged);
+            customObservable.PropertyValueChanged += (_, _) => InvokeAsync(StateHasChanged);
+        } else if(Model is INotifyPropertyChanged observable)
+        {
+            observable.PropertyChanged += (_, _) => InvokeAsync(StateHasChanged);
         }
     }
 }
