@@ -29,8 +29,7 @@ partial class IndentedStringBuilder
         Append(visibility switch
         {
             ServiceVisibility.Public => "public",
-            ServiceVisibility.Internal => "internal",
-            _ => throw new InvalidOperationException($"Unable to append service visibility: '{visibility}'")
+            _ => "internal"
         });
     public IndentedStringBuilder AppendServiceType(ServiceModel serviceModel, SettingsModel settingsModel) =>
         Append(settingsModel.ServiceInterfaceTypeName).Append('<')

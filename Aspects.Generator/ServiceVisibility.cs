@@ -9,6 +9,10 @@
 public enum ServiceVisibility
 {
     /// <summary>
+    /// The generated types will have the visibility set by <see cref="ServiceSettingsAttribute"/>.
+    /// </summary>
+    Default,
+    /// <summary>
     /// The generated types will be <see langword="public"/>.
     /// </summary>
     Public,

@@ -78,10 +78,14 @@ sealed record ServiceModel(
             _ => (false, false, getFullyQualifiedName(method.ReturnType))
         };
 
+        ServiceVisibility? visibility = attribute.Visibility is ServiceVisibility.Default
+            ? null
+            : attribute.Visibility;
+
         var result = new ServiceModel(
             ImplementationType: implementationType,
             Namespace: @namespace,
-            Visibility: attribute.Visibility,
+            Visibility: visibility,
             RequestTypeName: requestTypeName,
             RequestTypeFullName: requestTypeFullName,
             RequestTypeKind: attribute.RequestTypeKind,
