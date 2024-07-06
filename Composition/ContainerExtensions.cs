@@ -51,44 +51,17 @@ public static class ContainerExtensions
 
         options ??= ConventionalServiceRegistrationOptions.Default;
 
-        var registrations = assembly.GetTypes()
-            .Select(t => t.GetCustomAttribute<ServiceInjectionInfoAttribute>())
+        assembly.GetTypes()
+            .SelectMany(t => t.GetCustomAttributes<ServiceInjectionInfoAttribute>())
             .Where(a => a != null)
             .Select(a =>
-            {
-                var aopServiceType = typeof(IService<,>).MakeGenericType(a!.RequestType, a.ResultType);
-
-                var value = new
-                {
-                    TraditionalServiceType = a.ServiceType,
-                    TraditionalImplementationType = a.AdapterType,
-                    ImplementationTypes = new List<Type>() { a.ImplementationType }
-                };
-
-                return (aopServiceType, value);
-            }).ToDictionary(t => t.aopServiceType, t => t.value);
-
-        foreach(var (serviceType, data) in registrations)
-        {
-            if(data.ImplementationTypes is not [{ } implementationType])
-            {
-                if(options.IgnoreDuplicates)
-                    continue;
-
-                throw new ConventionalServiceRegistrationDuplicateException(serviceType, data.ImplementationTypes);
-            }
-
-            var info = new ConventionalServiceRegistrationInfo(
-                ServiceType: serviceType,
-                ImplementationType: implementationType,
-                TraditionalServiceType: data.TraditionalServiceType,
-                TraditionalServiceAdapterType: data.TraditionalImplementationType);
-
-            if(options.RegistrationPredicate.Invoke(info))
-            {
-                var context = new ConventionalServiceRegistrationCallbackContext(info, container);
-                options.RegistrationCallback.Invoke(context);
-            }
-        }
+                new ConventionalServiceRegistrationInfo(
+                    ServiceType: typeof(IService<,>).MakeGenericType(a!.RequestType, a.ResultType),
+                    ImplementationType: a.ImplementationType,
+                    TraditionalServiceType: a.ServiceType,
+                    TraditionalServiceAdapterType: a.AdapterType))
+            .Where(options.RegistrationPredicate.Invoke)
+            .Select(info => new ConventionalServiceRegistrationCallbackContext(info, container))
+            .ForEach(options.RegistrationCallback.Invoke);
     }
 }

@@ -22,7 +22,7 @@ Welcome to your new app.
         @context
     </Error>
 </InputGroup>
-
+<Button Value="Clear" />
 <Display Value="Display" />
 
 @code {
@@ -34,10 +34,22 @@ Welcome to your new app.
     public required IDisplayModel<String> Display { get; set; }
     [Injected]
     public required IToLowerService Service { get; set; }
+    [Injected]
+    public required IButtonModel Clear { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
-        _value = (await Service.ToLower(_value, default)).Value;
+        try
+        {
+            _value = (await Service.ToLower(_value, default)).Value;
+        }
+        catch { }
+        Clear.Label = "Clear";
+        Clear.Clicked += (s, e) =>
+        {
+            Model.Input.Value = String.Empty;
+            return Task.CompletedTask;
+        };
         Model.Input.PropertyValueChanged += (_, args) =>
             Display.Value = args.As<String>()?.NewValue ?? String.Empty;
     }
