@@ -12,14 +12,9 @@ using RhoMicro.ApplicationFramework.Common.Abstractions;
 /// </summary>
 public sealed class CssClassNames : IIndexableSet<CssClassNames, CssClassName>
 {
-    private CssClassNames(IndexableSet<CssClassName> classNames)
-    {
-        _classNames = classNames;
-        _stringRepresentation = new(() => String.Join(' ', classNames));
-    }
+    private CssClassNames(IndexableSet<CssClassName> classNames) => _classNames = classNames;
 
     private readonly IndexableSet<CssClassName> _classNames;
-    private readonly Lazy<String> _stringRepresentation;
 
     /// <summary>
     /// Gets an empty set of css class names.
@@ -119,7 +114,7 @@ public sealed class CssClassNames : IIndexableSet<CssClassNames, CssClassName>
 
     public override Int32 GetHashCode() => _classNames.GetHashCode();
 
-    public override String ToString() => _stringRepresentation.Value;
+    public override String ToString() => String.Join(' ', _classNames);
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }
 
