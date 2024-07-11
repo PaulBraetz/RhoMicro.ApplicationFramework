@@ -37,7 +37,7 @@ sealed record ServiceModel(
             ? $"global::{requestTypeName}"
             : $"global::{@namespace}.{requestTypeName}";
 
-        var serviceInterfaceName = $"I{requestTypeName}Service";
+        var serviceInterfaceName = attribute.ServiceInterfaceName ?? $"I{method.ContainingType.Name}";
         var serviceInterfaceFullName = @namespace is [.., { }]
             ? $"global::{@namespace}.{serviceInterfaceName}"
             : $"global::{serviceInterfaceName}";
