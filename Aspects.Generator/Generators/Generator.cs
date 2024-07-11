@@ -87,7 +87,7 @@ public sealed class Generator : IIncrementalGenerator
                             }) + ')' +
                             " : " + settingsModel!.RequestInterfaceTypeName + '<' + serviceModel.ResultTypeFullName + '>' + ';' + NewLine;
                     }) +
-                    Append(serviceModel!.Visibility ?? settingsModel!.DefaultVisibility) + " interface " + serviceModel.ServiceInterfaceName +
+                    Append(serviceModel!.Visibility ?? settingsModel!.DefaultVisibility) + " partial interface " + serviceModel.ServiceInterfaceName +
                     OpenBracesBlock() +
                         AppendImplementationSignature(serviceModel) + ';' +
                     CloseBlock() +
