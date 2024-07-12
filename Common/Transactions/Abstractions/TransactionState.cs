@@ -22,7 +22,7 @@ public enum TransactionState
     /// </summary>
     FlushedWithInconsistentCommits,
     /// <summary>
-    /// The state machne has experienced an exception while flushing.
+    /// The state machine has experienced an exception while flushing.
     /// </summary>
     Faulted
 }
