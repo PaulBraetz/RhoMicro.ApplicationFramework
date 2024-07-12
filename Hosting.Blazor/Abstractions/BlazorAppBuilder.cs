@@ -12,6 +12,7 @@ using SimpleInjector.Integration.ServiceCollection;
 using System.Linq.Expressions;
 using Microsoft.Extensions.Options;
 using RhoMicro.RequiredPropertyValidation;
+using RhoMicro.RequiredPropertyValidation.RhoMicro.RequiredPropertyValidation;
 
 /// <summary>
 /// Represents an app builder for local or web blazor apps.
@@ -64,10 +65,14 @@ public abstract partial class BlazorAppBuilder<TSelf, TApp, TUnderlyingBuilder, 
 
         base.OnSimpleInjectorAdd(options);
 
+        AddMinorDependencies(options);
         AddBlazor(options);
         RegisterBlazorComponents(options);
         AddStyles(options);
     }
+
+    private static void AddMinorDependencies(SimpleInjectorAddOptions options) => options.Services.AddRequiredPropertyValidation();
+
     private void AddStyles(SimpleInjectorAddOptions options)
     {
         var addMethod = typeof(InjectionUtils).GetMethod(nameof(InjectionUtils.AddStyle))!;
@@ -81,7 +86,7 @@ public abstract partial class BlazorAppBuilder<TSelf, TApp, TUnderlyingBuilder, 
             .Select(t => Expression.Call(
                 ( t.attribute!.StyleSettingsType.IsAssignableTo(typeof(IValidateRequiredProperties<>).MakeGenericType(t.attribute.StyleSettingsType))
                 ? addValidatableMethod
-                : addMethod)
+                : addMethod )
                 .MakeGenericMethod(t.attribute!.StyleType, t.attribute.StyleSettingsType),
                 optionsExpr,
                 Expression.Constant(t.componentType)));
@@ -178,15 +183,14 @@ file static class InjectionUtils
         where TStyle : class
     {
         AddStyle<TStyle, TStyleSettings>(options, componentType);
-        _ = options.Services.AddSingleton<IValidateOptions<TStyleSettings>>(
-            new ValidatableValidation<TStyleSettings>());
+        _ = options.Services.AddSingleton<IValidateOptions<TStyleSettings>, ValidatableValidation<TStyleSettings>>();
     }
-    sealed class ValidatableValidation<TStyleSettings> : IValidateOptions<TStyleSettings>
+    sealed class ValidatableValidation<TStyleSettings>(RequiredPropertyValidator validator) : IValidateOptions<TStyleSettings>
         where TStyleSettings : class, IValidateRequiredProperties<TStyleSettings>
     {
         public ValidateOptionsResult Validate(String? name, TStyleSettings options)
         {
-            if(RequiredPropertyValidation.TryValidate(options, out var nullProperties))
+            if(validator.TryValidate(options, out var nullProperties))
                 return ValidateOptionsResult.Success;
 
             return ValidateOptionsResult.Fail(nullProperties.Select(propName => $"Property '{propName}' on options '{name}' cannot be null."));

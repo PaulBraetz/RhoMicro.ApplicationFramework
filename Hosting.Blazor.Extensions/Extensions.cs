@@ -13,6 +13,7 @@ using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;
 using SimpleInjector;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
+using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Components;
 
 /// <summary>
 /// Extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.
@@ -20,7 +21,25 @@ using System.Text.Json;
 public static partial class Extensions
 {
     /// <summary>
-    /// Creates a composer combining the composer provided with default composers for blazor applications
+    /// Registers a js-interop-based clipboard implementation to the builder services.
+    /// </summary>
+    /// <param name="appBuilder"></param>
+    /// <returns>A reference to the builder, for chaining of further method calls.</returns>
+    public static TSelf AddJsClipboard<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(
+        this TSelf appBuilder)
+        where TSelf : AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>
+        where TApp : App<TApp, TUnderlyingApp>
+        where TCapabilities : BlazorAppBuilderCapabilities
+    {
+        ArgumentNullException.ThrowIfNull(appBuilder);
+
+        appBuilder.Options.Composer += Composer.Create(static c => c.Register<IClipboardModel, JsClipboardModel>());
+
+        return appBuilder;
+    }
+
+    /// <summary>
+    /// Adds blazor capabilities and options to the builder.
     /// </summary>
     /// <param name="appBuilder"></param>
     /// <returns>A reference to the builder, for chaining of further method calls.</returns>
@@ -97,7 +116,7 @@ public static partial class Extensions
             }
         });
     }
-    
+
     sealed class ApiServiceClientsOptions : IApiServiceClientsOptions
     {
         public JsonSerializerOptions SerializerOptions { get; set; } = new JsonSerializerOptions(JsonSerializerDefaults.Web);

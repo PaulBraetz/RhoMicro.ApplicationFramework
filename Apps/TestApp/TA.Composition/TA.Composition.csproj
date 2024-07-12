@@ -8,6 +8,13 @@
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <PackageReference Include="RhoMicro.RequiredPropertyValidation.Generator" Version="3.0.2">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	</ItemGroup>
+
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\Composition\Composition.csproj" />

@@ -3,19 +3,10 @@ using System;
 
 using RhoMicro.ApplicationFramework.Aspects;
 
+using static IndentedStringBuilder.Appendables;
+
 partial class IndentedStringBuilder
 {
-    public IndentedStringBuilder AppendImplementationSignature(ServiceModel serviceModel) =>
-        Append(Constants.ValueTaskTypeName).Append('<').Append(serviceModel.ResultTypeFullName).Append("> ")
-        .Append(serviceModel.RequestTypeName).Append('(')
-        .Append(b =>
-        {
-            foreach(var (type, name, _) in serviceModel.Parameters)
-            {
-                b.Append(type).Append(' ').Append(name).AppendCore(", ");
-            }
-        })
-        .Append(Constants.CtTypeName).Append(" cancellationToken)");
     public IndentedStringBuilder Append(RequestTypeKind requestTypeKind) =>
         Append(requestTypeKind switch
         {

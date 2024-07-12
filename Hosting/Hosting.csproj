@@ -14,6 +14,11 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
 		<PackageReference Include="NReco.Logging.File" Version="1.2.1" />
+		<PackageReference Include="RhoMicro.RequiredPropertyValidation.Generator" Version="3.0.2">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="RhoMicro.RequiredPropertyValidation.Library" Version="3.0.2" />
 		<PackageReference Include="SimpleInjector" Version="5.4.6" />
 		<PackageReference Include="SimpleInjector.Integration.ServiceCollection" Version="5.5.0" />
 	</ItemGroup>

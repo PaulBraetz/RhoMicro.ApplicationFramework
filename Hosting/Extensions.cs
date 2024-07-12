@@ -12,12 +12,29 @@ using RhoMicro.ApplicationFramework.Aspects.Abstractions;
 using RhoMicro.ApplicationFramework.Aspects.Decorators;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 using RhoMicro.ApplicationFramework.Composition;
+using RhoMicro.RequiredPropertyValidation.RhoMicro.RequiredPropertyValidation;
 
 /// <summary>
 /// Contains extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.
 /// </summary>
 public static class Extensions
 {
+    /// <summary>
+    /// Adds validation that assures all required non-null properties on resolved instances are not null.
+    /// </summary>
+    public static TSelf AddRequiredPropertyValidation<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(
+        this TSelf appBuilder,
+        Action<RequiredPropertyValidationConfiguration>? configure = null)
+        where TSelf : AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>
+        where TApp : App<TApp, TUnderlyingApp>
+        where TCapabilities : AppBuilderCapabilities
+    {
+        ArgumentNullException.ThrowIfNull(appBuilder);
+
+        appBuilder.Options.OnContainerAdd += o => _ = o.Services.AddRequiredPropertyValidation(configure);
+
+        return appBuilder;
+    }
     /// <summary>
     /// Adds timeout aspects and related configuration to the application.
     /// </summary>

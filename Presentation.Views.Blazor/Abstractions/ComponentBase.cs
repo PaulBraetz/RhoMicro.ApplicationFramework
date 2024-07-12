@@ -12,6 +12,7 @@ using RhoMicro.ApplicationFramework.Common;
 using RhoMicro.ApplicationFramework.Hosting;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Exceptions;
+using RhoMicro.RequiredPropertyValidation;
 
 /// <summary>
 /// <inheritdoc/>
@@ -31,7 +32,6 @@ public abstract class ComponentBase<TStyle> : SimpleInjectorIntegratedComponent,
     where TStyle : ICssStyle
 #pragma warning restore CA1063 // Implement IDisposable Correctly
 {
-    private static readonly ConcurrentDictionary<Type, IReadOnlyList<Action<Object>>> _nullChecks = new();
     private readonly CancellationTokenSource _disposalCts = new();
     private Int32 _disposed = BooleanState.FalseState;
     private Dictionary<String, Object?>? _attributes;
@@ -75,6 +75,11 @@ public abstract class ComponentBase<TStyle> : SimpleInjectorIntegratedComponent,
         }
     }
     /// <summary>
+    /// Gets or sets the validator used to validate required non-null properties of component instances.
+    /// </summary>
+    [Injected]
+    public required RequiredPropertyValidator RequiredPropertyValidator { get; set; }
+    /// <summary>
     /// Gets a representation of the value associated to the <c>class</c> attribute or an empty set if no value is associated.
     /// </summary>
     protected CssClassNames ClassNames
@@ -96,79 +101,7 @@ public abstract class ComponentBase<TStyle> : SimpleInjectorIntegratedComponent,
     }
 
     /// <inheritdoc/>
-    protected override void OnParametersSet() => CheckNullParameters();
-
-    private void CheckNullParameters()
-    {
-        var nullChecks = GetNullChecksForComponent();
-        foreach(var nullCheck in nullChecks)
-        {
-            nullCheck.Invoke(this);
-        }
-    }
-
-    private IReadOnlyList<Action<Object>> GetNullChecksForComponent()
-    {
-        var componentType = GetType();
-        var result = _nullChecks.GetOrAdd(componentType, CreateNullChecksForComponent);
-
-        return result;
-    }
-    private static IReadOnlyList<Action<Object>> CreateNullChecksForComponent(Type componentType)
-    {
-        var result = componentType
-            .GetProperties()
-            .Where(p => p.CustomAttributes.Any(a => a.AttributeType == typeof(ParameterAttribute)))
-            //only check parameters with required keyword
-            .Where(p => p.CustomAttributes.Any(a => a.AttributeType == typeof(RequiredMemberAttribute)))
-            .Where(p => !p.PropertyType.IsValueType || Nullable.GetUnderlyingType(p.PropertyType) != null)
-            .Select(p => CreateNullCheck(p, componentType))
-            .ToList();
-
-        return result;
-    }
-    private static Action<Object> CreateNullCheck(PropertyInfo info, Type componentType)
-    {
-        //instance
-        var instanceParam = Expression.Parameter(typeof(Object));
-        //(Type)instance
-        var castExpr = Expression.Convert(instanceParam, componentType);
-        //((Type)instance).Prop
-        var propertyExpr = Expression.Property(castExpr, info);
-        //null
-        var nullExpr = Expression.Constant(null, info.PropertyType);
-        //((Type)instance).Prop == null
-        var equalityExpr = Expression.Equal(propertyExpr, nullExpr);
-        //"Prop"
-        var paramNameExpr = Expression.Constant(info.Name);
-        //Type
-        var thisTypeExpr = Expression.Constant(componentType);
-        //Type
-        var propertyTypeExpr = Expression.Constant(info.PropertyType);
-        var exceptionCtor = typeof(NullComponentParameterException).GetConstructor([typeof(String), typeof(Type), typeof(Type)])!;
-        //new ParameterNullException("Prop", Type, Type)
-        var exceptionExpr = Expression.New(exceptionCtor, paramNameExpr, propertyTypeExpr, thisTypeExpr);
-        //throw new ParameterNullException("Prop", Type, Type)
-        var throwExpr = Expression.Throw(exceptionExpr);
-        //void
-        var voidExpr = Expression.Constant(typeof(void));
-        //if(((Type)instance).Prop == null)
-        //	throw new ParameterNullException("Prop", Type, Type)
-        //else
-        //	void
-        var ifThenExpr = Expression.IfThenElse(equalityExpr, throwExpr, voidExpr);
-
-        //(Object instance)=>{
-        //if(((Type)instance).Prop == null)
-        //		throw new ParameterNullException("Prop", Type, Type)
-        //void (return)
-        //}
-        var lambdaExpr = Expression.Lambda(ifThenExpr, instanceParam);
-
-        var result = (Action<Object>)lambdaExpr.Compile();
-
-        return result;
-    }
+    protected override void OnParametersSet() => RequiredPropertyValidator.Validate(this);
 
     /// <summary>
     /// Called the first time the instance is disposed.

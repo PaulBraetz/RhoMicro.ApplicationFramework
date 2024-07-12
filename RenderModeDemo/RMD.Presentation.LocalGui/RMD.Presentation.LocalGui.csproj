@@ -13,6 +13,11 @@
 	
 	<ItemGroup>
 		<PackageReference Include="Photino.Blazor" Version="3.0.11" />
+		<PackageReference Include="RhoMicro.RequiredPropertyValidation.Generator" Version="3.0.2">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="RhoMicro.RequiredPropertyValidation.Library" Version="3.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>

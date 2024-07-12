@@ -1,7 +1,7 @@
 ﻿@inherits ModelComponentBase<String>
 
-<span @attributes="Attributes" @onclick="()=>Clipboard!.WriteTextAsync(Model)">(copy)</span>
+<span @attributes="Attributes" @onclick="()=>Clipboard.WriteTextAsync(Model)">(copy)</span>
 
 @code {
-    [Injected] private Clipboard? Clipboard { get; set; }
+    [Injected] public required IClipboardModel Clipboard { get; set; }
 }

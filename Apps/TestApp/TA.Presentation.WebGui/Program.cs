@@ -7,6 +7,8 @@ await WebServerGuiApp.CreateBuilder(
     out var builder,
     s => s.BuilderSettings = new() { Args = args })
     .AddBlazor()
+    .AddJsClipboard()
+    .AddRequiredPropertyValidation()
     .AddApiServiceEndpoints()
     .ConfigureOptions(o => o.Composer += Composers.WebGui)
     .ConfigureCapabilities(c =>

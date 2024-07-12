@@ -17,6 +17,7 @@ class Program
     static void Main(String[] args) =>
         LocalGuiApp.CreateBuilder(out var builder, s => s.Args = args)
         .AddAppSettings()
+        .AddJsClipboard()
         .AddBlazor()
         .AddApiServiceClients()
         .ConfigureBuilder(b => b.RootComponents.Add<EntryPoint>("app"))

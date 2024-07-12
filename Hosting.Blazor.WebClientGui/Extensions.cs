@@ -1,11 +1,25 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
+using RhoMicro.RequiredPropertyValidation.RhoMicro.RequiredPropertyValidation;
+
 /// <summary>
 /// Contains extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.
 /// </summary>
 public static class Extensions
 {
+    /// <summary>
+    /// Registers a js-interop-based clipboard implementation to the builder services.
+    /// </summary>
+    /// <param name="appBuilder"></param>
+    /// <returns>A reference to the builder, for chaining of further method calls.</returns>
+    public static WebClientGuiAppBuilder AddJsClipboard(this WebClientGuiAppBuilder appBuilder) =>
+        appBuilder.AddJsClipboard<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>();
+    /// <summary>
+    /// Adds validation that assures all required non-null properties on resolved instances are not null.
+    /// </summary>
+    public static WebClientGuiAppBuilder AddRequiredPropertyValidation(this WebClientGuiAppBuilder appBuilder, Action<RequiredPropertyValidationConfiguration>? configure = null) =>
+        appBuilder.AddRequiredPropertyValidation<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>(configure);
     /// <summary>
     /// Adds timeout aspects and related configuration to the application.
     /// </summary>

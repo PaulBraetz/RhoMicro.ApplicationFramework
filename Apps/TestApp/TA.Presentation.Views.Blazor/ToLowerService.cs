@@ -7,7 +7,8 @@ using RhoMicro.ApplicationFramework.Aspects;
 
 public sealed partial class ToLowerService
 {
-    [ServiceMethod]
+    public required Object RequiredProp { get; set; } = new();
+    [ServiceMethod(ServiceInterfaceName = "IToLowerService")]
     public async ValueTask<ToLower.Result> ToLower(String value, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(value);
@@ -16,8 +17,8 @@ public sealed partial class ToLowerService
 
         return new(value.ToLowerInvariant());
     }
-    [ServiceMethod]
-    public async ValueTask<ToLower.Result> ToUpper(String value, CancellationToken ct)
+    [ServiceMethod(ServiceInterfaceName = "IToUpperService")]
+    public async ValueTask<ToUpper--.Result> ToUpper(String value, CancellationToken ct)
     {
         ArgumentNullException.ThrowIfNull(value);
 

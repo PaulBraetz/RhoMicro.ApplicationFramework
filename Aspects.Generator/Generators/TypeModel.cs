@@ -4,9 +4,13 @@ using Microsoft.CodeAnalysis;
 
 sealed record TypeModel
 {
+    TypeModel(String fullName) => FullName = fullName;
+
     public required String Namespace { get; init; }
     public required TypeSignatureModel Signature { get; init; }
     public required String? BaseType { get; init; }
+    private String FullName { get; }
+
     public static TypeModel Create(ITypeSymbol t, CancellationToken ct)
     {
         ct.ThrowIfCancellationRequested();
@@ -16,7 +20,9 @@ sealed record TypeModel
             SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted)) ??
             String.Empty;
 
-        var result = new TypeModel()
+        var fullName = t.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+        var result = new TypeModel(fullName)
         {
             BaseType = t.BaseType?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
             Namespace = @namespace,
@@ -25,4 +31,6 @@ sealed record TypeModel
 
         return result;
     }
+    public Boolean Equals(TypeModel? other) => other?.FullName == FullName;
+    public override Int32 GetHashCode() => FullName.GetHashCode();
 }

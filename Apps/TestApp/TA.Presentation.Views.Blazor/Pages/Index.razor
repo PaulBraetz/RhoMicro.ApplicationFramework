@@ -35,6 +35,8 @@ Welcome to your new app.
     [Injected]
     public required IToLowerService Service { get; set; }
     [Injected]
+    public required IToUpperService Service2 { get; set; }
+    [Injected]
     public required IButtonModel Clear { get; set; }
 
     protected override async Task OnParametersSetAsync()

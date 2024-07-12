@@ -11,7 +11,7 @@ using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 /// Initializes a new instance.
 /// </remarks>
 /// <param name="jsRuntime">The runtime used for invoking the javascript clipboard functionality.</param>
-public sealed class Clipboard(IJSRuntime jsRuntime) : IClipboardModel
+public sealed class JsClipboardModel(IJSRuntime jsRuntime) : IClipboardModel
 {
     /// <summary>
     /// Reads text stored in the clipboard.
