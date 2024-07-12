@@ -18,7 +18,7 @@ public sealed partial class ToLowerService
         return new(value.ToLowerInvariant());
     }
     [ServiceMethod(ServiceInterfaceName = "IToUpperService")]
-    public async ValueTask<ToUpper--.Result> ToUpper(String value, CancellationToken ct)
+    public async ValueTask<ToUpper.Result> ToUpper(String value, CancellationToken ct)
     {
         ArgumentNullException.ThrowIfNull(value);
 
