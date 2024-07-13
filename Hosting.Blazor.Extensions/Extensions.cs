@@ -14,6 +14,7 @@ using SimpleInjector;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Components;
+using Microsoft.JSInterop;
 
 /// <summary>
 /// Extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.
@@ -21,11 +22,11 @@ using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Components;
 public static partial class Extensions
 {
     /// <summary>
-    /// Registers a js-interop-based clipboard implementation to the builder services.
+    /// Registers a platform-specific clipboard implementation to the builder services.
     /// </summary>
     /// <param name="appBuilder"></param>
     /// <returns>A reference to the builder, for chaining of further method calls.</returns>
-    public static TSelf AddJsClipboard<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(
+    public static TSelf AddClipboard<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(
         this TSelf appBuilder)
         where TSelf : AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>
         where TApp : App<TApp, TUnderlyingApp>
@@ -33,11 +34,21 @@ public static partial class Extensions
     {
         ArgumentNullException.ThrowIfNull(appBuilder);
 
-        appBuilder.Options.Composer += Composer.Create(static c => c.Register<IClipboardModel, JsClipboardModel>());
+        appBuilder.Options.Composer += Composer.Create(static c => c.Register<IClipboardModel>(() =>
+        {
+            //if(c.GetInstance<IDeploymentPlatformProvider>().DeploymentPlatform is DeploymentPlatform.Desktop)
+            //{
+            //    return new ClipboardModel();
+            //} else
+            //{
+            //    var jsRuntime = c.GetInstance<IJSRuntime>();
+            //    return new JsClipboardModel(jsRuntime);
+            //}
+            return new JsClipboardModel(c.GetInstance<IJSRuntime>());
+        }));
 
         return appBuilder;
     }
-
     /// <summary>
     /// Adds blazor capabilities and options to the builder.
     /// </summary>

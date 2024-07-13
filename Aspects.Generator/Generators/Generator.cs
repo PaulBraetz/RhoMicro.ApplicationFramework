@@ -8,7 +8,6 @@ using RhoMicro.CodeAnalysis.Library;
 using RhoMicro.CodeAnalysis.Generated;
 
 using static RhoMicro.CodeAnalysis.Library.Text.IndentedStringBuilder.Appendables;
-using System.Diagnostics;
 
 /// <summary>
 /// Generates required members for AOP annotated service methods and request types.

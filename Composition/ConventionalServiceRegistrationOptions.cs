@@ -1,7 +1,4 @@
 ﻿namespace RhoMicro.ApplicationFramework.Composition;
-
-using SimpleInjector;
-
 /// <summary>
 /// Options for informing conventional service registrations.
 /// </summary>

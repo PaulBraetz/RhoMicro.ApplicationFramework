@@ -1,6 +1,5 @@
 ﻿namespace RhoMicro.ApplicationFramework.Aspects.Decorators;
 
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 

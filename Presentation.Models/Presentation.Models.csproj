@@ -21,6 +21,7 @@
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
 	  <PackageReference Include="RhoMicro.RequiredPropertyValidation.Library" Version="3.0.2" />
+	  <PackageReference Include="TextCopy" Version="6.2.1" />
 	</ItemGroup>
 
 	<ItemGroup>

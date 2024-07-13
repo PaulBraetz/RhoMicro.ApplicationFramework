@@ -9,12 +9,12 @@ using RhoMicro.RequiredPropertyValidation.RhoMicro.RequiredPropertyValidation;
 public static class Extensions
 {
     /// <summary>
-    /// Registers a js-interop-based clipboard implementation to the builder services.
+    /// Registers a platform-specific clipboard implementation to the builder services.
     /// </summary>
     /// <param name="appBuilder"></param>
     /// <returns>A reference to the builder, for chaining of further method calls.</returns>
-    public static WebClientGuiAppBuilder AddJsClipboard(this WebClientGuiAppBuilder appBuilder) =>
-        appBuilder.AddJsClipboard<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>();
+    public static WebClientGuiAppBuilder AddClipboard(this WebClientGuiAppBuilder appBuilder) =>
+        appBuilder.AddClipboard<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>();
     /// <summary>
     /// Adds validation that assures all required non-null properties on resolved instances are not null.
     /// </summary>

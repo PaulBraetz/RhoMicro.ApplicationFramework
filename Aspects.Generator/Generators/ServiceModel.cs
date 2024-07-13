@@ -1,7 +1,5 @@
 ﻿namespace RhoMicro.ApplicationFramework.Aspects;
 
-using System.Diagnostics;
-
 using Microsoft.CodeAnalysis;
 
 using RhoMicro.CodeAnalysis.Library;

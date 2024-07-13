@@ -3,8 +3,6 @@ using System;
 
 using RhoMicro.ApplicationFramework.Aspects;
 
-using static IndentedStringBuilder.Appendables;
-
 partial class IndentedStringBuilder
 {
     public IndentedStringBuilder Append(RequestTypeKind requestTypeKind) =>

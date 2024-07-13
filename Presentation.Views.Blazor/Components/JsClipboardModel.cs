@@ -13,18 +13,11 @@ using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 /// <param name="jsRuntime">The runtime used for invoking the javascript clipboard functionality.</param>
 public sealed class JsClipboardModel(IJSRuntime jsRuntime) : IClipboardModel
 {
-    /// <summary>
-    /// Reads text stored in the clipboard.
-    /// </summary>
-    /// <returns>A task that, upon completion, will contain the text read from the clipboard.</returns>
-    public ValueTask<String> ReadAsync() =>
-        jsRuntime.InvokeAsync<String>("navigator.clipboard.readText");
+    /// <inheritdoc/>
+    public ValueTask<String> ReadTextAsync(CancellationToken cancellationToken) =>
+        jsRuntime.InvokeAsync<String>("navigator.clipboard.readText", cancellationToken);
 
-    /// <summary>
-    /// Writes text to the clipboard.
-    /// </summary>
-    /// <param name="text">The text to write to the clipboard.</param>
-    /// <returns>A task that will complete upon the text having been written to the clipboard.</returns>
-    public ValueTask WriteTextAsync(String text) =>
-        jsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
+    /// <inheritdoc/>
+    public ValueTask WriteTextAsync(String text, CancellationToken cancellationToken) =>
+        jsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", cancellationToken, text);
 }
