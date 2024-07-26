@@ -39,7 +39,7 @@ public sealed class Generator : IIncrementalGenerator
 
         var servicesProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
                 typeof(ServiceMethodAttribute).FullName,
-                (node, ct) => node is MethodDeclarationSyntax,
+                (node, ct) => true,
                 ServiceModel.Create)
             .Where(m => m is not null)
             .Collect()
