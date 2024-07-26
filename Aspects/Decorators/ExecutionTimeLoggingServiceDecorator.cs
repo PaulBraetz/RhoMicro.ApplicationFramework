@@ -37,7 +37,7 @@ public sealed class ExecutionTimeLoggingServiceDecorator<TRequest, TResult>(
         ILogEntry createLog()
         {
             stopWatch!.Stop();
-            var result = new ExecutionTimeLogEntry<TRequest>(stopWatch!.ElapsedTicks);
+            var result = new ExecutionTimeLogEntry<TRequest>(stopWatch!.Elapsed);
 
             return result;
         }
