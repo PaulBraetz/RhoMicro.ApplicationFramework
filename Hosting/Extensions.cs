@@ -13,6 +13,7 @@ using RhoMicro.ApplicationFramework.Aspects.Decorators;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 using RhoMicro.ApplicationFramework.Composition;
 using RhoMicro.RequiredPropertyValidation.RhoMicro.RequiredPropertyValidation;
+using SimpleInjector;
 
 /// <summary>
 /// Contains extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.
@@ -109,6 +110,7 @@ public static class Extensions
 
         var config = appBuilder.Capabilities.Configuration.Build();
         _ = appBuilder.Capabilities.Logging.AddFile(config, configureOptions ?? ( static o => { } ));
+        appBuilder.Options.OnContainerAdd += (o) => o.AddLogging();
 
         return appBuilder;
     }
@@ -128,6 +130,7 @@ public static class Extensions
         ArgumentNullException.ThrowIfNull(appBuilder);
 
         _ = appBuilder.Capabilities.Logging.AddConsole(configureOptions ?? ( static o => { } ));
+        appBuilder.Options.OnContainerAdd += (o) => o.AddLogging();
 
         return appBuilder;
     }
