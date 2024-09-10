@@ -1,5 +1,7 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
 
+using NReco.Logging.File;
+
 using Photino.Blazor;
 
 using RhoMicro.RequiredPropertyValidation.RhoMicro.RequiredPropertyValidation;
@@ -47,6 +49,16 @@ public static class Extensions
     /// <returns>A reference to the builder, for chaining of further method calls.</returns>
     public static LocalGuiAppBuilder AddApiServiceClients(this LocalGuiAppBuilder appBuilder, Action<IApiServiceClientsOptions>? configureClients = null) =>
         appBuilder.AddApiServiceClients<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>(configureClients);
+    /// <summary>
+    /// Adds configuration based file logging to the builders capabilities.
+    /// </summary>
+    private static LocalGuiAppBuilder AddFileLogging(this LocalGuiAppBuilder appBuilder, Action<FileLoggerOptions>? configureOptions = null) =>
+        appBuilder.AddFileLogging<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>(configureOptions);
+    /// <summary>
+    /// Adds logging support to the builders capabilities.
+    /// </summary>
+    public static LocalGuiAppBuilder AddConsoleLogging(this LocalGuiAppBuilder appBuilder) =>
+        appBuilder.AddLogging<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>();
     ///// <summary>
     ///// Adds default component models to the app builders capabilities.
     ///// </summary>
@@ -57,21 +69,6 @@ public static class Extensions
     ///// </summary>
     //private static LocalGuiAppBuilder AddDefaultViews(this LocalGuiAppBuilder appBuilder) =>
     //    appBuilder.AddDefaultViews<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>();
-    ///// <summary>
-    ///// Adds appsettings to the app builder.
-    ///// </summary>
-    //private static LocalGuiAppBuilder AddAppSettings(this LocalGuiAppBuilder appBuilder) =>
-    //    appBuilder.AddAppSettings<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>();
-    ///// <summary>
-    ///// Adds configuration based file logging to the builders capabilities.
-    ///// </summary>
-    //private static LocalGuiAppBuilder AddFileLogging(this LocalGuiAppBuilder appBuilder, Action<FileLoggerOptions>? configureOptions = null) =>
-    //    appBuilder.AddFileLogging<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>(configureOptions);
-    ///// <summary>
-    ///// Adds configuration based console logging to the builders capabilities.
-    ///// </summary>
-    //private static LocalGuiAppBuilder AddConsoleLogging(this LocalGuiAppBuilder appBuilder, Action<ConsoleLoggerOptions>? configureOptions = null) =>
-    //    appBuilder.AddConsoleLogging<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>(configureOptions);
     ///// <summary>
     ///// Adds appsettings and configuration to the app builder.
     ///// </summary>

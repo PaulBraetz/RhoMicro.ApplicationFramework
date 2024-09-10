@@ -47,10 +47,10 @@ public static class Extensions
     public static WebClientGuiAppBuilder AddAppSettings(this WebClientGuiAppBuilder appBuilder) =>
         appBuilder.AddAppSettings<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>();
     /// <summary>
-    /// Adds configuration based console logging to the builders capabilities.
+    /// Adds logging support to the builders capabilities.
     /// </summary>
-    public static WebClientGuiAppBuilder AddConsoleLogging(this WebClientGuiAppBuilder appBuilder, Action<ConsoleLoggerOptions>? configureOptions = null) =>
-        appBuilder.AddConsoleLogging<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>(configureOptions);
+    public static WebClientGuiAppBuilder AddConsoleLogging(this WebClientGuiAppBuilder appBuilder) =>
+        appBuilder.AddLogging<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>();
     ///// <summary>
     ///// Adds configuration based file logging to the builders capabilities.
     ///// </summary>

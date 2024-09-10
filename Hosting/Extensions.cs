@@ -115,21 +115,17 @@ public static class Extensions
         return appBuilder;
     }
     /// <summary>
-    /// Adds configuration based console logging to the builders capabilities.
+    /// Adds logging support to the builders capabilities.
     /// </summary>
     /// <param name="appBuilder"></param>
-    /// <param name="configureOptions"></param>
     /// <returns></returns>
-    public static TSelf AddConsoleLogging<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(
-        this TSelf appBuilder,
-        Action<ConsoleLoggerOptions>? configureOptions = null)
+    public static TSelf AddLogging<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(this TSelf appBuilder)
         where TSelf : AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>
         where TApp : App<TApp, TUnderlyingApp>
         where TCapabilities : AppBuilderCapabilities
     {
         ArgumentNullException.ThrowIfNull(appBuilder);
 
-        _ = appBuilder.Capabilities.Logging.AddConsole(configureOptions ?? ( static o => { } ));
         appBuilder.Options.OnContainerAdd += (o) => o.AddLogging();
 
         return appBuilder;

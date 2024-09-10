@@ -14,6 +14,7 @@ using System.Text.Json;
 using RhoMicro.RequiredPropertyValidation.RhoMicro.RequiredPropertyValidation;
 using NReco.Logging.File;
 using Microsoft.Extensions.Logging.Console;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Contains extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.
@@ -140,8 +141,15 @@ public static class Extensions
     /// <summary>
     /// Adds configuration based console logging to the builders capabilities.
     /// </summary>
-    public static WebServerGuiAppBuilder AddConsoleLogging(this WebServerGuiAppBuilder appBuilder, Action<ConsoleLoggerOptions>? configureOptions = null) =>
-        appBuilder.AddConsoleLogging<WebServerGuiAppBuilder, WebServerGuiApp, WebApplicationBuilder, WebApplication, BlazorAppBuilderCapabilities>(configureOptions);
+    public static WebServerGuiAppBuilder AddConsoleLogging(this WebServerGuiAppBuilder appBuilder, Action<ConsoleLoggerOptions>? configureOptions = null)
+    {
+        ArgumentNullException.ThrowIfNull(appBuilder);
+
+        _ = appBuilder.AddLogging<WebServerGuiAppBuilder, WebServerGuiApp, WebApplicationBuilder, WebApplication, BlazorAppBuilderCapabilities>();
+        _ = appBuilder.Capabilities.Logging.AddConsole(configureOptions ?? ( static o => { } ));
+
+        return appBuilder;
+    }
     ///// <summary>
     ///// Adds default component models to the app builders capabilities.
     ///// </summary>
