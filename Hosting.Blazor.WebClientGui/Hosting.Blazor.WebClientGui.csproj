@@ -14,13 +14,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.7" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.8" />
 		<PackageReference Include="RhoMicro.RequiredPropertyValidation.Generator" Version="3.0.2">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="RhoMicro.RequiredPropertyValidation.Library" Version="3.0.2" />
-		<PackageReference Include="SimpleInjector" Version="5.4.6" />
+		<PackageReference Include="SimpleInjector" Version="5.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>

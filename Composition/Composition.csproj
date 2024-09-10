@@ -17,7 +17,7 @@
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="RhoMicro.RequiredPropertyValidation.Library" Version="3.0.2" />
-		<PackageReference Include="SimpleInjector" Version="5.4.6" />
+		<PackageReference Include="SimpleInjector" Version="5.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>
