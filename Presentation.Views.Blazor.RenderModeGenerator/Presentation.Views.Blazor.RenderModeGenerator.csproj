@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<!--AutoUpdateAssemblyName-->
-		
+
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
@@ -9,6 +9,7 @@
 		<IsRoslynComponent>true</IsRoslynComponent>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -24,8 +25,8 @@
 		<PackageReference Update="NETStandard.Library" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.11.0" />
 		<PackageReference Include="PolySharp" Version="1.14.1">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="RhoMicro.CodeAnalysis.UtilityGenerators" Version="15.1.7">
 			<PrivateAssets>all</PrivateAssets>
@@ -36,13 +37,13 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="RhoMicro.RequiredPropertyValidation.Generator" Version="3.0.2">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="bin\Debug\netstandard2.0\\RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeGenerator.1.0.0.139.dll" />
+		<None Remove="bin\Debug\netstandard2.0\\RhoMicro.ApplicationFramework.Presentation.Views.Blazor.RenderModeGenerator.1.0.0.139.dll" />
 	</ItemGroup>
 
 	<ItemGroup>
