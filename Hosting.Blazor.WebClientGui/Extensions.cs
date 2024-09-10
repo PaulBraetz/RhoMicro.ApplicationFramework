@@ -1,5 +1,6 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.Logging.Console;
 
 using RhoMicro.RequiredPropertyValidation.RhoMicro.RequiredPropertyValidation;
 
@@ -40,6 +41,21 @@ public static class Extensions
     /// <returns>A reference to the builder, for chaining of further method calls.</returns>
     public static WebClientGuiAppBuilder AddApiServiceClients(this WebClientGuiAppBuilder appBuilder, Action<IApiServiceClientsOptions>? configureClients = null) =>
         appBuilder.AddApiServiceClients<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>(configureClients);
+    /// <summary>
+    /// Adds appsettings to the app builder.
+    /// </summary>
+    public static WebClientGuiAppBuilder AddAppSettings(this WebClientGuiAppBuilder appBuilder) =>
+        appBuilder.AddAppSettings<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>();
+    /// <summary>
+    /// Adds configuration based console logging to the builders capabilities.
+    /// </summary>
+    public static WebClientGuiAppBuilder AddConsoleLogging(this WebClientGuiAppBuilder appBuilder, Action<ConsoleLoggerOptions>? configureOptions = null) =>
+        appBuilder.AddConsoleLogging<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>(configureOptions);
+    ///// <summary>
+    ///// Adds configuration based file logging to the builders capabilities.
+    ///// </summary>
+    //private static WebClientGuiAppBuilder AddFileLogging(this WebClientGuiAppBuilder appBuilder, Action<FileLoggerOptions>? configureOptions = null) =>
+    //  appBuilder.AddFileLogging<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>(configureOptions);
     ///// <summary>
     ///// Adds default component models to the app builders capabilities.
     ///// </summary>
@@ -50,21 +66,7 @@ public static class Extensions
     ///// </summary>
     //private static WebClientGuiAppBuilder AddDefaultViews(this WebClientGuiAppBuilder appBuilder) =>
     //    appBuilder.AddDefaultViews<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>();
-    ///// <summary>
-    ///// Adds appsettings to the app builder.
-    ///// </summary>
-    //private static WebClientGuiAppBuilder AddAppSettings(this WebClientGuiAppBuilder appBuilder) =>
-    //    appBuilder.AddAppSettings<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>();
-    ///// <summary>
-    ///// Adds configuration based file logging to the builders capabilities.
-    ///// </summary>
-    //private static WebClientGuiAppBuilder AddFileLogging(this WebClientGuiAppBuilder appBuilder, Action<FileLoggerOptions>? configureOptions = null) =>
-    //    appBuilder.AddFileLogging<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>(configureOptions);
-    ///// <summary>
-    ///// Adds configuration based console logging to the builders capabilities.
-    ///// </summary>
-    //private static WebClientGuiAppBuilder AddConsoleLogging(this WebClientGuiAppBuilder appBuilder, Action<ConsoleLoggerOptions>? configureOptions = null) =>
-    //    appBuilder.AddConsoleLogging<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>(configureOptions);
+
     ///// <summary>
     ///// Adds appsettings and configuration to the app builder.
     ///// </summary>
