@@ -18,7 +18,7 @@ public enum TransactionState
     Flushed,
     /// <summary>
     /// The state machine is flushed successfully but at least one child is either also flushed
-    /// with inconsistent commits or not conforming to the transaction trees 'IsComit'-state.
+    /// with inconsistent commits or not conforming to the transaction trees 'IsCommit'-state.
     /// </summary>
     FlushedWithInconsistentCommits,
     /// <summary>
