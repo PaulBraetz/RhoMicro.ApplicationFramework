@@ -11,7 +11,7 @@ using SimpleInjector.Diagnostics;
 /// <summary>
 /// Contains object graph definitions for presentation models.
 /// </summary>
-internal static class PresentationComposers
+public static class PresentationComposers
 {
     /// <summary>
     /// Creates a composer combining the composer provided with a composer able to compose presentation model graphs.

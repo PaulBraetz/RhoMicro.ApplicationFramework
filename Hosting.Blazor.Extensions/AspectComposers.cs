@@ -14,7 +14,7 @@ using SimpleInjector;
 /// <summary>
 /// Contains object graph definitions for cross-cutting concerns.
 /// </summary>
-internal static class AspectComposers
+public static class AspectComposers
 {
     /// <summary>
     /// Creates a composer combining the composer provided with a composer able to compose common aspects.
