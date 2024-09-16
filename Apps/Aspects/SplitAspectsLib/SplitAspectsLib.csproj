@@ -1,14 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Common\Common.csproj" />
-    <ProjectReference Include="..\..\..\Aspects.Generator\Aspects.Generator.csproj" outputItemType="analyzer" referenceOutputAssemblies="false" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Common\Common.csproj" />
+		<ProjectReference Include="..\..\..\Aspects.Generator\Aspects.Generator.csproj" outputItemType="analyzer" referenceOutputAssemblies="false" />
+	</ItemGroup>
 
 </Project>
