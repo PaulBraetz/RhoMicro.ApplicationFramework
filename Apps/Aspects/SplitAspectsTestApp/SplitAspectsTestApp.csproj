@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Hosting.Cli\Hosting.Cli.csproj" />
+		<ProjectReference Include="..\SplitAspectsLib\SplitAspectsLib.csproj" />
+		<ProjectReference Include="..\..\..\Aspects.Generator\Aspects.Generator.csproj" outputItemType="analyzer" referenceOutputAssemblies="false" />
+	</ItemGroup>
+
+</Project>

@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis;
 using RhoMicro.CodeAnalysis.Library;
 
 sealed record ServiceModel(
+    Boolean IsExternal,
     String RequestTypeFullName,
     EquatableList<ParameterModel> Parameters,
     ParameterModel? CancellationTokenParameter,
@@ -19,6 +20,64 @@ sealed record ServiceModel(
     String Namespace,
     String ResultTypeFullName)
 {
+    public static ServiceModel? CreateFromPartial(GeneratorAttributeSyntaxContext ctx, CancellationToken ct)
+    {
+        ct.ThrowIfCancellationRequested();
+
+        if(ctx.TargetSymbol is not IMethodSymbol method ||
+           !PartialServiceMethodAttribute.TryCreate(ctx.Attributes[0], out var attribute) ||
+           //!attribute!.RequestTypeSymbol.IsRecord ||
+           attribute!.ServiceInterfaceSymbol.TypeKind != TypeKind.Interface)
+        {
+            return null;
+        }
+
+        var requestTypeName = attribute.RequestTypeSymbol.Name;
+        var requestTypeFullName = attribute.RequestTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+        var serviceInterfaceName = attribute.ServiceInterfaceSymbol.Name;
+        var serviceInterfaceFullName = attribute.ServiceInterfaceSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+        var (parameters, cancellationTokenParameter) = GetParameters(method, ct);
+
+        var (returnsTask, returnsValueTask, resultTypeName) = InterpretReturnType(method, ct);
+
+        var implementationType = TypeModel.Create(method.ContainingType, ct);
+
+        var @namespace = implementationType.Namespace;
+
+        ServiceVisibility? visibility = null;
+
+        var requestTypeKind = method.ContainingType switch
+        {
+            { IsRecord: true, TypeKind: TypeKind.Struct } => RequestTypeKind.RecordStruct,
+            { IsRecord: true, TypeKind: TypeKind.Class } => method.ContainingType switch
+            {
+                { IsSealed: true } => RequestTypeKind.SealedRecordClass,
+                { IsAbstract: true } => RequestTypeKind.AbstractRecordClass,
+                _ => RequestTypeKind.RecordClass
+            },
+            _ => default
+        };
+
+        var result = new ServiceModel(
+            IsExternal: true,
+            ImplementationType: implementationType,
+            Namespace: @namespace,
+            Visibility: visibility,
+            RequestTypeName: requestTypeName,
+            RequestTypeFullName: requestTypeFullName,
+            RequestTypeKind: requestTypeKind,
+            Parameters: parameters,
+            ResultTypeFullName: resultTypeName,
+            ServiceInterfaceFullName: serviceInterfaceFullName,
+            ServiceInterfaceName: serviceInterfaceName,
+            ReturnsTask: returnsTask,
+            ReturnsValueTask: returnsValueTask,
+            CancellationTokenParameter: cancellationTokenParameter);
+
+        return result;
+    }
     public static ServiceModel? Create(GeneratorAttributeSyntaxContext ctx, CancellationToken ct)
     {
         ct.ThrowIfCancellationRequested();
@@ -40,11 +99,42 @@ sealed record ServiceModel(
             ? $"global::{@namespace}.{serviceInterfaceName}"
             : $"global::{serviceInterfaceName}";
 
+        var (parameters, cancellationTokenParameter) = GetParameters(method, ct);
+        var (returnsTask, returnsValueTask, resultTypeName) = InterpretReturnType(method, ct);
+
+        ServiceVisibility? visibility = attribute.Visibility is ServiceVisibility.Default
+            ? null
+            : attribute.Visibility;
+
+        var result = new ServiceModel(
+            IsExternal: false,
+            ImplementationType: implementationType,
+            Namespace: @namespace,
+            Visibility: visibility,
+            RequestTypeName: requestTypeName,
+            RequestTypeFullName: requestTypeFullName,
+            RequestTypeKind: attribute.RequestTypeKind,
+            Parameters: parameters,
+            ResultTypeFullName: resultTypeName,
+            ServiceInterfaceFullName: serviceInterfaceFullName,
+            ServiceInterfaceName: serviceInterfaceName,
+            ReturnsTask: returnsTask,
+            ReturnsValueTask: returnsValueTask,
+            CancellationTokenParameter: cancellationTokenParameter);
+
+        return result;
+    }
+    private static (EquatableList<ParameterModel> parameters, ParameterModel? cancellationTokenParameter) GetParameters(IMethodSymbol method, CancellationToken ct)
+    {
+        ct.ThrowIfCancellationRequested();
+
         ParameterModel? cancellationTokenParameter = null;
         var parametersMutable = new List<ParameterModel>();
 
         foreach(var parameter in method.Parameters)
         {
+            ct.ThrowIfCancellationRequested();
+
             var model = ParameterModel.Create(parameter);
             if(parameter.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == Constants.CtTypeName)
             {
@@ -62,44 +152,30 @@ sealed record ServiceModel(
 
         var parameters = parametersMutable.AsEquatable();
 
-        var (returnsTask, returnsValueTask, resultTypeName) = method.ReturnType switch
+        return (parameters, cancellationTokenParameter);
+    }
+    private static (Boolean returnsTask, Boolean returnsValueTask, String resultTypeName) InterpretReturnType(IMethodSymbol method, CancellationToken ct)
+    {
+        ct.ThrowIfCancellationRequested();
+        var result = method.ReturnType switch
         {
             INamedTypeSymbol { TypeArguments: [{ } returnTypeSymbol] } =>
-                getNonGenericFullyQualifiedName(method.ReturnType) switch
+                GetNonGenericFullyQualifiedName(method.ReturnType) switch
                 {
                     Constants.TaskTypeName =>
-                        (true, false, getFullyQualifiedName(returnTypeSymbol)),
+                        (true, false, GetFullyQualifiedName(returnTypeSymbol)),
                     Constants.ValueTaskTypeName =>
-                        (false, true, getFullyQualifiedName(returnTypeSymbol)),
-                    _ => (false, false, getFullyQualifiedName(method.ReturnType))
+                        (false, true, GetFullyQualifiedName(returnTypeSymbol)),
+                    _ => (false, false, GetFullyQualifiedName(method.ReturnType))
                 },
-            _ => (false, false, getFullyQualifiedName(method.ReturnType))
+            _ => (false, false, GetFullyQualifiedName(method.ReturnType))
         };
 
-        ServiceVisibility? visibility = attribute.Visibility is ServiceVisibility.Default
-            ? null
-            : attribute.Visibility;
-
-        var result = new ServiceModel(
-            ImplementationType: implementationType,
-            Namespace: @namespace,
-            Visibility: visibility,
-            RequestTypeName: requestTypeName,
-            RequestTypeFullName: requestTypeFullName,
-            RequestTypeKind: attribute.RequestTypeKind,
-            Parameters: parameters,
-            ResultTypeFullName: resultTypeName,
-            ServiceInterfaceFullName: serviceInterfaceFullName,
-            ServiceInterfaceName: serviceInterfaceName,
-            ReturnsTask: returnsTask,
-            ReturnsValueTask: returnsValueTask,
-            CancellationTokenParameter: cancellationTokenParameter);
-
         return result;
-
-        static String getFullyQualifiedName(ISymbol returnTypeSymbol) =>
-            returnTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-        static String getNonGenericFullyQualifiedName(ISymbol returnTypeSymbol) =>
-            returnTypeSymbol.ToDisplayString(SymbolDisplayFormats.NonGenericFullyQualifiedFormat);
     }
+
+    static String GetFullyQualifiedName(ISymbol returnTypeSymbol) =>
+        returnTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+    static String GetNonGenericFullyQualifiedName(ISymbol returnTypeSymbol) =>
+        returnTypeSymbol.ToDisplayString(SymbolDisplayFormats.NonGenericFullyQualifiedFormat);
 }

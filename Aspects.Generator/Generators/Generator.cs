@@ -1,7 +1,6 @@
 namespace RhoMicro.ApplicationFramework.Aspects;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using RhoMicro.CodeAnalysis.Library.Text;
 using RhoMicro.CodeAnalysis.Library;
@@ -18,8 +17,8 @@ public sealed class Generator : IIncrementalGenerator
     /// <inheritdoc/>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        //if(!Debugger.Launch())
-        //    Debugger.Break();
+        //if(!System.Diagnostics.Debugger.Launch())
+        //    System.Diagnostics.Debugger.Break();
 
         var settingsProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
                 typeof(ServiceSettingsAttribute).FullName,
@@ -27,6 +26,7 @@ public sealed class Generator : IIncrementalGenerator
                 SettingsModel.Create)
             .Where(m => m is not null)
             .Collect()
+            .WithCollectionComparer()
             .Select((settings, ct) =>
             {
                 ct.ThrowIfCancellationRequested();
@@ -37,6 +37,13 @@ public sealed class Generator : IIncrementalGenerator
                 return result;
             });
 
+        var partialServicesProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
+                typeof(PartialServiceMethodAttribute).FullName,
+                (node, ct) => true,
+                ServiceModel.CreateFromPartial)
+            .Where(m => m is not null)
+            .Collect()
+            .WithCollectionComparer();
         var servicesProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
                 typeof(ServiceMethodAttribute).FullName,
                 (node, ct) => true,
@@ -44,10 +51,11 @@ public sealed class Generator : IIncrementalGenerator
             .Where(m => m is not null)
             .Collect()
             .WithCollectionComparer()
+            .Combine(partialServicesProvider)
             .SelectMany((models, ct) =>
             {
                 ct.ThrowIfCancellationRequested();
-                var result = models
+                var result = models.Left.Concat(models.Right)
                     .GroupBy(m => m!.ImplementationType)
                     .Select(g => g.ToEquatableList(ct));
 
@@ -70,9 +78,14 @@ public sealed class Generator : IIncrementalGenerator
                         GeneratorName = typeof(Generator).FullName
                     });
 
+                var maxVisibility = services
+                    .Select(s => s.Visibility ?? settings.DefaultVisibility)
+                    .Max();
+
                 for(var i = 0; i < services.Count; i++)
                 {
-                    AppendNonAdapterTypes(builder, services[i], settings);
+                    ct.ThrowIfCancellationRequested();
+                    AppendNonAdapterTypes(builder, services[i] with { Visibility = maxVisibility }, settings);
                 }
 
                 AppendAdapterType(builder, settings, services);
@@ -88,53 +101,9 @@ public sealed class Generator : IIncrementalGenerator
     }
     static void AppendNonAdapterTypes(IndentedStringBuilder builder, ServiceModel service, SettingsModel settings)
     {
+        AppendRequestTypeAndInterface(builder, service, settings);
+
         _ = builder.Operators +
-            Append(b =>
-            {
-                if(service!.Namespace is not [.., { }])
-                    return;
-
-                _ = b.Append("namespace ").Append(service!.Namespace).OpenBracesBlock();
-            }) +
-                Append(b =>
-                {
-                    if(service!.RequestTypeKind is RequestTypeKind.MatchParameterType)
-                        return;
-
-                    _ = b.Operators +
-                    Append(service.Visibility ?? settings!.DefaultVisibility) + ' ' +
-                    Append(service.RequestTypeKind) + ' ' +
-                    service.RequestTypeName + '(' +
-                        Append(b =>
-                        {
-                            for(var i = 0; i < service.Parameters.Count; i++)
-                            {
-                                if(i > 0)
-                                    b.AppendCore(',');
-
-                                var paramModel = service.Parameters[i];
-                                b.Append(paramModel.Type).Append(' ').AppendCore(paramModel.PropertyName);
-                            }
-                        }) + ')' +
-                        " : " + settings!.RequestInterfaceTypeName + '<' + service.ResultTypeFullName + '>' + ';' + NewLine;
-                }) +
-                Append(service!.Visibility ?? settings!.DefaultVisibility) + " partial interface " + service.ServiceInterfaceName +
-                OpenBracesBlock() +
-                    Append(b =>
-                    {
-                        b.Append(Constants.ValueTaskTypeName).Append('<').Append(service.ResultTypeFullName).Append("> ")
-                        .Append(service.RequestTypeName).Append('(')
-                        .Append(b =>
-                        {
-                            foreach(var (type, name, _) in service.Parameters)
-                            {
-                                b.Append(type).Append(' ').Append(name).AppendCore(", ");
-                            }
-                        })
-                        .Append(Constants.CtTypeName).AppendCore(" cancellationToken);");
-                    }) +
-                CloseBlock() +
-            CloseAllBlocks() +
             Append(b =>
             {
                 if(service.ImplementationType.Namespace is not [.., { }])
@@ -197,6 +166,59 @@ public sealed class Generator : IIncrementalGenerator
                     CloseBlock();
                 }) +
             CloseAllBlocks();
+    }
+
+    private static void AppendRequestTypeAndInterface(IndentedStringBuilder builder, ServiceModel service, SettingsModel settings)
+    {
+        if(service.IsExternal)
+            return;
+
+        _ = builder.Operators + Append(b =>
+        {
+            if(service!.Namespace is not [.., { }])
+                return;
+
+            _ = b.Append("namespace ").Append(service!.Namespace).OpenBracesBlock();
+        }) +
+                        Append(b =>
+                        {
+                            if(service!.RequestTypeKind is RequestTypeKind.MatchParameterType)
+                                return;
+
+                            _ = b.Operators +
+                            Append(service.Visibility ?? settings!.DefaultVisibility) + ' ' +
+                            Append(service.RequestTypeKind) + ' ' +
+                            service.RequestTypeName + '(' +
+                                Append(b =>
+                                {
+                                    for(var i = 0; i < service.Parameters.Count; i++)
+                                    {
+                                        if(i > 0)
+                                            b.AppendCore(',');
+
+                                        var paramModel = service.Parameters[i];
+                                        b.Append(paramModel.Type).Append(' ').AppendCore(paramModel.PropertyName);
+                                    }
+                                }) + ')' +
+                                " : " + settings!.RequestInterfaceTypeName + '<' + service.ResultTypeFullName + '>' + ';' + NewLine;
+                        }) +
+                        Append(service!.Visibility ?? settings!.DefaultVisibility) + " partial interface " + service.ServiceInterfaceName +
+                        OpenBracesBlock() +
+                            Append(b =>
+                            {
+                                b.Append(Constants.ValueTaskTypeName).Append('<').Append(service.ResultTypeFullName).Append("> ")
+                                .Append(service.RequestTypeName).Append('(')
+                                .Append(b =>
+                                {
+                                    foreach(var (type, name, _) in service.Parameters)
+                                    {
+                                        b.Append(type).Append(' ').Append(name).AppendCore(", ");
+                                    }
+                                })
+                                .Append(Constants.CtTypeName).AppendCore(" cancellationToken);");
+                            }) +
+                        CloseBlock() +
+                    CloseAllBlocks();
     }
 
     static void AppendAdapterType(IndentedStringBuilder builder, SettingsModel settings, IReadOnlyList<ServiceModel> services)

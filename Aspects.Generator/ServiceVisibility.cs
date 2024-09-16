@@ -13,11 +13,11 @@ public enum ServiceVisibility
     /// </summary>
     Default,
     /// <summary>
-    /// The generated types will be <see langword="public"/>.
-    /// </summary>
-    Public,
-    /// <summary>
     /// The generated members will be <see langword="internal"/>.
     /// </summary>
-    Internal
+    Internal,
+    /// <summary>
+    /// The generated types will be <see langword="public"/>.
+    /// </summary>
+    Public
 }

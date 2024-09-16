@@ -10,7 +10,7 @@ using System;
 [RhoMicro.CodeAnalysis.GenerateFactory]
 [RhoMicro.CodeAnalysis.IncludeFile]
 #endif
-public sealed partial class ServiceSettingsAttribute : Attribute
+internal sealed partial class ServiceSettingsAttribute : Attribute
 {
     /// <summary>
     /// Gets or sets the interface type to use for requests. This type must contain exactly one generic parameter.

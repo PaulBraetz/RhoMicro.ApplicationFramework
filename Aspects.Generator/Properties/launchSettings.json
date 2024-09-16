@@ -2,7 +2,7 @@
   "profiles": {
     "Profile 1": {
       "commandName": "DebugRoslynComponent",
-      "targetProject": "..\\TestLib\\TestLib.csproj"
+      "targetProject": "..\\Apps\\Aspects\\SplitAspectsTestApp\\SplitAspectsTestApp.csproj"
     }
   }
 }
