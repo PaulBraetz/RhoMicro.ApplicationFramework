@@ -25,18 +25,22 @@ public static class Composers
     });
     private static IComposer Client { get; } = Composer.Create(c =>
     {
-        c.RegisterServices(typeof(ToLowerService).Assembly, new ConventionalServiceRegistrationOptions()
+        c.RegisterServices(new ConventionalServiceRegistrationOptions()
         {
             RegistrationPredicate = ConventionalServiceRegistrationPredicates.RegisterAll,
-            RegistrationDerivation = ctx =>
+            RegistrationDerivation = info =>
             {
-                if(ctx.RegistrationInfo.ServiceType != typeof(IService<ToLower, ToLower.Result>))
+                var result = new List<ConventionalServiceRegistration>();
+                if(info.ServiceType != typeof(IService<ToLower, ToLower.Result>))
                 {
-                    ctx.Container.Register(ctx.RegistrationInfo.ServiceType, ctx.RegistrationInfo.ImplementationType, Lifestyle.Scoped);
+                    result.Add(new(info.ServiceType, info.ImplementationType, Lifestyle.Scoped, false));
                 }
-                ctx.Container.Register(ctx.RegistrationInfo.TraditionalServiceType, ctx.RegistrationInfo.TraditionalServiceAdapterType, Lifestyle.Scoped);
+
+                result.Add(new(info.TraditionalServiceType, info.TraditionalServiceAdapterType, Lifestyle.Scoped, false));
+
+                return result;
             }
-        });
+        }, typeof(ToLowerService).Assembly);
     });
     /// <summary>
     /// Gets the default composition root for web application clients.

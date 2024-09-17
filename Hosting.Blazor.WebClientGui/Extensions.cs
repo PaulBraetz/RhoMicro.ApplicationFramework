@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 using RhoMicro.RequiredPropertyValidation.RhoMicro.RequiredPropertyValidation;
 
+using SimpleInjector;
+
 /// <summary>
 /// Contains extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.
 /// </summary>
@@ -21,10 +23,15 @@ public static class Extensions
     public static WebClientGuiAppBuilder AddRequiredPropertyValidation(this WebClientGuiAppBuilder appBuilder, Action<RequiredPropertyValidationConfiguration>? configure = null) =>
         appBuilder.AddRequiredPropertyValidation<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>(configure);
     /// <summary>
-    /// Adds timeout aspects and related configuration to the application.
+    /// Adds timeout aspects and related configuration to the application using the lifestyle provided.
+    /// </summary>
+    public static WebClientGuiAppBuilder AddTimeout(this WebClientGuiAppBuilder appBuilder, Lifestyle lifestyle) =>
+        appBuilder.AddTimeout<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>(lifestyle);
+    /// <summary>
+    /// Adds timeout aspects and related configuration to the application using the <see cref="Lifestyle.Scoped"/> lifestyle.
     /// </summary>
     public static WebClientGuiAppBuilder AddTimeout(this WebClientGuiAppBuilder appBuilder) =>
-        appBuilder.AddTimeout<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>();
+        appBuilder.AddTimeout(Lifestyle.Scoped);
     /// <summary>
     /// Adds blazor to the web client app builder.
     /// </summary>

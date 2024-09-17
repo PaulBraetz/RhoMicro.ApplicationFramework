@@ -6,6 +6,8 @@ using Photino.Blazor;
 
 using RhoMicro.RequiredPropertyValidation.RhoMicro.RequiredPropertyValidation;
 
+using SimpleInjector;
+
 /// <summary>
 /// Contains extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.
 /// </summary>
@@ -24,10 +26,15 @@ public static class Extensions
     public static LocalGuiAppBuilder AddRequiredPropertyValidation(this LocalGuiAppBuilder appBuilder, Action<RequiredPropertyValidationConfiguration>? configure = null) =>
         appBuilder.AddRequiredPropertyValidation<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>(configure);
     /// <summary>
-    /// Adds timeout aspects and related configuration to the application.
+    /// Adds timeout aspects and related configuration to the application using the lifestyle provided.
+    /// </summary>
+    public static LocalGuiAppBuilder AddTimeout(this LocalGuiAppBuilder appBuilder, Lifestyle lifestyle) =>
+        appBuilder.AddTimeout<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>(lifestyle);
+    /// <summary>
+    /// Adds timeout aspects and related configuration to the application using the <see cref="Lifestyle.Scoped"/> lifestyle.
     /// </summary>
     public static LocalGuiAppBuilder AddTimeout(this LocalGuiAppBuilder appBuilder) =>
-        appBuilder.AddTimeout<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>();
+        appBuilder.AddTimeout(Lifestyle.Scoped);
     /// <summary>
     /// Adds appsettings to the app builder.
     /// </summary>
