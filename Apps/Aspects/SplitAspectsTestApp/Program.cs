@@ -7,21 +7,25 @@ using RhoMicro.ApplicationFramework.Hosting;
 
 using SplitAspectsLib;
 
+using SplitAspectsTestApp;
+
 await CliApp.CreateBuilder()
     .ConfigureOptions(o => o.Composer += Composer.Create(c =>
     {
         c.RegisterServices(typeof(IConcatService).Assembly);
+        c.RegisterServices(typeof(ConcatServiceImpl).Assembly);
     }))
-    .ConfigureCapabilities(c=>c.Services.AddHostedService<MainService>())
+    .ConfigureCapabilities(c => c.Services.AddHostedService<MainService>())
     .Build()
     .RunAsync(default)
     .ConfigureAwait(false);
 
-internal class MainService : IHostedService
+internal class MainService(IConcatService service) : IHostedService
 {
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        Console.WriteLine("Hello, World!");
+        var msg = service.Concat("Hello, ", "World!", default);
+        Console.WriteLine(msg);
         return Task.CompletedTask;
     }
 
