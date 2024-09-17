@@ -144,10 +144,12 @@ public sealed class Generator : IIncrementalGenerator
                     OpenBracesBlock() +
                         "global::System.Threading.Tasks.ValueTask<" + service.ResultTypeFullName + "> " +
                         AppendServiceType(service, settings) + '.' + settings.ExecuteName + '(' +
-                        service.RequestTypeFullName + " request, " + Constants.CtTypeName + " cancellationToken) =>" + NewLine +
-                        Indent() +
+                        service.RequestTypeFullName + " request, " + Constants.CtTypeName + " cancellationToken = default)" +
+                        OpenBracesBlock() +
                             Append(b =>
                             {
+                                b.AppendLine("cancellationToken.ThrowIfCancellationRequested();").AppendCore("return ");
+
                                 if(!service.ReturnsValueTask)
                                 {
                                     b.Append("new ").Append(Constants.ValueTaskTypeName).Append('<').Append(service.ResultTypeFullName).AppendCore(">(");
@@ -162,7 +164,7 @@ public sealed class Generator : IIncrementalGenerator
 
                                 b.AppendCore(';');
                             }) +
-                        Detent() +
+                        CloseBlock() +
                     CloseBlock();
                 }) +
             CloseAllBlocks();
@@ -215,7 +217,7 @@ public sealed class Generator : IIncrementalGenerator
                                         b.Append(type).Append(' ').Append(name).AppendCore(", ");
                                     }
                                 })
-                                .Append(Constants.CtTypeName).AppendCore(" cancellationToken);");
+                                .Append(Constants.CtTypeName).AppendCore(" cancellationToken = default);");
                             }) +
                         CloseBlock() +
                     CloseAllBlocks();
@@ -265,9 +267,10 @@ public sealed class Generator : IIncrementalGenerator
                                 b.Append(type).Append(' ').Append(name).AppendCore(", ");
                             }
                         })
-                        .Append(Constants.CtTypeName).Append(" cancellationToken) => ").AppendLine()
-                        .Indent()
-                            .Append("service_").Append(i.ToString()).Append('.').Append(settings!.ExecuteName).Append("(new ").Append(services[i].RequestTypeFullName).AppendLine('(')
+                        .Append(Constants.CtTypeName).Append(" cancellationToken = default)")
+                        .OpenBracesBlock()
+                            .AppendLine("cancellationToken.ThrowIfCancellationRequested();")
+                            .Append("return service_").Append(i.ToString()).Append('.').Append(settings!.ExecuteName).Append("(new ").Append(services[i].RequestTypeFullName).AppendLine('(')
                             .Indent()
                                 .Append(b =>
                                 {
@@ -286,7 +289,7 @@ public sealed class Generator : IIncrementalGenerator
                             .Detent()
                             .AppendLine("), cancellationToken);")
                             .AppendLine()
-                        .DetentCore();
+                        .CloseBlockCore();
                     }
                 }) +
             CloseAllBlocks();
