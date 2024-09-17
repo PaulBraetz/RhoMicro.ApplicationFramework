@@ -6,7 +6,7 @@
 #if GENERATOR
 [RhoMicro.CodeAnalysis.IncludeFile]
 #endif
-public enum ServiceVisibility
+internal enum ServiceVisibility
 {
     /// <summary>
     /// The generated types will have the visibility set by <see cref="ServiceSettingsAttribute"/>.

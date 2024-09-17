@@ -6,6 +6,7 @@ using System;
 /// Annotates a partial service method for AOP service generation.
 /// Use this attribute when defining the service interface and request type manually or externally.
 /// </summary>
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
 #if GENERATOR
 [RhoMicro.CodeAnalysis.GenerateFactory]
 [RhoMicro.CodeAnalysis.IncludeFile]

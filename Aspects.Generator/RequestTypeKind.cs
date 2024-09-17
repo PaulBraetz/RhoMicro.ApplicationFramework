@@ -6,7 +6,7 @@
 #if GENERATOR
 [RhoMicro.CodeAnalysis.IncludeFile]
 #endif
-public enum RequestTypeKind
+internal enum RequestTypeKind
 {
     /// <summary>
     /// The generated request type will be a <see langword="readonly"/> <see langword="record"/> <see langword="struct"/>.
