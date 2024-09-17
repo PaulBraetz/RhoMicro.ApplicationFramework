@@ -20,6 +20,7 @@
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="SimpleInjector" Version="5.5.0" />
+		<PackageReference Include="SimpleInjector.Integration.GenericHost" Version="5.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>

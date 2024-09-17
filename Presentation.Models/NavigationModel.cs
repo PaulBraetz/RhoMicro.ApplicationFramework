@@ -1,6 +1,4 @@
 ﻿namespace RhoMicro.ApplicationFramework.Presentation.Models;
-using Microsoft.AspNetCore.Http;
-
 using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 
 /// <summary>

@@ -1,6 +1,5 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Logging.Console;
 
 using RhoMicro.RequiredPropertyValidation.RhoMicro.RequiredPropertyValidation;
 

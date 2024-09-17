@@ -28,7 +28,7 @@ public static class Composers
         c.RegisterServices(typeof(ToLowerService).Assembly, new ConventionalServiceRegistrationOptions()
         {
             RegistrationPredicate = ConventionalServiceRegistrationPredicates.RegisterAll,
-            RegistrationCallback = ctx =>
+            RegistrationDerivation = ctx =>
             {
                 if(ctx.RegistrationInfo.ServiceType != typeof(IService<ToLower, ToLower.Result>))
                 {

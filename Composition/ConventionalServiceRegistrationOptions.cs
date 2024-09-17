@@ -10,7 +10,7 @@ public sealed class ConventionalServiceRegistrationOptions
     /// </summary>
     public ConventionalServiceRegistrationPredicate RegistrationPredicate { get; set; } = ConventionalServiceRegistrationPredicates.RegisterAll;
     /// <summary>
-    /// Gets or sets the callback used for actually registering services to the container.
+    /// Gets or sets the callback used for deriving service registrations from discovered service types.
     /// </summary>
-    public ConventionalServiceRegistrationCallback RegistrationCallback { get; set; } = ConventionalServiceRegistrationCallbacks.Default;
+    public ConventionalServiceRegistrationDerivation RegistrationDerivation { get; set; } = ConventionalServiceRegistrationDerivations.Default;
 }

@@ -2,8 +2,6 @@
 using System;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging.Console;
-using Microsoft.Extensions.Logging;
 using NReco.Logging.File;
 using RhoMicro.ApplicationFramework.Common.Environment;
 using Microsoft.Extensions.Options;
@@ -37,10 +35,10 @@ public static class Extensions
         return appBuilder;
     }
     /// <summary>
-    /// Adds timeout aspects and related configuration to the application.
+    /// Adds timeout aspects and related configuration to the application using the lifestyle provided.
     /// </summary>
     public static TSelf AddTimeout<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(
-        this TSelf appBuilder)
+        this TSelf appBuilder, Lifestyle lifestyle)
         where TSelf : AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>
         where TApp : App<TApp, TUnderlyingApp>
         where TCapabilities : AppBuilderCapabilities
@@ -65,8 +63,8 @@ public static class Extensions
 
                 return result;
             });
-            c.RegisterConditional(typeof(ITimeoutSettings<>), typeof(TimeoutSettings<>), ctx => !ctx.Handled);
-            c.RegisterDecorator(typeof(IService<,>), typeof(TimeoutDecorator<,>));
+            c.RegisterConditional(typeof(ITimeoutSettings<>), typeof(TimeoutSettings<>), lifestyle, ctx => !ctx.Handled);
+            c.RegisterDecorator(typeof(IService<,>), typeof(TimeoutDecorator<,>), lifestyle);
         });
 
         return appBuilder;

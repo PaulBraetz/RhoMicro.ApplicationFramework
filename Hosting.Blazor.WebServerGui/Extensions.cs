@@ -15,6 +15,7 @@ using RhoMicro.RequiredPropertyValidation.RhoMicro.RequiredPropertyValidation;
 using NReco.Logging.File;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Logging;
+using SimpleInjector;
 
 /// <summary>
 /// Contains extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.
@@ -34,10 +35,15 @@ public static class Extensions
     public static WebServerGuiAppBuilder AddRequiredPropertyValidation(this WebServerGuiAppBuilder appBuilder, Action<RequiredPropertyValidationConfiguration>? configure = null) =>
         appBuilder.AddRequiredPropertyValidation<WebServerGuiAppBuilder, WebServerGuiApp, WebApplicationBuilder, WebApplication, BlazorAppBuilderCapabilities>(configure);
     /// <summary>
-    /// Adds timeout aspects and related configuration to the application.
+    /// Adds timeout aspects and related configuration to the application using the lifestyle provided.
+    /// </summary>
+    public static WebServerGuiAppBuilder AddTimeout(this WebServerGuiAppBuilder appBuilder, Lifestyle lifestyle) =>
+        appBuilder.AddTimeout<WebServerGuiAppBuilder, WebServerGuiApp, WebApplicationBuilder, WebApplication, BlazorAppBuilderCapabilities>(lifestyle);
+    /// <summary>
+    /// Adds timeout aspects and related configuration to the application using the <see cref="Lifestyle.Scoped"/> lifestyle.
     /// </summary>
     public static WebServerGuiAppBuilder AddTimeout(this WebServerGuiAppBuilder appBuilder) =>
-        appBuilder.AddTimeout<WebServerGuiAppBuilder, WebServerGuiApp, WebApplicationBuilder, WebApplication, BlazorAppBuilderCapabilities>();
+        appBuilder.AddTimeout(Lifestyle.Scoped);
     /// <summary>
     /// Adds blazor to the web server app builder.
     /// </summary>

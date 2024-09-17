@@ -1,6 +1,4 @@
 ﻿namespace RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
-using Microsoft.AspNetCore.Http;
-
 /// <summary>
 /// Represents a model that navigates to a static path.
 /// </summary>

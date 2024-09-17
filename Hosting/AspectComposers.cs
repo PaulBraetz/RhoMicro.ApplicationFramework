@@ -17,48 +17,39 @@ using SimpleInjector;
 public static class AspectComposers
 {
     /// <summary>
-    /// Creates a composer combining the composer provided with a composer able to compose common aspects.
+    /// Gets a composer able to compose common aspects using the <see cref="Lifestyle.Scoped"/> lifestyle.
     /// </summary>
-    /// <param name="composer">The composer to combine.</param>
-    /// <returns>A new combined composer.</returns>
-    private static IComposer WithAspects(this IComposer composer) => Composer.Create(composer, Default);
-#pragma warning disable IDE0053 // Use expression body for lambda expression
-#pragma warning disable IDE0200 // Remove unnecessary lambda expression
+    public static IComposer Default { get; } = Create(Lifestyle.Scoped, CommonAspects.All);
     /// <summary>
-    /// Gets a composer able to compose common aspects.
+    /// Gets a composer able to compose common aspects using the lifestyle provided.
     /// </summary>
-    public static IComposer Default { get; } =
-        Composer.Create(c =>
-        {
-            RegisterCoreAspects(c);
-        });
+    public static IComposer Create(Lifestyle lifestyle, CommonAspects aspects = CommonAspects.All) => Composer.Create(c => RegisterCoreAspects(c, lifestyle, aspects));
     /// <summary>
     /// Gets a composer adding the <see cref="SynchronizationContextDiscardingDecorator{TRequest, TResult}"/> to the container.
     /// </summary>
     public static IComposer SynchronizationContextDiscardingDecoratorComposer { get; } =
-        Composer.Create(c =>
-        {
-            c.RegisterDecorator(typeof(IService<,>), typeof(SynchronizationContextDiscardingDecorator<,>), Lifestyle.Scoped);
-        });
-#pragma warning restore IDE0200 // Remove unnecessary lambda expression
-#pragma warning restore IDE0053 // Use expression body for lambda expression
-    private static void RegisterCoreAspects(Container c)
+        Composer.Create(c => c.RegisterDecorator(typeof(IService<,>), typeof(SynchronizationContextDiscardingDecorator<,>), Lifestyle.Scoped));
+    private static void RegisterCoreAspects(Container c, Lifestyle lifestyle, CommonAspects aspects)
     {
         RegisterFormatters(c);
         RegisterLoggingService(c);
-        RegisterLoggingDecorators(c);
+        RegisterLoggingDecorators(c, lifestyle, aspects);
     }
-    private static void RegisterLoggingDecorators(Container c)
+    private static void RegisterLoggingDecorators(Container c, Lifestyle lifestyle, CommonAspects aspects)
     {
-        //timestamp->execution->thread->exception->time->service
-
-        c.RegisterDecorator(typeof(IService<,>), typeof(TimestampLoggingServiceDecorator<,>), Lifestyle.Scoped);
-        c.RegisterDecorator(typeof(IService<,>), typeof(ExecutionTimeLoggingServiceDecorator<,>), Lifestyle.Scoped);
-        c.RegisterDecorator(typeof(IService<,>), typeof(ExceptionLoggingServiceDecorator<,>), Lifestyle.Scoped);
-        c.RegisterDecorator(typeof(IService<,>), typeof(ThreadIdLoggingServiceDecorator<,>), Lifestyle.Scoped);
-        c.RegisterDecorator(typeof(IService<,>), typeof(ExecutionLoggingServiceDecorator<,>), Lifestyle.Scoped);
-        c.RegisterDecorator(typeof(IService<,>), typeof(ServiceCancellationDecorator<,>), Lifestyle.Scoped);
-        c.RegisterDecorator(typeof(IService<,>), ctx =>
+        if(aspects.HasFlag(CommonAspects.ExecutionTime))
+            c.RegisterDecorator(typeof(IService<,>), typeof(ExecutionTimeLoggingServiceDecorator<,>), lifestyle);
+        if(aspects.HasFlag(CommonAspects.Timestamp))
+            c.RegisterDecorator(typeof(IService<,>), typeof(TimestampLoggingServiceDecorator<,>), lifestyle);
+        if(aspects.HasFlag(CommonAspects.Exception))
+            c.RegisterDecorator(typeof(IService<,>), typeof(ExceptionLoggingServiceDecorator<,>), lifestyle);
+        if(aspects.HasFlag(CommonAspects.ThreadId))
+            c.RegisterDecorator(typeof(IService<,>), typeof(ThreadIdLoggingServiceDecorator<,>), lifestyle);
+        if(aspects.HasFlag(CommonAspects.Execution))
+            c.RegisterDecorator(typeof(IService<,>), typeof(ExecutionLoggingServiceDecorator<,>), lifestyle);
+        if(aspects.HasFlag(CommonAspects.ServiceType))
+        {
+            c.RegisterDecorator(typeof(IService<,>), ctx =>
         {
             var implementationType = ctx.ImplementationType;
 
@@ -81,13 +72,14 @@ public static class AspectComposers
                 .MakeGenericType(serviceArgs[0], serviceArgs[1], implementationType);
 
             return result;
-        }, Lifestyle.Scoped, ctx => true);
+        }, lifestyle, ctx => true);
+        }
     }
 
     private static void RegisterLoggingService(Container c)
     {
-        c.Register(() => new LoggingService(c.GetRequiredService<ILoggerFactory>().CreateLogger<LoggingService>()), Lifestyle.Scoped);
-        c.Register<ILoggingService>(c.GetRequiredService<LoggingService>, Lifestyle.Scoped);
+        c.Register(() => new LoggingService(c.GetRequiredService<ILoggerFactory>().CreateLogger<LoggingService>()), Lifestyle.Singleton);
+        c.Register<ILoggingService>(c.GetRequiredService<LoggingService>, Lifestyle.Singleton);
     }
 
     private static void RegisterFormatters(Container c)

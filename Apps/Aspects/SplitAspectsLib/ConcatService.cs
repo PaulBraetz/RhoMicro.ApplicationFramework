@@ -1,14 +1,12 @@
 ﻿namespace SplitAspectsLib;
 
 using RhoMicro.ApplicationFramework.Aspects;
-using RhoMicro.ApplicationFramework.Common;
-using RhoMicro.ApplicationFramework.Common.Abstractions;
 #pragma warning disable
 
 partial class ConcatService
 {
-    [ServiceMethod(Visibility = ServiceVisibility.Public)]
+    [ServiceMethod(Visibility = ServiceVisibility.Public, ServiceInterfaceName = "IConcatService")]
     static String Concat(String a, String b) => throw new NotSupportedException("The service is not supported client-side. Make sure to register an api client implementation instead.");
-    [ServiceMethod(Visibility = ServiceVisibility.Public)]
-    static int Foo() => 0;
+    [ServiceMethod(Visibility = ServiceVisibility.Public, ServiceInterfaceName = "IFooService")]
+    static int Foo() => throw new NotSupportedException("The service is not supported client-side. Make sure to register an api client implementation instead.");
 }

@@ -9,6 +9,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="SimpleInjector.Integration.GenericHost" Version="5.5.0" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\..\..\Hosting.Cli\Hosting.Cli.csproj" />
 		<ProjectReference Include="..\SplitAspectsLib\SplitAspectsLib.csproj" />
 		<ProjectReference Include="..\..\..\Aspects.Generator\Aspects.Generator.csproj" outputItemType="analyzer" referenceOutputAssemblies="false" />
