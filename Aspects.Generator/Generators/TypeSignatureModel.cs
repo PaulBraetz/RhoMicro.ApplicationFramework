@@ -43,7 +43,8 @@ sealed record TypeSignatureModel
 
     static String GetHintName(ITypeSymbol type)
     {
-        var resultBuilder = new StringBuilder(type.ContainingNamespace?.ToDisplayString() ?? String.Empty);
+        var resultBuilder = new StringBuilder(type.ContainingNamespace is { IsGlobalNamespace: false } ns ? ns.ToDisplayString().Replace('.', '_') : String.Empty);
+
         var types = new List<ITypeSymbol>();
         do
         {
@@ -65,7 +66,7 @@ sealed record TypeSignatureModel
             }
         }
 
-        var result = resultBuilder.ToString();
+        var result = resultBuilder.Append(".g.cs").ToString();
 
         return result;
     }
