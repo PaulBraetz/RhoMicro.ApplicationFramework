@@ -1,5 +1,7 @@
 ﻿namespace RhoMicro.ApplicationFramework.Composition;
 
+using System.Reflection;
+
 using SimpleInjector;
 
 /// <summary>
@@ -22,4 +24,17 @@ public static class ConventionalServiceRegistrationDerivations
         new(info.ServiceType, info.ImplementationType, Lifestyle.Scoped, false),
         new(info.TraditionalServiceType, info.TraditionalServiceAdapterType, Lifestyle.Scoped, false)
     ];
+    /// <summary>
+    /// Creates a callback that will prefer registering services from the specified assembly.
+    /// </summary>
+    /// <param name="assembly">The assembly whose services to prioritize when registering duplicate services.</param>
+    /// <returns></returns>
+    public static ConventionalServiceRegistrationDerivation PreferAssembly(Assembly assembly) => info =>
+    {
+        var isOverride = info.ImplementationType.Assembly == assembly;
+        return [
+            new(info.ServiceType,info.ImplementationType, Lifestyle.Scoped, isOverride),
+            new(info.TraditionalServiceType, info.TraditionalServiceAdapterType, Lifestyle.Scoped, isOverride)
+        ];
+    };
 }
