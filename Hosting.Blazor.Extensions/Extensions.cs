@@ -173,7 +173,7 @@ public static partial class Extensions
                         settings.Services.Select(s => (s.SettingsType, s.ServiceType, s.ImplementationType)))
                 {
                     o.Container.Register(settingsType, () => o.Container.GetInstance<ApiServiceSettingsFactory>().Create(settingsType));
-                    o.Container.Register(serviceType, implementationType);
+                    o.Container.RegisterConditional(serviceType, implementationType, ctx => !ctx.Handled);
                     _ = o.Services.AddHttpClient(implementationType.FullName!);
                 }
             };
