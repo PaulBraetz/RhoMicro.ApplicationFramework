@@ -5,7 +5,7 @@ using System.Reflection;
 /// <summary>
 /// Options for informing conventional service registrations.
 /// </summary>
-public sealed class ConventionalServiceRegistrationOptions
+public sealed record ConventionalServiceRegistrationOptions
 {
     /// <summary>
     /// Gets the default options.
