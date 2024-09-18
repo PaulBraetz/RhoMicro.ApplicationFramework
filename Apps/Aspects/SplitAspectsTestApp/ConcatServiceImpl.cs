@@ -5,8 +5,8 @@ using RhoMicro.ApplicationFramework.Aspects;
 
 partial class ConcatServiceImpl
 {
-    [PartialServiceMethod(RequestType = typeof(Concat), ServiceInterface = typeof(IConcatService))]
+    [ServiceMethodImplementation(Request = typeof(Concat), Service = typeof(IConcatService))]
     static String Concat(String a, String b) => a + b;
-    [PartialServiceMethod(RequestType = typeof(Foo), ServiceInterface = typeof(IFooService))]
+    [ServiceMethodImplementation(Request = typeof(Foo), Service = typeof(IFooService))]
     static Int32 Foo() => 1;
 }

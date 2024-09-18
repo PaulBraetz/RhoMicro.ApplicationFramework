@@ -3,7 +3,8 @@
 using System;
 
 /// <summary>
-/// Annotates a partial service method for AOP service generation.
+/// Annotates a service method for AOP service generation.
+/// No request type or service interface will be generated.
 /// Use this attribute when defining the service interface and request type manually or externally.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
@@ -11,7 +12,7 @@ using System;
 [RhoMicro.CodeAnalysis.GenerateFactory]
 [RhoMicro.CodeAnalysis.IncludeFile]
 #endif
-internal sealed partial class PartialServiceMethodAttribute : Attribute
+internal sealed partial class ServiceMethodImplementationAttribute : Attribute
 {
     /// <summary>
     /// Gets or sets the external service interface implemented by this service.
@@ -20,7 +21,7 @@ internal sealed partial class PartialServiceMethodAttribute : Attribute
 #if !GENERATOR
         required 
 #endif
-        Type ServiceInterface
+        Type Service
     { get; set; }
 #if GENERATOR
     = null!;
@@ -32,7 +33,7 @@ internal sealed partial class PartialServiceMethodAttribute : Attribute
 #if !GENERATOR
         required 
 #endif
-        Type RequestType
+        Type Request
     { get; set; }
 #if GENERATOR
     = null!;

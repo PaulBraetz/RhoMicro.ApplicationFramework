@@ -38,7 +38,7 @@ public sealed class Generator : IIncrementalGenerator
             });
 
         var partialServicesProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
-                typeof(PartialServiceMethodAttribute).FullName,
+                typeof(ServiceMethodImplementationAttribute).FullName,
                 (node, ct) => true,
                 ServiceModel.CreateFromPartial)
             .Where(m => m is not null)

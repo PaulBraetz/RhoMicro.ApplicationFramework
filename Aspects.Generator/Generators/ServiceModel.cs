@@ -25,18 +25,18 @@ sealed record ServiceModel(
         ct.ThrowIfCancellationRequested();
 
         if(ctx.TargetSymbol is not IMethodSymbol method ||
-           !PartialServiceMethodAttribute.TryCreate(ctx.Attributes[0], out var attribute) ||
-           //!attribute!.RequestTypeSymbol.IsRecord ||
-           attribute!.ServiceInterfaceSymbol.TypeKind != TypeKind.Interface)
+           !ServiceMethodImplementationAttribute.TryCreate(ctx.Attributes[0], out var attribute) ||
+           //!attribute!.RequestSymbol.IsRecord ||
+           attribute!.ServiceSymbol.TypeKind != TypeKind.Interface)
         {
             return null;
         }
 
-        var requestTypeName = attribute.RequestTypeSymbol.Name;
-        var requestTypeFullName = attribute.RequestTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        var requestTypeName = attribute.RequestSymbol.Name;
+        var requestTypeFullName = attribute.RequestSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
-        var serviceInterfaceName = attribute.ServiceInterfaceSymbol.Name;
-        var serviceInterfaceFullName = attribute.ServiceInterfaceSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        var serviceInterfaceName = attribute.ServiceSymbol.Name;
+        var serviceInterfaceFullName = attribute.ServiceSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
         var (parameters, cancellationTokenParameter) = GetParameters(method, ct);
 
