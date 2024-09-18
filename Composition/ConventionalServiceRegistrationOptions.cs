@@ -29,10 +29,10 @@ public sealed record ConventionalServiceRegistrationOptions
     /// Gets or sets a predicate determining whether to register a given service
     /// implementation.
     /// </summary>
-    public ConventionalServiceRegistrationPredicate RegistrationPredicate { get; set; } = ConventionalServiceRegistrationPredicates.RegisterAll;
+    public ConventionalServiceRegistrationPredicate RegistrationPredicate { get; init; } = ConventionalServiceRegistrationPredicates.RegisterAll;
     /// <summary>
     /// Gets or sets the callback used for deriving service registrations from
     /// discovered service types.
     /// </summary>
-    public ConventionalServiceRegistrationDerivation RegistrationDerivation { get; set; } = ConventionalServiceRegistrationDerivations.Default;
+    public ConventionalServiceRegistrationDerivation RegistrationDerivation { get; init; } = ConventionalServiceRegistrationDerivations.Default;
 }
