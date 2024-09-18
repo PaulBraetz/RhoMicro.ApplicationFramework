@@ -90,7 +90,11 @@ public static partial class ContainerExtensions
         {
             try
             {
-                container.Register(registration.ServiceType, registration.ImplementationType, registration.Lifestyle);
+                container.RegisterConditional(
+                    registration.ServiceType,
+                    registration.ImplementationType,
+                    registration.Lifestyle,
+                    ctx => !ctx.Handled);
             } catch(InvalidOperationException ex)
             when(GetDuplicateRegistrationMessagePattern().IsMatch(ex.Message))
             {
