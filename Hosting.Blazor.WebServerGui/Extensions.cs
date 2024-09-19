@@ -16,6 +16,7 @@ using NReco.Logging.File;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Logging;
 using SimpleInjector;
+using Microsoft.Extensions.Hosting;
 
 /// <summary>
 /// Contains extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.
@@ -156,6 +157,14 @@ public static class Extensions
 
         return appBuilder;
     }
+    /// <summary>
+    /// Adds all services implementing <see cref="IHostedService"/> from the assemblies provided as hosted services to the app being built.
+    /// </summary>
+    /// <param name="appBuilder"></param>
+    /// <param name="assemblies"></param>
+    /// <returns></returns>
+    public static WebServerGuiAppBuilder AddHostedServices(this WebServerGuiAppBuilder appBuilder, params Assembly[] assemblies) =>
+        appBuilder.AddHostedServices<WebServerGuiAppBuilder, WebServerGuiApp, WebApplicationBuilder, WebApplication, BlazorAppBuilderCapabilities>(assemblies);
     ///// <summary>
     ///// Adds default component models to the app builders capabilities.
     ///// </summary>

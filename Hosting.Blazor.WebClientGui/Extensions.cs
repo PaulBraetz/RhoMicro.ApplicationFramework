@@ -1,5 +1,8 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
+using System.Reflection;
+
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.Hosting;
 
 using RhoMicro.RequiredPropertyValidation.RhoMicro.RequiredPropertyValidation;
 
@@ -57,6 +60,14 @@ public static class Extensions
     /// </summary>
     public static WebClientGuiAppBuilder AddConsoleLogging(this WebClientGuiAppBuilder appBuilder) =>
         appBuilder.AddLogging<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>();
+    /// <summary>
+    /// Adds all services implementing <see cref="IHostedService"/> from the assemblies provided as hosted services to the app being built.
+    /// </summary>
+    /// <param name="appBuilder"></param>
+    /// <param name="assemblies"></param>
+    /// <returns></returns>
+    public static WebClientGuiAppBuilder AddHostedServices(this WebClientGuiAppBuilder appBuilder, params Assembly[] assemblies) =>
+        appBuilder.AddHostedServices<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>(assemblies);
     ///// <summary>
     ///// Adds configuration based file logging to the builders capabilities.
     ///// </summary>

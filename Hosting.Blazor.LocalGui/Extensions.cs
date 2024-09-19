@@ -1,5 +1,8 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
 
+using Microsoft.Extensions.Hosting;
+using System.Reflection;
+
 using NReco.Logging.File;
 
 using Photino.Blazor;
@@ -66,6 +69,14 @@ public static class Extensions
     /// </summary>
     public static LocalGuiAppBuilder AddConsoleLogging(this LocalGuiAppBuilder appBuilder) =>
         appBuilder.AddLogging<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>();
+    /// <summary>
+    /// Adds all services implementing <see cref="IHostedService"/> from the assemblies provided as hosted services to the app being built.
+    /// </summary>
+    /// <param name="appBuilder"></param>
+    /// <param name="assemblies"></param>
+    /// <returns></returns>
+    public static LocalGuiAppBuilder AddHostedServices(this LocalGuiAppBuilder appBuilder, params Assembly[] assemblies) =>
+        appBuilder.AddHostedServices<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>(assemblies);
     ///// <summary>
     ///// Adds default component models to the app builders capabilities.
     ///// </summary>

@@ -12,6 +12,10 @@ using RhoMicro.ApplicationFramework.Common.Abstractions;
 using RhoMicro.ApplicationFramework.Composition;
 using RhoMicro.RequiredPropertyValidation.RhoMicro.RequiredPropertyValidation;
 using SimpleInjector;
+using Microsoft.Extensions.Hosting;
+using SimpleInjector.Integration.ServiceCollection;
+using System.Linq.Expressions;
+using System.Reflection;
 
 /// <summary>
 /// Contains extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.
@@ -125,6 +129,39 @@ public static class Extensions
         ArgumentNullException.ThrowIfNull(appBuilder);
 
         appBuilder.Options.OnContainerAdd += (o) => o.AddLogging();
+
+        return appBuilder;
+    }
+    /// <summary>
+    /// Adds all services implementing <see cref="IHostedService"/> from the assemblies provided as hosted services to the app being built.
+    /// </summary>
+    /// <param name="appBuilder"></param>
+    /// <param name="assemblies"></param>
+    /// <returns></returns>
+    public static TSelf AddHostedServices<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(this TSelf appBuilder, params Assembly[] assemblies)
+        where TSelf : AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>
+        where TApp : App<TApp, TUnderlyingApp>
+        where TCapabilities : AppBuilderCapabilities
+    {
+        ArgumentNullException.ThrowIfNull(appBuilder);
+
+        var paramExpr = Expression.Parameter(typeof(SimpleInjectorAddOptions));
+        var addExprs = assemblies.SelectMany(a => a.GetTypes())
+            .Where(t => t.IsAssignableTo(typeof(IHostedService)))
+            .Select(t =>
+            {
+                var method = ( typeof(SimpleInjectorGenericHostExtensions)
+                    .GetMethod(nameof(SimpleInjectorGenericHostExtensions.AddHostedService))
+                    ?? throw new InvalidOperationException($"Unable to locate method '{nameof(SimpleInjectorGenericHostExtensions.AddHostedService)}' in type  '{typeof(SimpleInjectorGenericHostExtensions).FullName}'.") )
+                    .MakeGenericMethod(t);
+                var callExpr = Expression.Call(method, paramExpr);
+
+                return callExpr;
+            });
+        var body = Expression.Block(addExprs);
+        var lambdaExpr = Expression.Lambda<Action<SimpleInjectorAddOptions>>(body, paramExpr);
+        var handler = lambdaExpr.Compile();
+        appBuilder.Options.OnContainerAdd += handler;
 
         return appBuilder;
     }
