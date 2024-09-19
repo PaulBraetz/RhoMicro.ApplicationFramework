@@ -14,16 +14,16 @@ public sealed record ConventionalServiceRegistrationOptions
     /// <summary>
     /// Creates options with a predicate for discovering all services, while
     /// registering with a preference of those originating from the specified
-    /// assembly.
+    /// assemblies.
     /// </summary>
-    /// <param name="assembly">
-    /// The assembly to prefer registering services from.
+    /// <param name="assemblies">
+    /// The assemblies whose services to prioritize when registering duplicate services.
     /// </param>
     /// <returns></returns>
-    public static ConventionalServiceRegistrationOptions PreferAssembly(Assembly assembly) => new()
+    public static ConventionalServiceRegistrationOptions PreferAssemblies(params Assembly[] assemblies) => new()
     {
         RegistrationPredicate = ConventionalServiceRegistrationPredicates.RegisterAll,
-        RegistrationDerivation = ConventionalServiceRegistrationDerivations.PreferAssembly(assembly)
+        RegistrationDerivation = ConventionalServiceRegistrationDerivations.PreferAssemblies(assemblies)
     };
     /// <summary>
     /// Gets or sets a predicate determining whether to register a given service

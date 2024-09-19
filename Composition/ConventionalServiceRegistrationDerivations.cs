@@ -11,13 +11,15 @@ using SimpleInjector;
 /// <returns>The registrations to add to the container.</returns>
 public delegate IEnumerable<ConventionalServiceRegistration> ConventionalServiceRegistrationDerivation(ConventionalServiceRegistrationInfo registrationInfo);
 /// <summary>
-/// Contains common <see cref="ConventionalServiceRegistrationDerivation"/> instances.
+/// Contains common <see cref="ConventionalServiceRegistrationDerivation"/>
+/// instances.
 /// </summary>
 public static class ConventionalServiceRegistrationDerivations
 {
     /// <summary>
-    /// Gets the default callback that will register the located service implementation onto the service type,
-    /// as well as the traditional service adapter type onto the traditional service type.
+    /// Gets the default callback that will register the located service
+    /// implementation onto the service type, as well as the traditional service
+    /// adapter type onto the traditional service type.
     /// </summary>
     public static ConventionalServiceRegistrationDerivation Default { get; } = info =>
     [
@@ -25,16 +27,24 @@ public static class ConventionalServiceRegistrationDerivations
         new(info.TraditionalServiceType, info.TraditionalServiceAdapterType, Lifestyle.Scoped, false)
     ];
     /// <summary>
-    /// Creates a callback that will prefer registering services from the specified assembly.
+    /// Creates a callback that will prefer registering services from the
+    /// specified assemblies. Providing duplicate service implementations from
+    /// the assemblies provided will likely lead to priority conflicts.
     /// </summary>
-    /// <param name="assembly">The assembly whose services to prioritize when registering duplicate services.</param>
+    /// <param name="assemblies">
+    /// The assemblies whose services to prioritize when registering duplicate services.
+    /// </param>
     /// <returns></returns>
-    public static ConventionalServiceRegistrationDerivation PreferAssembly(Assembly assembly) => info =>
+    public static ConventionalServiceRegistrationDerivation PreferAssemblies(params Assembly[] assemblies)
     {
-        var isOverride = info.ImplementationType.Assembly == assembly;
-        return [
-            new(info.ServiceType,info.ImplementationType, Lifestyle.Scoped, isOverride),
-            new(info.TraditionalServiceType, info.TraditionalServiceAdapterType, Lifestyle.Scoped, isOverride)
-        ];
-    };
+        var assemblySet = assemblies.ToHashSet();
+        return info =>
+        {
+            var isOverride = assemblySet.Contains(info.ImplementationType.Assembly);
+            return [
+                new(info.ServiceType,info.ImplementationType, Lifestyle.Scoped, isOverride),
+                new(info.TraditionalServiceType, info.TraditionalServiceAdapterType, Lifestyle.Scoped, isOverride)
+            ];
+        };
+    }
 }
