@@ -1,5 +1,7 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
 
+using System.Diagnostics;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,18 +28,18 @@ public sealed class CliApp(
     /// Creates a new builder instance.
     /// </summary>
     /// <returns>A new builder instance.</returns>
-    public static CliAppBuilder CreateBuilder(Action<CliAppBuilderCreationSettings>? configure = null)
+    public static CliAppBuilder CreateBuilder(Action<CliAppBuilderCreationOptions>? configure = null)
     {
-        var builderSettings = GetBuilderSettings(configure);
-        var builder = Host.CreateApplicationBuilder(builderSettings);
-        var capabilities = CreateCapabilities(builderSettings, builder);
+        var options = GetBuilderCreationOptions(configure);
+        var builder = Host.CreateApplicationBuilder(options.BuilderSettings);
+        var capabilities = CreateCapabilities(options, builder);
 
-        return new CliAppBuilder(builder, capabilities);
+        return new CliAppBuilder(builder, capabilities).LogFeature("CliAppBuilder", "built");
     }
 
-    private static AppBuilderCapabilities CreateCapabilities(HostApplicationBuilderSettings builderSettings, HostApplicationBuilder builder)
+    private static AppBuilderCapabilities CreateCapabilities(CliAppBuilderCreationOptions settings, HostApplicationBuilder builder)
     {
-        var configBuilder = CreateConfigBuilder(builderSettings);
+        var configBuilder = CreateConfigBuilder(settings.BuilderSettings);
         var result = new AppBuilderCapabilities()
         {
             Services = builder.Services
@@ -46,7 +48,8 @@ public sealed class CliApp(
                         .AddSingleton<IConfiguration>(p => p.GetRequiredService<IConfigurationRoot>()),
             Configuration = configBuilder,
             Logging = new LoggingBuilder(builder.Services),
-            EnvironmentConfiguration = EnvironmentConfiguration.Create(builderSettings.EnvironmentName)
+            EnvironmentConfiguration = EnvironmentConfiguration.Create(settings.BuilderSettings.EnvironmentName),
+            SetupLoggingCallback = settings.SetupLoggingCallback
         };
 
         return result;
@@ -63,9 +66,9 @@ public sealed class CliApp(
         return configBuilder;
     }
 
-    private static HostApplicationBuilderSettings GetBuilderSettings(Action<CliAppBuilderCreationSettings>? configure)
+    private static CliAppBuilderCreationOptions GetBuilderCreationOptions(Action<CliAppBuilderCreationOptions>? configure)
     {
-        var options = new CliAppBuilderCreationSettings()
+        var options = new CliAppBuilderCreationOptions()
         {
             BuilderSettings = new HostApplicationBuilderSettings()
             {
@@ -75,19 +78,13 @@ public sealed class CliApp(
 
         configure?.Invoke(options);
 
-        var builderSettings = options.BuilderSettings;
-        return builderSettings;
+        return options;
     }
 
     /// <inheritdoc/>
-    protected override IServiceProvider GetServiceProvider()
-    {
-        return underlyingApp.Services;
-    }
-
+    protected override IServiceProvider GetServiceProvider() => UnderlyingApp.Services;
     /// <inheritdoc/>
-    protected override Task RunUnderlyingApplicationAsync(CancellationToken cancellationToken)
-        => underlyingApp.RunAsync(cancellationToken);
+    protected override Task RunUnderlyingApplicationAsync(CancellationToken cancellationToken) => UnderlyingApp.RunAsync(cancellationToken);
     /// <inheritdoc/>
-    protected override void RunUnderlyingApplication(CancellationToken cancellationToken) => underlyingApp.Run();
+    protected override void RunUnderlyingApplication(CancellationToken cancellationToken) => UnderlyingApp.Run();
 }

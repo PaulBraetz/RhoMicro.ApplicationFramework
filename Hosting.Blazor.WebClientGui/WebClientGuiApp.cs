@@ -1,5 +1,7 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
 
+using System.Diagnostics;
+
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 using RhoMicro.ApplicationFramework.Common.Environment;
@@ -27,29 +29,32 @@ public sealed class WebClientGuiApp(
     /// Creates a new builder instance.
     /// </summary>
     /// <returns>A new builder instance.</returns>
-    public static WebClientGuiAppBuilder CreateBuilder(Action<WebClientGuiAppBuilderCreationSettings>? configure = null)
+    public static WebClientGuiAppBuilder CreateBuilder(Action<WebClientGuiAppBuilderCreationOptions>? configure = null)
     {
-        var builderSettings = CreateBuilderCreationSettings(configure);
-        var builder = WebAssemblyHostBuilder.CreateDefault(builderSettings.Args);
-        var configuredBuilderSettings = ConfigureBuilderCreationSettings(builderSettings, configure, builder);
-        var capabilities = CreateCapabilities(configuredBuilderSettings, builder);
+        //we create/clone options because the environment can only be queried 
+        //after creating an instance of the builder, which requires args in the 
+        //first place
+        var options = CreateBuilderCreationOptions(configure);
+        var builder = WebAssemblyHostBuilder.CreateDefault(options.Args);
+        var configuredOptions = ConfigureBuilderCreationOptions(options, configure, builder);
+        var capabilities = CreateCapabilities(configuredOptions, builder);
 
-        return new WebClientGuiAppBuilder(builder, capabilities);
+        return new WebClientGuiAppBuilder(builder, capabilities).LogFeature("WebClientGuiAppBuilder", "built");
     }
     /// <summary>
     /// Creates a new builder instance.
     /// </summary>
     /// <returns>A new builder instance.</returns>
-    public static WebClientGuiAppBuilder CreateBuilder(out WebClientGuiAppBuilder builder, Action<WebClientGuiAppBuilderCreationSettings>? configure = null)
+    public static WebClientGuiAppBuilder CreateBuilder(out WebClientGuiAppBuilder builder, Action<WebClientGuiAppBuilderCreationOptions>? configure = null)
     {
         builder = CreateBuilder(configure);
 
         return builder;
     }
 
-    private static BlazorAppBuilderCapabilities CreateCapabilities(WebClientGuiAppBuilderCreationSettings builderSettings, WebAssemblyHostBuilder builder)
+    private static BlazorAppBuilderCapabilities CreateCapabilities(WebClientGuiAppBuilderCreationOptions options, WebAssemblyHostBuilder builder)
     {
-        var environment = builderSettings.EnvironmentConfiguration;
+        var environment = options.EnvironmentConfiguration;
 
         var capabilities = new BlazorAppBuilderCapabilities()
         {
@@ -57,42 +62,39 @@ public sealed class WebClientGuiApp(
             Services = builder.Services.AddConfiguration(builder.Configuration),
             Configuration = builder.Configuration,
             Logging = new LoggingBuilder(builder.Services),
-            EnvironmentConfiguration = environment
+            EnvironmentConfiguration = environment,
+            SetupLoggingCallback = options.SetupLoggingCallback
         };
         return capabilities;
     }
 
-    private static WebClientGuiAppBuilderCreationSettings ConfigureBuilderCreationSettings(
-        WebClientGuiAppBuilderCreationSettings builderSettings,
-        Action<WebClientGuiAppBuilderCreationSettings>? configure,
+    private static WebClientGuiAppBuilderCreationOptions ConfigureBuilderCreationOptions(
+        WebClientGuiAppBuilderCreationOptions options,
+        Action<WebClientGuiAppBuilderCreationOptions>? configure,
         WebAssemblyHostBuilder underlyingBuilder)
     {
-        var clone = new WebClientGuiAppBuilderCreationSettings(builderSettings)
+        var clone = new WebClientGuiAppBuilderCreationOptions(options)
         {
-            EnvironmentConfiguration = EnvironmentConfiguration.Create(underlyingBuilder.HostEnvironment.Environment)
+            EnvironmentConfiguration = EnvironmentConfiguration.Create(underlyingBuilder.HostEnvironment.Environment),
         };
         configure?.Invoke(clone);
         return clone;
     }
-    private static WebClientGuiAppBuilderCreationSettings CreateBuilderCreationSettings(Action<WebClientGuiAppBuilderCreationSettings>? configure)
+    private static WebClientGuiAppBuilderCreationOptions CreateBuilderCreationOptions(Action<WebClientGuiAppBuilderCreationOptions>? configure)
     {
-        var builderSettings = new WebClientGuiAppBuilderCreationSettings();
-        configure?.Invoke(builderSettings);
-        return builderSettings;
+        var options = new WebClientGuiAppBuilderCreationOptions();
+        configure?.Invoke(options);
+        return options;
     }
 
     /// <inheritdoc/>
-    protected override IServiceProvider GetServiceProvider()
-    {
-        return underlyingApp.Services;
-    }
-
+    protected override IServiceProvider GetServiceProvider() => UnderlyingApp.Services;
     /// <inheritdoc/>
     protected override Task RunUnderlyingApplicationAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        return underlyingApp.RunAsync();
+        return UnderlyingApp.RunAsync();
     }
     /// <inheritdoc/>
     protected override void RunUnderlyingApplication(CancellationToken cancellationToken) =>

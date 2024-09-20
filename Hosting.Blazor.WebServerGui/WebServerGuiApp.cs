@@ -28,22 +28,22 @@ public sealed class WebServerGuiApp(
     /// Creates a new builder instance.
     /// </summary>
     /// <returns>A new builder instance.</returns>
-    public static WebServerGuiAppBuilder CreateBuilder(Action<WebServerGuiAppBuilderCreationSettings>? configure = null)
+    public static WebServerGuiAppBuilder CreateBuilder(Action<WebServerGuiAppBuilderCreationOptions>? configure = null)
     {
-        var builderCreationSettings = CreateBuilderCreationSettings(configure);
-        var builder = WebApplication.CreateBuilder(builderCreationSettings.BuilderSettings);
-        var capabilities = CreateCapabilities(builderCreationSettings.BuilderSettings, builder);
+        var options = CreateBuilderCreationOptions(configure);
+        var builder = WebApplication.CreateBuilder(options.AppOptions);
+        var capabilities = CreateCapabilities(options, builder);
 
-        return new WebServerGuiAppBuilder(builder, capabilities);
+        return new WebServerGuiAppBuilder(builder, capabilities).LogFeature("WebServerGuiAppBuilder", "built");
     }
     /// <summary>
     /// Creates a new builder instance.
     /// </summary>
     /// <returns>A new builder instance.</returns>
-    public static WebServerGuiAppBuilder CreateBuilder(out WebServerGuiAppBuilder appBuilder, Action<WebServerGuiAppBuilderCreationSettings>? configure = null) =>
+    public static WebServerGuiAppBuilder CreateBuilder(out WebServerGuiAppBuilder appBuilder, Action<WebServerGuiAppBuilderCreationOptions>? configure = null) =>
         appBuilder = CreateBuilder(configure);
 
-    private static BlazorAppBuilderCapabilities CreateCapabilities(WebApplicationOptions builderSettings, WebApplicationBuilder builder)
+    private static BlazorAppBuilderCapabilities CreateCapabilities(WebServerGuiAppBuilderCreationOptions options, WebApplicationBuilder builder)
     {
         var capabilities = new BlazorAppBuilderCapabilities()
         {
@@ -54,34 +54,27 @@ public sealed class WebServerGuiApp(
                 .AddSingleton<IConfiguration>(p => p.GetRequiredService<IConfigurationRoot>()),
             Configuration = builder.Configuration,
             Logging = new LoggingBuilder(builder.Services),
-            EnvironmentConfiguration = EnvironmentConfiguration.Create(builderSettings.EnvironmentName)
+            EnvironmentConfiguration = EnvironmentConfiguration.Create(options.AppOptions.EnvironmentName),
+            SetupLoggingCallback = options.SetupLoggingCallback
         };
         return capabilities;
     }
-    private static WebServerGuiAppBuilderCreationSettings CreateBuilderCreationSettings(Action<WebServerGuiAppBuilderCreationSettings>? configure)
+    private static WebServerGuiAppBuilderCreationOptions CreateBuilderCreationOptions(Action<WebServerGuiAppBuilderCreationOptions>? configure)
     {
-        var builderSettings = new WebServerGuiAppBuilderCreationSettings();
-        configure?.Invoke(builderSettings);
-        return builderSettings;
+        var options = new WebServerGuiAppBuilderCreationOptions();
+        configure?.Invoke(options);
+        return options;
     }
 
     /// <inheritdoc/>
-    protected override IServiceProvider GetServiceProvider()
-    {
-        return underlyingApp.Services;
-    }
-
+    protected override IServiceProvider GetServiceProvider() => UnderlyingApp.Services;
     /// <inheritdoc/>
     protected override Task RunUnderlyingApplicationAsync(CancellationToken cancellationToken)
     {
-        var result = underlyingApp.RunAsync(cancellationToken);
+        var result = UnderlyingApp.RunAsync(cancellationToken);
 
         return result;
     }
-
     /// <inheritdoc/>
-    protected override void RunUnderlyingApplication(CancellationToken cancellationToken)
-    {
-        underlyingApp.Run();
-    }
+    protected override void RunUnderlyingApplication(CancellationToken cancellationToken) => UnderlyingApp.Run();
 }

@@ -21,8 +21,14 @@ using Microsoft.Extensions.Hosting;
 /// <summary>
 /// Contains extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.
 /// </summary>
+#pragma warning disable CA1724
 public static class Extensions
 {
+    /// <summary>
+    /// Logs to the app builders setup logging callback a message about a feature.
+    /// </summary>
+    public static WebServerGuiAppBuilder LogFeature(this WebServerGuiAppBuilder appBuilder, String feature, String message) =>
+        appBuilder.LogFeature<WebServerGuiAppBuilder, WebServerGuiApp, WebApplicationBuilder, WebApplication, BlazorAppBuilderCapabilities>(feature, message);
     /// <summary>
     /// Registers a platform-specific clipboard implementation to the builder services.
     /// </summary>
@@ -58,44 +64,44 @@ public static class Extensions
     /// <param name="appBuilder">The builder to add api services to.</param>
     /// <param name="configureClients">Callback for configuring which kinds of api clients to register.</param>
     /// <returns>A reference to the builder, for chaining of further method calls.</returns>
-    public static WebServerGuiAppBuilder AddApiServiceClients(this WebServerGuiAppBuilder appBuilder, Action<IApiServiceClientsOptions> configureClients) =>
+    public static WebServerGuiAppBuilder AddApiServiceClients(this WebServerGuiAppBuilder appBuilder, Action<ApiServiceOptions> configureClients) =>
         appBuilder.AddApiServiceClients<WebServerGuiAppBuilder, WebServerGuiApp, WebApplicationBuilder, WebApplication, BlazorAppBuilderCapabilities>(configureClients);
-    sealed class ApiServiceEndpointsOptions : IApiServiceEndpointsOptions
-    {
-        public JsonSerializerOptions SerializerOptions { get; set; } = new JsonSerializerOptions(JsonSerializerDefaults.Web);
-    }
     /// <summary>
     /// Adds and configures conventional api service endpoints.
     /// </summary>
     /// <param name="builder">The builder to add endpoint handlers to.</param>
     /// <param name="configureEndpoints">Callback for configuring endpoint settings.</param>
     /// <returns>A reference to the builder, for chaining of further method calls.</returns>
-    public static WebServerGuiAppBuilder AddApiServiceEndpoints(this WebServerGuiAppBuilder builder, Action<IApiServiceEndpointsOptions>? configureEndpoints = null)
+    public static WebServerGuiAppBuilder AddApiServiceEndpoints(this WebServerGuiAppBuilder builder, Action<ApiServiceOptions>? configureEndpoints = null)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        _ = builder.ConfigureOptions(o =>
-         {
-             o.OnContainerAdd += (o) =>
-             {
-                 var options = new ApiServiceEndpointsOptions();
-                 configureEndpoints?.Invoke(options);
 
-                 _ = o.Services
-                      .AddTransient(sp =>
-                          sp.GetRequiredService<IOptions<ApiServicesSettings>>().Value)
-                      .AddOptions<ApiServicesSettings>()
-                     .BindConfiguration("ApiServicesSettings")
-                     .Validate(
-                         s => s.GetIsValid(ignoreBaseUri: true),
-                         "Endpoints with invalid request type or request uri detected. Service endpoint uris must be well-formed relative uris.")
-                     .ValidateOnStart();
+        const String feature = "ApiServiceEndpoints";
 
-                 o.Container.Register<ApiServiceEndpointHandlerMetadataProvider>();
-                 o.Container.RegisterInstance(new ApiServiceEndpointHandlerSettings(options.SerializerOptions));
-             };
-         });
+        builder.Options.OnContainerAdd += (o) =>
+        {
+            var options = new ApiServiceOptions();
+            configureEndpoints?.Invoke(options);
 
-        return builder;
+            _ = o.Services
+                .AddTransient(sp =>
+                    sp.GetRequiredService<IOptions<ApiServicesSettings>>().Value)
+                .AddOptions<ApiServicesSettings>()
+                .BindConfiguration("ApiServicesSettings")
+                .Validate(
+                    s => s.GetIsValid(ignoreBaseUri: true),
+                    "Endpoints with invalid request type or request uri detected. Service endpoint uris must be well-formed relative uris.")
+                .ValidateOnStart();
+
+            _ = builder.LogFeature(feature, "added options");
+
+            o.Container.Register<ApiServiceEndpointHandlerMetadataProvider>();
+            o.Container.RegisterInstance(new ApiServiceEndpointHandlerSettings(options.SerializerOptions));
+
+            _ = builder.LogFeature(feature, "added services");
+        };
+
+        return builder.LogFeature(feature, "added");
     }
     /// <summary>
     /// Maps configured api service endpoints.
@@ -105,9 +111,13 @@ public static class Extensions
     public static WebServerGuiApp MapApiServiceEndpoints(this WebServerGuiApp app)
     {
         ArgumentNullException.ThrowIfNull(app);
+
         _ = app.ConfigureUnderlyingApp((app, container) =>
         {
             using var scope = AsyncScopedLifestyle.BeginScope(container);
+
+            var logger = scope.GetInstance<ILogger>();
+
             container.GetInstance<ApiServiceEndpointHandlerMetadataProvider>()
                 .GetMetadata()
                 .ForEach(d =>
@@ -127,6 +137,8 @@ public static class Extensions
                     var handler = lambda.Compile();
 
                     _ = app.MapPost(route, handler);
+                    
+                    logger.LogInformation("Mapping {Handler} to {Route}", ( handlerType.GenericTypeArguments.FirstOrDefault() ?? handlerType ).Name, route);
                 });
         });
 
@@ -155,7 +167,7 @@ public static class Extensions
         _ = appBuilder.AddLogging<WebServerGuiAppBuilder, WebServerGuiApp, WebApplicationBuilder, WebApplication, BlazorAppBuilderCapabilities>();
         _ = appBuilder.Capabilities.Logging.AddConsole(configureOptions ?? ( static o => { } ));
 
-        return appBuilder;
+        return appBuilder.LogFeature("ConsoleLogging", "added");
     }
     /// <summary>
     /// Adds all services implementing <see cref="IHostedService"/> from the assemblies provided as hosted services to the app being built.

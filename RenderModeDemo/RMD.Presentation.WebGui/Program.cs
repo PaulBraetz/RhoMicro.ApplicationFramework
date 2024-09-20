@@ -5,7 +5,7 @@ using RMD.Presentation.WebGui.Client;
 
 await WebServerGuiApp.CreateBuilder(
     out var builder,
-    s => s.BuilderSettings = new() { Args = args })
+    s => s.AppOptions = new() { Args = args })
     .AddBlazor()
     .ConfigureOptions(o => o.Composer += Composers.WebGui)
     .ConfigureCapabilities(c =>

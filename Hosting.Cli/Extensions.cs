@@ -15,8 +15,14 @@ using SimpleInjector.Integration.ServiceCollection;
 /// <summary>
 /// Contains extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.
 /// </summary>
+#pragma warning disable CA1724
 public static class Extensions
 {
+    /// <summary>
+    /// Logs to the app builders setup logging callback a message about a feature.
+    /// </summary>
+    public static CliAppBuilder LogFeature(this CliAppBuilder appBuilder, String feature, String message) =>
+        appBuilder.LogFeature<CliAppBuilder, CliApp, HostApplicationBuilder, IHost, AppBuilderCapabilities>(feature, message);
     /// <summary>
     /// Adds appsettings to the app builder.
     /// </summary>
@@ -45,7 +51,7 @@ public static class Extensions
         _ = appBuilder.AddLogging<CliAppBuilder, CliApp, HostApplicationBuilder, IHost, AppBuilderCapabilities>();
         _ = appBuilder.Capabilities.Logging.AddConsole(configureOptions ?? ( static o => { } ));
 
-        return appBuilder;
+        return appBuilder.LogFeature("ConsoleLogging", "added");
     }
     /// <summary>
     /// Adds timeout aspects and related configuration to the application using the lifestyle provided.

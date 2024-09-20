@@ -14,8 +14,14 @@ using SimpleInjector;
 /// <summary>
 /// Contains extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.
 /// </summary>
+#pragma warning disable CA1724
 public static class Extensions
 {
+    /// <summary>
+    /// Logs to the app builders setup logging callback a message about a feature.
+    /// </summary>
+    public static LocalGuiAppBuilder LogFeature(this LocalGuiAppBuilder appBuilder, String feature, String message)=>
+        appBuilder.LogFeature<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>(feature, message);
     /// <summary>
     /// Registers a platform-specific clipboard implementation to the builder services.
     /// </summary>
@@ -57,7 +63,7 @@ public static class Extensions
     /// <param name="appBuilder">The builder to add api services to.</param>
     /// <param name="configureClients">Callback for configuring which kinds of api clients to register.</param>
     /// <returns>A reference to the builder, for chaining of further method calls.</returns>
-    public static LocalGuiAppBuilder AddApiServiceClients(this LocalGuiAppBuilder appBuilder, Action<IApiServiceClientsOptions>? configureClients = null) =>
+    public static LocalGuiAppBuilder AddApiServiceClients(this LocalGuiAppBuilder appBuilder, Action<ApiServiceOptions>? configureClients = null) =>
         appBuilder.AddApiServiceClients<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>(configureClients);
     /// <summary>
     /// Adds configuration based file logging to the builders capabilities.

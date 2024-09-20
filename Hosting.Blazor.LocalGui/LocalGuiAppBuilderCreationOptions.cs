@@ -1,10 +1,12 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
+using System.Diagnostics;
+
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 
 /// <summary>
 /// Provides settings for creating local gui app builders.
 /// </summary>
-public sealed class LocalGuiAppBuilderCreationSettings
+public sealed class LocalGuiAppBuilderCreationOptions
 {
     /// <summary>
     /// Gets the arguments passed to the program entry point.
@@ -17,4 +19,9 @@ public sealed class LocalGuiAppBuilderCreationSettings
     /// </summary>
     public IEnvironmentConfiguration EnvironmentConfiguration { get; set; }
         = Common.Environment.EnvironmentConfiguration.CreateFromEnvironmentVariable();
+    /// <summary>
+    /// Gets a callback to be used for logging setup actions before the DI
+    /// pipeline is able to resolve loggers.
+    /// </summary>
+    public Action<String> SetupLoggingCallback { get; set; } = Console.WriteLine;
 }

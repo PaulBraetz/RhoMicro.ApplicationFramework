@@ -50,6 +50,9 @@ public abstract class AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp
     /// </summary>
     protected abstract TSelf Self { get; }
 
+    private void LogFeature(String message)=>
+        Self.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>("AppBuilder", message);
+
     /// <summary>
     /// Configures the builder underlying an app builder. Repeated calls to this method are cumulative.
     /// </summary>
@@ -62,6 +65,8 @@ public abstract class AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp
         configure.Invoke(UnderlyingBuilder);
 
         OnAfterConfigureBuilder();
+
+        LogFeature("configured underlying builder");
 
         return Self;
     }
@@ -82,6 +87,8 @@ public abstract class AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp
 
         OnAfterConfigureCapabilities();
 
+        LogFeature("configured capabilities");
+
         return Self;
     }
     /// <summary>
@@ -100,6 +107,8 @@ public abstract class AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp
         configure.Invoke(Options);
 
         OnAfterConfigureOptions();
+
+        LogFeature("configured options");
 
         return Self;
     }
@@ -146,6 +155,8 @@ public abstract class AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp
         var underlyingApp = BuildUnderlyingApp();
         var result = CreateApp(underlyingApp, container, Options.AppRunOptions);
 
+        LogFeature("built app");
+
         return result;
     }
 
@@ -159,6 +170,8 @@ public abstract class AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp
     {
         Options.InvokeOnContainerAdd(options);
         OnSimpleInjectorAdd(options);
+
+        LogFeature("added simpleinjector to services");
     }
 
     /// <summary>
@@ -184,6 +197,8 @@ public abstract class AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp
         Options.Composer.Compose(container);
 
         OnContainerComposed(container);
+
+        LogFeature("created simpleinjector container");
 
         return container;
     }
@@ -216,5 +231,7 @@ public abstract class AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp
 
                 return result;
             });
+
+        LogFeature("added environment services");
     }
 }

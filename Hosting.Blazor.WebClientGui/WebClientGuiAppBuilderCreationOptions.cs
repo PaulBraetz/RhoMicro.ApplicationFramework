@@ -1,27 +1,29 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
 
+using System.Diagnostics;
+
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 
 /// <summary>
 /// Provides settings for creating web client gui app builders.
 /// </summary>
-public sealed class WebClientGuiAppBuilderCreationSettings
+public sealed class WebClientGuiAppBuilderCreationOptions
 {
     /// <summary>
     /// Initializes a new instance.
     /// </summary>
-    public WebClientGuiAppBuilderCreationSettings() { }
+    public WebClientGuiAppBuilderCreationOptions() { }
     /// <summary>
-    /// Initializes a new instance based on the properties provided by another.
+    /// Initializes a new shallow copy instance based on the properties provided by another.
     /// </summary>
-    /// <param name="settings">
+    /// <param name="options">
     /// The instance whose properties to copy.
     /// </param>
-    public WebClientGuiAppBuilderCreationSettings(WebClientGuiAppBuilderCreationSettings settings)
+    public WebClientGuiAppBuilderCreationOptions(WebClientGuiAppBuilderCreationOptions options)
     {
-        ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(options);
 
-        (Args, EnvironmentConfiguration) = (settings.Args, settings.EnvironmentConfiguration);
+        (Args, EnvironmentConfiguration, SetupLoggingCallback) = (options.Args, options.EnvironmentConfiguration, options.SetupLoggingCallback);
     }
 
     /// <summary>
@@ -35,4 +37,9 @@ public sealed class WebClientGuiAppBuilderCreationSettings
     /// </summary>
     public IEnvironmentConfiguration EnvironmentConfiguration { get; set; }
         = Common.Environment.EnvironmentConfiguration.CreateFromEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+    /// <summary>
+    /// Gets a callback to be used for logging setup actions before the DI
+    /// pipeline is able to resolve loggers.
+    /// </summary>
+    public Action<String> SetupLoggingCallback { get; set; } = Console.WriteLine;
 }

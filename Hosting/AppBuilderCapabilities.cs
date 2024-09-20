@@ -24,4 +24,9 @@ public class AppBuilderCapabilities
     /// Gets the execution environment configuration.
     /// </summary>
     public required IEnvironmentConfiguration EnvironmentConfiguration { get; init; }
+    /// <summary>
+    /// Gets a callback to be used for logging setup actions before the DI
+    /// pipeline is able to resolve loggers.
+    /// </summary>
+    public required Action<String> SetupLoggingCallback { get; init; }
 }

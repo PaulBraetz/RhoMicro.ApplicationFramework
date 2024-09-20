@@ -15,10 +15,12 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Components;
 using Microsoft.JSInterop;
+using Microsoft.AspNetCore.Http.Features;
 
 /// <summary>
 /// Extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.
 /// </summary>
+#pragma warning disable CA1724
 public static partial class Extensions
 {
     /// <summary>
@@ -34,20 +36,25 @@ public static partial class Extensions
     {
         ArgumentNullException.ThrowIfNull(appBuilder);
 
-        appBuilder.Options.Composer += Composer.Create(static c => c.Register<IClipboardModel>(() =>
-        {
-            //if(c.GetInstance<IDeploymentPlatformProvider>().DeploymentPlatform is DeploymentPlatform.Desktop)
-            //{
-            //    return new ClipboardModel();
-            //} else
-            //{
-            //    var jsRuntime = c.GetInstance<IJSRuntime>();
-            //    return new JsClipboardModel(jsRuntime);
-            //}
-            return new JsClipboardModel(c.GetInstance<IJSRuntime>());
-        }));
+        const String feature = "Clipboard";
 
-        return appBuilder;
+        appBuilder.Options.Composer += Composer.Create(c =>
+        {
+            c.Register<IClipboardModel>(() =>
+                        //if(c.GetInstance<IDeploymentPlatformProvider>().DeploymentPlatform is DeploymentPlatform.Desktop)
+                        //{
+                        //    return new ClipboardModel();
+                        //} else
+                        //{
+                        //    var jsRuntime = c.GetInstance<IJSRuntime>();
+                        //    return new JsClipboardModel(jsRuntime);
+                        //}
+                        new JsClipboardModel(c.GetInstance<IJSRuntime>()));
+
+            _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added services");
+        });
+
+        return appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added");
     }
     /// <summary>
     /// Adds blazor capabilities and options to the builder.
@@ -62,23 +69,23 @@ public static partial class Extensions
     {
         ArgumentNullException.ThrowIfNull(appBuilder);
 
+        const String feature = "Blazor";
+
         _ = appBuilder
-            .ConfigureCapabilities(c =>
-            {
-                _ = c.Components.Add(typeof(DynamicModelComponent<>).Assembly);
-            })
+            .ConfigureCapabilities(c => _ = c.Components.Add(typeof(DynamicModelComponent<>).Assembly))
             .ConfigureOptions(o =>
             {
-                o.OnContainerAdd += _ => AddDynamicComponentSettings<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(appBuilder);
+                o.OnContainerAdd += _0 => AddDynamicComponentSettings<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(appBuilder);
                 o.Composer = Composer.Create(
                     appBuilder.Options.Composer,
                     BlazorModelsComposer,
                     CreateStylesComposer(appBuilder.Capabilities.Configuration.Build()),
                     AspectComposers.Default,
-                    PresentationComposers.Models);
+                    PresentationComposers.Models,
+                    Composer.Create(c => appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added services")));
             });
 
-        return appBuilder;
+        return appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added");
     }
 
     private static void AddDynamicComponentSettings<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(TSelf appBuilder)
@@ -86,6 +93,8 @@ public static partial class Extensions
         where TApp : App<TApp, TUnderlyingApp>
         where TCapabilities : BlazorAppBuilderCapabilities
     {
+        const String feature = "DynamicComponentSettings";
+
         var handledComponentInfos = new HashSet<ModelComponentInfo>();
         var ambiguousComponentInfos = new HashSet<ModelComponentInfo>();
 
@@ -125,61 +134,11 @@ public static partial class Extensions
             {
                 c.RegisterInstance(settingsType, settingsInstance);
             }
-        });
-    }
 
-    sealed class ApiServiceClientsOptions : IApiServiceClientsOptions
-    {
-        public JsonSerializerOptions SerializerOptions { get; set; } = new JsonSerializerOptions(JsonSerializerDefaults.Web);
-    }
-    /// <summary>
-    /// Adds api services to the app builder.
-    /// </summary>
-    /// <param name="appBuilder">The builder to add api services to.</param>
-    /// <param name="configureClients">Callback for configuring client settings.</param>
-    /// <returns>A reference to the builder, for chaining of further method calls.</returns>
-    public static TSelf AddApiServiceClients<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(
-        this TSelf appBuilder, Action<IApiServiceClientsOptions>? configureClients = null)
-        where TSelf : AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>
-        where TApp : App<TApp, TUnderlyingApp>
-        where TCapabilities : BlazorAppBuilderCapabilities
-    {
-        ArgumentNullException.ThrowIfNull(appBuilder);
-
-        _ = appBuilder.ConfigureOptions(o =>
-        {
-            o.OnContainerAdd += (o) =>
-            {
-                var clientsOptions = new ApiServiceClientsOptions();
-                configureClients?.Invoke(clientsOptions);
-
-                _ = o.Services
-                    .AddHttpClient()
-                    .AddTransient(sp => sp.GetRequiredService<IOptions<ApiServicesSettings>>().Value)
-                    .AddOptions<ApiServicesSettings>()
-                    .BindConfiguration("ApiServicesSettings")
-                    .Validate(
-                        s => s.GetIsValid(ignoreBaseUri: false),
-                        "Endpoints with invalid request type or request uri detected. Service endpoint uris must be well-formed relative uris.  The base uri must be a well-formed absolute uri.")
-                    .ValidateOnStart();
-
-                o.Container.Register(() => new ApiServiceSettingsFactory(o.Container.GetInstance<ApiServicesSettings>(), clientsOptions.SerializerOptions));
-
-                var settings = new ApiServicesSettings() { BaseUri = "" };
-                var config = appBuilder.Capabilities.Configuration.Build();
-                config.Bind("ApiServicesSettings", settings);
-
-                foreach(var (settingsType, serviceType, implementationType) in
-                        settings.Services.Select(s => (s.SettingsType, s.ServiceType, s.ImplementationType)))
-                {
-                    o.Container.Register(settingsType, () => o.Container.GetInstance<ApiServiceSettingsFactory>().Create(settingsType));
-                    o.Container.RegisterConditional(serviceType, implementationType, ctx => !ctx.Handled);
-                    _ = o.Services.AddHttpClient(implementationType.FullName!);
-                }
-            };
+            _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added services");
         });
 
-        return appBuilder;
+        _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added");
     }
 
     /// <summary>
@@ -193,10 +152,7 @@ public static partial class Extensions
     /// </summary>
     /// <returns>The model composer instance.</returns>
     private static IComposer BlazorModelsComposer { get; } =
-        Composer.Create(c =>
-        {
-            c.Register<INavigationManager, NavigationManager>(Lifestyle.Scoped);
-        });
+        Composer.Create(c => c.Register<INavigationManager, NavigationManager>(Lifestyle.Scoped));
     /// <summary>
     /// Creates a composer combining the composer provided with a styles composer instance.
     /// </summary>
@@ -246,7 +202,7 @@ public static partial class Extensions
 
         appBuilder.Options.Composer += PresentationComposers.Models;
 
-        return appBuilder;
+        return appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>("DefaultModels", "added");
     }
 }
 

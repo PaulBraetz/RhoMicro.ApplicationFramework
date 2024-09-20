@@ -16,12 +16,32 @@ using Microsoft.Extensions.Hosting;
 using SimpleInjector.Integration.ServiceCollection;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text.Json;
+using System.Runtime.CompilerServices;
 
 /// <summary>
 /// Contains extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.
 /// </summary>
+#pragma warning disable CA1724
 public static class Extensions
 {
+    /// <summary>
+    /// Logs to the app builders setup logging callback a message about a feature.
+    /// </summary>
+    public static TSelf LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(
+        this TSelf appBuilder,
+        String feature,
+        String message)
+        where TSelf : AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>
+        where TApp : App<TApp, TUnderlyingApp>
+        where TCapabilities : AppBuilderCapabilities
+    {
+        ArgumentNullException.ThrowIfNull(appBuilder);
+
+        appBuilder.Capabilities.SetupLoggingCallback.Invoke($"[{feature}] {message}");
+
+        return appBuilder;
+    }
     /// <summary>
     /// Adds validation that assures all required non-null properties on resolved instances are not null.
     /// </summary>
@@ -36,7 +56,7 @@ public static class Extensions
 
         appBuilder.Options.OnContainerAdd += o => _ = o.Services.AddRequiredPropertyValidation(configure);
 
-        return appBuilder;
+        return appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>("RequiredPropertyValidation", "added");
     }
     /// <summary>
     /// Adds timeout aspects and related configuration to the application using the lifestyle provided.
@@ -49,29 +69,33 @@ public static class Extensions
     {
         ArgumentNullException.ThrowIfNull(appBuilder);
 
-        _ = appBuilder.ConfigureOptions(o => o.OnContainerAdd += o =>
-        {
-            _ = o.Services
-                .AddTransient<ITimeoutProviderSettings>(sp => sp.GetRequiredService<IOptions<TimeoutProviderSettings>>().Value)
-                .AddOptions<TimeoutProviderSettings>()
-                .BindConfiguration(nameof(TimeoutProviderSettings))
-                .ValidateOnStart();
-        });
+        const String feature = "Timeout";
+        _ = appBuilder
+            .ConfigureOptions(o => o.OnContainerAdd += o =>
+            {
+                _ = o.Services
+                    .AddTransient((Func<IServiceProvider, ITimeoutProviderSettings>)( sp => sp.GetRequiredService<IOptions<TimeoutProviderSettings>>().Value ))
+                    .AddOptions<TimeoutProviderSettings>()
+                    .BindConfiguration(nameof(Aspects.Decorators.TimeoutProviderSettings))
+                    .ValidateOnStart();
+                _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added options");
+            });
 
         appBuilder.Options.Composer += Composer.Create(c =>
-        {
-            c.RegisterSingleton<ITimeoutProvider>(() =>
             {
-                var settings = c.GetInstance<ITimeoutProviderSettings>();
-                var result = TimeoutProvider.Create(settings);
+                c.RegisterSingleton<ITimeoutProvider>(() =>
+                {
+                    var settings = c.GetInstance<ITimeoutProviderSettings>();
+                    var result = TimeoutProvider.Create(settings);
 
-                return result;
+                    return result;
+                });
+                c.RegisterConditional(typeof(ITimeoutSettings<>), typeof(TimeoutSettings<>), lifestyle, ctx => !ctx.Handled);
+                c.RegisterDecorator(typeof(IService<,>), typeof(TimeoutDecorator<,>), lifestyle);
+                _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added services");
             });
-            c.RegisterConditional(typeof(ITimeoutSettings<>), typeof(TimeoutSettings<>), lifestyle, ctx => !ctx.Handled);
-            c.RegisterDecorator(typeof(IService<,>), typeof(TimeoutDecorator<,>), lifestyle);
-        });
 
-        return appBuilder;
+        return appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added");
     }
     /// <summary>
     /// Adds appsettings to the app builders capabilities.
@@ -84,16 +108,20 @@ public static class Extensions
     {
         ArgumentNullException.ThrowIfNull(appBuilder);
 
-        var config = appBuilder.Capabilities.Configuration
-            .AddJsonFile("appsettings.json");
+        const String feature = "Appsettings";
+
+        var config = appBuilder.Capabilities.Configuration.AddJsonFile("appsettings.json");
+        _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added appsettings.json");
 
         var environmentConfig = appBuilder.Capabilities.EnvironmentConfiguration;
         if(!EnvironmentConfiguration.Unknown.Equals(environmentConfig))
         {
-            _ = config.AddJsonFile($"appsettings.{environmentConfig.Name}.json", optional: true);
+            var envAppsettings = $"appsettings.{environmentConfig.Name}.json";
+            _ = config.AddJsonFile(envAppsettings, optional: true);
+            _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, $"added {envAppsettings}");
         }
 
-        return appBuilder;
+        return appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added");
     }
     /// <summary>
     /// Adds configuration based file logging to the builders capabilities.
@@ -110,11 +138,17 @@ public static class Extensions
     {
         ArgumentNullException.ThrowIfNull(appBuilder);
 
+        const String feature = "FileLogging";
+
         var config = appBuilder.Capabilities.Configuration.Build();
         _ = appBuilder.Capabilities.Logging.AddFile(config, configureOptions ?? ( static o => { } ));
-        appBuilder.Options.OnContainerAdd += (o) => o.AddLogging();
+        appBuilder.Options.OnContainerAdd += o =>
+        {
+            _ = o.AddLogging();
+            _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added services");
+        };
 
-        return appBuilder;
+        return appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added");
     }
     /// <summary>
     /// Adds logging support to the builders capabilities.
@@ -128,9 +162,72 @@ public static class Extensions
     {
         ArgumentNullException.ThrowIfNull(appBuilder);
 
-        appBuilder.Options.OnContainerAdd += (o) => o.AddLogging();
+        const String feature = "FileLogging";
 
-        return appBuilder;
+        appBuilder.Options.OnContainerAdd += o =>
+        {
+            _ = o.AddLogging();
+            _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added services");
+        };
+
+        return appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added");
+    }
+
+    /// <summary>
+    /// Adds api services to the app builder.
+    /// </summary>
+    /// <param name="appBuilder">The builder to add api services to.</param>
+    /// <param name="configureClients">Callback for configuring client settings.</param>
+    /// <returns>A reference to the builder, for chaining of further method calls.</returns>
+    public static TSelf AddApiServiceClients<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(
+        this TSelf appBuilder, Action<ApiServiceOptions>? configureClients = null)
+        where TSelf : AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>
+        where TApp : App<TApp, TUnderlyingApp>
+        where TCapabilities : AppBuilderCapabilities
+    {
+        ArgumentNullException.ThrowIfNull(appBuilder);
+
+        const String feature = "ApiServiceClients";
+
+        appBuilder.Options.OnContainerAdd += (o) =>
+        {
+            var clientsOptions = new ApiServiceOptions();
+            configureClients?.Invoke(clientsOptions);
+
+            _ = o.Services
+                .AddHttpClient()
+                .AddTransient(sp => sp.GetRequiredService<IOptions<ApiServicesSettings>>().Value)
+                .AddOptions<ApiServicesSettings>()
+                .BindConfiguration("ApiServicesSettings")
+                .Validate(
+                    s => s.GetIsValid(ignoreBaseUri: false),
+                    "Endpoints with invalid request type or request uri detected. Service endpoint uris must be well-formed relative uris. The base uri must be a well-formed absolute uri.")
+                .ValidateOnStart();
+
+            _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added options");
+
+            o.Container.Register(() => new ApiServiceSettingsFactory(o.Container.GetInstance<ApiServicesSettings>(), clientsOptions.SerializerOptions));
+
+            var servicesSettings = new ApiServicesSettings() { BaseUri = "" };
+            var config = appBuilder.Capabilities.Configuration.Build();
+            config.Bind("ApiServicesSettings", servicesSettings);
+
+            _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, $"using base uri {servicesSettings.BaseUri}");
+
+            foreach(var (settingsType, serviceType, implementationType, serviceSettings) in
+                    servicesSettings.Services.Select(s => (s.SettingsType, s.ServiceType, s.ImplementationType, s)))
+            {
+                o.Container.Register(settingsType, () => o.Container.GetInstance<ApiServiceSettingsFactory>().Create(settingsType));
+                o.Container.RegisterConditional(serviceType, implementationType, ctx => !ctx.Handled);
+                _ = o.Services.AddHttpClient(implementationType.FullName!);
+
+                _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, $"added client {serviceSettings.Request} at {serviceSettings.Endpoint}");
+            }
+
+            _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added services");
+        };
+
+        return appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added");
     }
     /// <summary>
     /// Adds all services implementing <see cref="IHostedService"/> from the assemblies provided as hosted services to the app being built.
@@ -145,10 +242,12 @@ public static class Extensions
     {
         ArgumentNullException.ThrowIfNull(appBuilder);
 
+        const String feature = "HostedServices";
+
         var paramExpr = Expression.Parameter(typeof(SimpleInjectorAddOptions));
         var addExprs = assemblies.SelectMany(a => a.GetTypes())
             .Where(t => t.IsAssignableTo(typeof(IHostedService)))
-            .Select(t =>
+            .SelectMany<Type, Expression>(t =>
             {
                 var method = ( typeof(SimpleInjectorGenericHostExtensions)
                     .GetMethod(nameof(SimpleInjectorGenericHostExtensions.AddHostedService))
@@ -156,13 +255,15 @@ public static class Extensions
                     .MakeGenericMethod(t);
                 var callExpr = Expression.Call(method, paramExpr);
 
-                return callExpr;
+                Expression<Action> logExpr = () => appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, $"added {t.Name}");
+
+                return [callExpr, logExpr];
             });
         var body = Expression.Block(addExprs);
         var lambdaExpr = Expression.Lambda<Action<SimpleInjectorAddOptions>>(body, paramExpr);
         var handler = lambdaExpr.Compile();
         appBuilder.Options.OnContainerAdd += handler;
 
-        return appBuilder;
+        return appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added");
     }
 }

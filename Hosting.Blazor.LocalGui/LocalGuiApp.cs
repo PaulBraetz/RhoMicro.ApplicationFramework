@@ -7,6 +7,7 @@ using Photino.Blazor;
 using SimpleInjector;
 
 using RhoMicro.ApplicationFramework.Composition;
+using RhoMicro.ApplicationFramework.Hosting;
 
 /// <summary>
 /// Represents a local photino blazor app adapter.
@@ -27,24 +28,24 @@ public sealed class LocalGuiApp(
     /// Creates a new builder instance.
     /// </summary>
     /// <returns>A new builder instance.</returns>
-    public static LocalGuiAppBuilder CreateBuilder(Action<LocalGuiAppBuilderCreationSettings>? configure = null)
+    public static LocalGuiAppBuilder CreateBuilder(Action<LocalGuiAppBuilderCreationOptions>? configure = null)
     {
-        var builderSettings = CreateBuilderSettings(configure);
-        var builder = PhotinoBlazorAppBuilder.CreateDefault(builderSettings.Args);
-        var capabilities = CreateCapabilities(builderSettings, builder);
+        var options = CreateBuilderOptions(configure);
+        var builder = PhotinoBlazorAppBuilder.CreateDefault(options.Args);
+        var capabilities = CreateCapabilities(options, builder);
 
-        return new LocalGuiAppBuilder(builder, capabilities);
+        return new LocalGuiAppBuilder(builder, capabilities).LogFeature("LocalGuiAppBuilder", "built");
     }
     /// <summary>
     /// Creates a new builder instance.
     /// </summary>
     /// <returns>A new builder instance.</returns>
-    public static LocalGuiAppBuilder CreateBuilder(out LocalGuiAppBuilder appBuilder, Action<LocalGuiAppBuilderCreationSettings>? configure = null) =>
+    public static LocalGuiAppBuilder CreateBuilder(out LocalGuiAppBuilder appBuilder, Action<LocalGuiAppBuilderCreationOptions>? configure = null) =>
         appBuilder = CreateBuilder(configure);
 
-    private static BlazorAppBuilderCapabilities CreateCapabilities(LocalGuiAppBuilderCreationSettings builderSettings, PhotinoBlazorAppBuilder builder)
+    private static BlazorAppBuilderCapabilities CreateCapabilities(LocalGuiAppBuilderCreationOptions options, PhotinoBlazorAppBuilder builder)
     {
-        var environment = builderSettings.EnvironmentConfiguration;
+        var environment = options.EnvironmentConfiguration;
 
         var configBuilder = new ConfigurationBuilder();
 
@@ -54,23 +55,20 @@ public sealed class LocalGuiApp(
             Services = builder.Services.AddConfiguration(configBuilder),
             Configuration = configBuilder,
             Logging = new LoggingBuilder(builder.Services),
-            EnvironmentConfiguration = environment
+            EnvironmentConfiguration = environment,
+            SetupLoggingCallback = options.SetupLoggingCallback
         };
         return capabilities;
     }
-    private static LocalGuiAppBuilderCreationSettings CreateBuilderSettings(Action<LocalGuiAppBuilderCreationSettings>? configure)
+    private static LocalGuiAppBuilderCreationOptions CreateBuilderOptions(Action<LocalGuiAppBuilderCreationOptions>? configure)
     {
-        var builderSettings = new LocalGuiAppBuilderCreationSettings();
-        configure?.Invoke(builderSettings);
-        return builderSettings;
+        var options = new LocalGuiAppBuilderCreationOptions();
+        configure?.Invoke(options);
+        return options;
     }
 
     /// <inheritdoc/>
-    protected override IServiceProvider GetServiceProvider()
-    {
-        return underlyingApp.Services;
-    }
-
+    protected override IServiceProvider GetServiceProvider() => UnderlyingApp.Services;
     /// <inheritdoc/>
     protected override Task RunUnderlyingApplicationAsync(CancellationToken cancellationToken)
     {
@@ -83,6 +81,6 @@ public sealed class LocalGuiApp(
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        underlyingApp.Run();
+        UnderlyingApp.Run();
     }
 }
