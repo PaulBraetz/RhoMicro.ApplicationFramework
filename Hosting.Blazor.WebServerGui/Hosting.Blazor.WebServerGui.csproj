@@ -10,11 +10,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Include="..\Hosting.Blazor.Extensions\ApiServiceSettings.cs" Link="ApiServiceSettings.cs" />
-		<Compile Include="..\Hosting.Blazor.Extensions\ApiServicesSettings.cs" Link="ApiServicesSettings.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\Hosting.Blazor.Extensions\Hosting.Blazor.Extensions.csproj" />
 	</ItemGroup>
 
