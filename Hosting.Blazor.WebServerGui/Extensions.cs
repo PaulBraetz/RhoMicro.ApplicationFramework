@@ -120,7 +120,7 @@ public static class Extensions
         {
             using var scope = AsyncScopedLifestyle.BeginScope(container);
 
-            var logger = scope.GetInstance<ILogger>();
+            var logger = scope.GetInstance<ILoggerFactory>().CreateLogger("MapApiServiceEndpoints");
 
             container.GetInstance<ApiServiceEndpointHandlerMetadataProvider>()
                 .GetMetadata()

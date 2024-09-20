@@ -1,6 +1,7 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
 using System;
 
+using RhoMicro.ApplicationFramework.Common;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 
 sealed partial class ApiServiceSettings
@@ -31,30 +32,42 @@ sealed partial class ApiServiceSettings
         get => _request;
         set
         {
-            var requestType = GetRequestType(value)
-                ?? throw new InvalidOperationException($"Invalid request name provided. Unable to locate request type for '{value}'.");
-
-            var interfaceTypes = requestType.GetInterfaces()
-                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IApiRequest<,,,>))
-                .ToArray();
-
-            var (resultType, requestDtoType, resultDtoType) = interfaceTypes switch
+            try
             {
-            [{ } iasrType] => getNonRequestArgs(iasrType),
-            [] => throw new InvalidOperationException($"Unable to locate required generic arguments on request type '{requestType}'."),
-                _ => throw new InvalidOperationException($"Unable to locate unique required generic arguments on request type '{requestType}'. Multiple api service request implementations were found: {String.Join(',', interfaceTypes.Select(t => t.FullName))}"),
-            };
-
-            OnRequestTypeNameSet(requestType, resultType, requestDtoType, resultDtoType);
-            _request = value;
-
-            static (Type, Type, Type) getNonRequestArgs(Type iasrType)
+                SetRequest(value);
+            } catch(Exception ex)
             {
-                var args = iasrType.GenericTypeArguments;
-                return (args[1], args[2], args[3]);
+                Error = ex;
             }
         }
     }
+
+    private void SetRequest(String value)
+    {
+        var requestType = GetRequestType(value)
+            ?? throw new InvalidOperationException($"Invalid request name provided. Unable to locate request type for '{value}'.");
+
+        var interfaceTypes = requestType.GetInterfaces()
+            .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IApiRequest<,,,>))
+            .ToArray();
+
+        var (resultType, requestDtoType, resultDtoType) = interfaceTypes switch
+        {
+        [{ } iasrType] => getNonRequestArgs(iasrType),
+        [] => throw new InvalidOperationException($"Unable to locate required generic arguments on request type '{requestType}'."),
+            _ => throw new InvalidOperationException($"Unable to locate unique required generic arguments on request type '{requestType}'. Multiple api service request implementations were found: {String.Join(',', interfaceTypes.Select(t => t.FullName))}"),
+        };
+
+        OnRequestTypeNameSet(requestType, resultType, requestDtoType, resultDtoType);
+        _request = value;
+
+        static (Type, Type, Type) getNonRequestArgs(Type iasrType)
+        {
+            var args = iasrType.GenericTypeArguments;
+            return (args[1], args[2], args[3]);
+        }
+    }
+
     public required String Endpoint { get; set; }
 
     void ThrowIfUninitialized()
@@ -63,6 +76,7 @@ sealed partial class ApiServiceSettings
             throw new InvalidOperationException($"{nameof(Request)} was not initialized correctly (was either null or empty).");
     }
 
-    public Boolean IsValid => _request is [.., { }] && Uri.IsWellFormedUriString(Endpoint, UriKind.Relative);
+    public Optional<Exception> Error { get; private set; } = Optional.None<Exception>();
+    public Boolean IsValid => _request is [.., { }] && Error.IsNone && Uri.IsWellFormedUriString(Endpoint, UriKind.Relative);
 }
 
