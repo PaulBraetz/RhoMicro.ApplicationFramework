@@ -140,7 +140,69 @@ public static partial class Extensions
 
         _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added");
     }
+    sealed class ApiServiceClientsOptions : IApiServiceClientsOptions
+    {
+        public JsonSerializerOptions SerializerOptions { get; set; } = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+    }
+    /// <summary>
+    /// Adds api services to the app builder.
+    /// </summary>
+    /// <param name="appBuilder">The builder to add api services to.</param>
+    /// <param name="configureClients">Callback for configuring client settings.</param>
+    /// <returns>A reference to the builder, for chaining of further method calls.</returns>
+    public static TSelf AddApiServiceClients<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(
+        this TSelf appBuilder, Action<IApiServiceClientsOptions>? configureClients = null)
+        where TSelf : AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>
+        where TApp : App<TApp, TUnderlyingApp>
+        where TCapabilities : BlazorAppBuilderCapabilities
+    {
+        ArgumentNullException.ThrowIfNull(appBuilder);
 
+        const String feature = "ApiServiceClients";
+
+        _ = appBuilder.ConfigureOptions(o =>
+        {
+            o.OnContainerAdd += (o) =>
+            {
+                var clientsOptions = new ApiServiceClientsOptions();
+                configureClients?.Invoke(clientsOptions);
+
+                _ = o.Services
+                    .AddHttpClient()
+                    .AddTransient(sp => sp.GetRequiredService<IOptions<ApiServicesSettings>>().Value)
+                    .AddOptions<ApiServicesSettings>()
+                    .BindConfiguration("ApiServicesSettings")
+                    .Validate(
+                        s => s.GetIsValid(ignoreBaseUri: false),
+                        "Endpoints with invalid request type or request uri detected. Service endpoint uris must be well-formed relative uris.  The base uri must be a well-formed absolute uri.")
+                    .ValidateOnStart();
+
+                _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added options");
+
+                o.Container.Register(() => new ApiServiceSettingsFactory(o.Container.GetInstance<ApiServicesSettings>(), clientsOptions.SerializerOptions));
+
+                var servicesSettings = new ApiServicesSettings() { BaseUri = "" };
+                var config = appBuilder.Capabilities.Configuration.Build();
+                config.Bind("ApiServicesSettings", servicesSettings);
+
+                _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, $"using base uri {servicesSettings.BaseUri}");
+
+                foreach(var (settingsType, serviceType, implementationType, serviceSettings) in
+                        servicesSettings.Services.Select(s => (s.SettingsType, s.ServiceType, s.ImplementationType, s)))
+                {
+                    o.Container.Register(settingsType, () => o.Container.GetInstance<ApiServiceSettingsFactory>().Create(settingsType));
+                    o.Container.RegisterConditional(serviceType, implementationType, ctx => !ctx.Handled);
+                    _ = o.Services.AddHttpClient(implementationType.FullName!);
+
+                    _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, $"added client {serviceSettings.Request} at {serviceSettings.Endpoint}");
+                }
+
+                _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added services");
+            };
+        });
+
+        return appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added");
+    }
     /// <summary>
     /// Creates a composer combining the composer provided with a blazor specific model composer instance.
     /// </summary>

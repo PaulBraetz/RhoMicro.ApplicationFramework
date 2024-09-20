@@ -63,7 +63,7 @@ public static class Extensions
     /// <param name="appBuilder">The builder to add api services to.</param>
     /// <param name="configureClients">Callback for configuring which kinds of api clients to register.</param>
     /// <returns>A reference to the builder, for chaining of further method calls.</returns>
-    public static LocalGuiAppBuilder AddApiServiceClients(this LocalGuiAppBuilder appBuilder, Action<ApiServiceOptions>? configureClients = null) =>
+    public static LocalGuiAppBuilder AddApiServiceClients(this LocalGuiAppBuilder appBuilder, Action<IApiServiceClientsOptions>? configureClients = null) =>
         appBuilder.AddApiServiceClients<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>(configureClients);
     /// <summary>
     /// Adds configuration based file logging to the builders capabilities.

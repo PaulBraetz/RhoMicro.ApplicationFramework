@@ -5,4 +5,5 @@
 /// </summary>
 /// <typeparam name="TSuccess">The type of success to produce.</typeparam>
 /// <typeparam name="TFailure">The type of failure to produce.</typeparam>
+#pragma warning disable CA1040 // Avoid empty interfaces
 public interface IRequest<TSuccess, TFailure> : IRequest<Result<TSuccess, TFailure>>;

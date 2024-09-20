@@ -111,7 +111,7 @@ public sealed class FormatString : IEquatable<FormatString?>
         return result;
     }
 
-    private IReadOnlyDictionary<FormatStringPosition, FormatStringArgument> MapArguments(FormatStringArgument[] arguments)
+    private Dictionary<FormatStringPosition, FormatStringArgument> MapArguments(FormatStringArgument[] arguments)
     {
         var argMapPosition = new Dictionary<FormatStringPosition, FormatStringArgument>();
 

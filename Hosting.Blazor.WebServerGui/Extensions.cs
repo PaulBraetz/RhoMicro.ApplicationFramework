@@ -64,15 +64,19 @@ public static class Extensions
     /// <param name="appBuilder">The builder to add api services to.</param>
     /// <param name="configureClients">Callback for configuring which kinds of api clients to register.</param>
     /// <returns>A reference to the builder, for chaining of further method calls.</returns>
-    public static WebServerGuiAppBuilder AddApiServiceClients(this WebServerGuiAppBuilder appBuilder, Action<ApiServiceOptions> configureClients) =>
+    public static WebServerGuiAppBuilder AddApiServiceClients(this WebServerGuiAppBuilder appBuilder, Action<IApiServiceClientsOptions> configureClients) =>
         appBuilder.AddApiServiceClients<WebServerGuiAppBuilder, WebServerGuiApp, WebApplicationBuilder, WebApplication, BlazorAppBuilderCapabilities>(configureClients);
+    sealed class ApiServiceEndpointsOptions : IApiServiceEndpointsOptions
+    {
+        public JsonSerializerOptions SerializerOptions { get; set; } = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+    }
     /// <summary>
     /// Adds and configures conventional api service endpoints.
     /// </summary>
     /// <param name="builder">The builder to add endpoint handlers to.</param>
     /// <param name="configureEndpoints">Callback for configuring endpoint settings.</param>
     /// <returns>A reference to the builder, for chaining of further method calls.</returns>
-    public static WebServerGuiAppBuilder AddApiServiceEndpoints(this WebServerGuiAppBuilder builder, Action<ApiServiceOptions>? configureEndpoints = null)
+    public static WebServerGuiAppBuilder AddApiServiceEndpoints(this WebServerGuiAppBuilder builder, Action<IApiServiceEndpointsOptions>? configureEndpoints = null)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
@@ -80,7 +84,7 @@ public static class Extensions
 
         builder.Options.OnContainerAdd += (o) =>
         {
-            var options = new ApiServiceOptions();
+            var options = new ApiServiceEndpointsOptions();
             configureEndpoints?.Invoke(options);
 
             _ = o.Services

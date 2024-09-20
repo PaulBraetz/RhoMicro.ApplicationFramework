@@ -7,4 +7,5 @@
 #if !GENERATOR
 public
 #endif
-    interface IRequest<TResult>;
+#pragma warning disable
+interface IRequest<TResult>;

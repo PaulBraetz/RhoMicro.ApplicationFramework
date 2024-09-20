@@ -12,11 +12,11 @@ public sealed class ServiceStub<TRequest, TResult> :
     where TRequest : IRequest<TResult>
 {
     /// <summary>
-    /// Gets a value indicating whether <see cref="Execute(TRequest)"/> has been called.
+    /// Gets a value indicating whether <see cref="Execute(TRequest, CancellationToken)"/> has been called.
     /// </summary>
     public Boolean ExecuteCalled { get; private set; }
     /// <summary>
-    /// Gets or sets the strategy to use when invoking <see cref="Execute(TRequest)"/>.
+    /// Gets or sets the strategy to use when invoking <see cref="Execute(TRequest, CancellationToken)"/>.
     /// </summary>
     public Func<TRequest, ValueTask<TResult>>? ExecuteStrategy { get; set; }
 

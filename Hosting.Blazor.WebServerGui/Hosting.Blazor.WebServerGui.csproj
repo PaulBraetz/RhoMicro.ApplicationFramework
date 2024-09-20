@@ -10,14 +10,19 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Compile Include="..\Hosting.Blazor.Extensions\ApiServiceSettings.cs" Link="ApiServiceSettings.cs" />
+		<Compile Include="..\Hosting.Blazor.Extensions\ApiServicesSettings.cs" Link="ApiServicesSettings.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\Hosting.Blazor.Extensions\Hosting.Blazor.Extensions.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 		<PackageReference Include="RhoMicro.RequiredPropertyValidation.Generator" Version="3.0.2">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="RhoMicro.RequiredPropertyValidation.Library" Version="3.0.2" />
 		<PackageReference Include="SimpleInjector" Version="5.5.0" />

@@ -88,7 +88,7 @@ public class IndexableSetTests
         Assert.Equal(actual.Count, expected.Count);
     }
     /// <summary>
-    /// Asserts that elements passed to <see cref="IndexableSet{T}.Remove(T)(T)"/> are not present in the output.
+    /// Asserts that elements passed to <see cref="IndexableSet{T}.Remove(T)"/> are not present in the output.
     /// </summary>
     /// <param name="elements"></param>
     /// <param name="elementToRemove"></param>

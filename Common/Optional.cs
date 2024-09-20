@@ -31,15 +31,21 @@ public readonly partial struct Optional<[UnionType(Alias = "Some")] T>
 
         return result;
     }
+}
+/// <summary>
+/// Provides unit functions for the <see cref="Optional{T}"/> type.
+/// </summary>
+public static class Optional
+{
     /// <summary>
     /// Creates a new optional with the underlying value provided.
     /// </summary>
     /// <param name="value">The value to initialize the new optional with.</param>
     /// <returns>A new optional representing <paramref name="value"/> (<c>Some</c>).</returns>
-    public static Optional<T> Some(T value) => value;
+    public static Optional<T> Some<T>(T value) => value;
     /// <summary>
     /// Creates a new optional with no underlying value.
     /// </summary>
     /// <returns>A new optional representing <see cref="Unit"/> (<c>None</c>).</returns>
-    public static Optional<T> None() => new Unit();
+    public static Optional<T> None<T>() => new Unit();
 }

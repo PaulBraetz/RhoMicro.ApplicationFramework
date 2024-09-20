@@ -14,12 +14,12 @@ public readonly record struct Failure(Optional<String> Reason)
     /// <summary>
     /// Initializes a new instance that does not present a reason for the failure.
     /// </summary>
-    public Failure() : this(Optional<String>.None()) { }
+    public Failure() : this(Optional.None<String>()) { }
     /// <summary>
     /// Initializes a new instance that presents a reason for the failure.
     /// </summary>
     /// <param name="reason">The reason the failure occurred.</param>
-    public Failure(String reason) : this(Optional<String>.Some(reason)) { }
+    public Failure(String reason) : this(Optional.Some(reason)) { }
 }
 /// <summary>
 /// Represents a generic result capable of representing either a success or a failure.

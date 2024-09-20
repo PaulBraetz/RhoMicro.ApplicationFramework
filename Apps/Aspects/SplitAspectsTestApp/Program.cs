@@ -38,7 +38,7 @@ internal class MainService(IConcatService concatService) : IHostedService
 {
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        var msg = concatService.Concat("Hello, ", "World!");
+        var msg = concatService.Concat("Hello, ", "World!", cancellationToken);
         Console.WriteLine(msg);
         return Task.CompletedTask;
     }

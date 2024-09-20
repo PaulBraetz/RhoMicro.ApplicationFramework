@@ -20,8 +20,7 @@ public sealed class AppBuilderOptions
     /// <summary>
     /// Gets or sets the configuration to be applied to the <see cref="Container"/> upon having been added to the underlying <see cref="IServiceCollection"/>.
     /// </summary>
-    public event Action<SimpleInjectorAddOptions>? OnContainerAdd = options =>
-    {
+    public event Action<SimpleInjectorAddOptions>? OnContainerAdd = options => {
         options.Container.ResolveUnregisteredType += (s, e) =>
         {
             if(e.Handled || e.UnregisteredServiceType.GetCustomAttribute<ResolveUnregisteredTypeAttribute>() is null)

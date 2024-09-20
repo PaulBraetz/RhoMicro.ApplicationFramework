@@ -54,7 +54,7 @@ public static class Extensions
     /// <param name="appBuilder">The builder to add api services to.</param>
     /// <param name="configureClients">Callback for configuring which kinds of api clients to register.</param>
     /// <returns>A reference to the builder, for chaining of further method calls.</returns>
-    public static WebClientGuiAppBuilder AddApiServiceClients(this WebClientGuiAppBuilder appBuilder, Action<ApiServiceOptions>? configureClients = null) =>
+    public static WebClientGuiAppBuilder AddApiServiceClients(this WebClientGuiAppBuilder appBuilder, Action<IApiServiceClientsOptions>? configureClients = null) =>
         appBuilder.AddApiServiceClients<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>(configureClients);
     /// <summary>
     /// Adds appsettings to the app builder.

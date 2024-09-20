@@ -1,5 +1,6 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
 using System;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
@@ -21,18 +22,18 @@ sealed class ApiServiceClient<TRequest, TResult, TRequestDto, TResultDto>(
             settings.RequestUri,
             requestDto,
             settings.SerializerOptions,
-            cancellationToken);
+            cancellationToken).ConfigureAwait(false);
         TResultDto? resultDto;
         try
         {
-            resultDto = await httpResponse.Content.ReadFromJsonAsync<TResultDto>(settings.SerializerOptions, cancellationToken);
+            resultDto = await httpResponse.Content.ReadFromJsonAsync<TResultDto>(settings.SerializerOptions, cancellationToken).ConfigureAwait(false);
         } catch(Exception ex)
         {
             throw new ApiServiceDeserializationException(typeof(TResultDto), ex);
         }
 
         if(resultDto is null)
-            throw new ApiServiceDeserializationException(typeof(TResultDto), await httpResponse.Content.ReadAsStringAsync(cancellationToken));
+            throw new ApiServiceDeserializationException(typeof(TResultDto), await httpResponse.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false));
 
         var result = resultDto.ToResult();
 

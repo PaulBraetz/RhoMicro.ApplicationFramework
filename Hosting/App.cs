@@ -58,7 +58,6 @@ public abstract class App<TSelf, TUnderlyingApp>(
     /// <summary>
     /// Runs the underlying app.
     /// </summary>
-    /// <param name="underlyingApp">The app to run.</param>
     /// <param name="cancellationToken">The token used to signal app execution to be cancelled (cooperatively).</param>
     protected abstract void RunUnderlyingApplication(CancellationToken cancellationToken);
     /// <summary>
