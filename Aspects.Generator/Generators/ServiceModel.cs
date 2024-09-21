@@ -8,6 +8,7 @@ sealed record ServiceModel(
     Boolean IsExternal,
     String RequestTypeFullName,
     EquatableList<ParameterModel> Parameters,
+    InterceptionModel Interception,
     ParameterModel? CancellationTokenParameter,
     Boolean ReturnsTask,
     Boolean ReturnsValueTask,
@@ -38,7 +39,7 @@ sealed record ServiceModel(
         var serviceInterfaceName = attribute.ServiceSymbol.Name;
         var serviceInterfaceFullName = attribute.ServiceSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
-        var (parameters, cancellationTokenParameter) = GetParameters(method, ct);
+        var (parameters, interception, cancellationTokenParameter) = GetParameters(method, ct);
 
         var (returnsTask, returnsValueTask, resultTypeName) = InterpretReturnType(method, ct);
 
@@ -69,6 +70,7 @@ sealed record ServiceModel(
             RequestTypeFullName: requestTypeFullName,
             RequestTypeKind: requestTypeKind,
             Parameters: parameters,
+            Interception: interception,
             ResultTypeFullName: resultTypeName,
             ServiceInterfaceFullName: serviceInterfaceFullName,
             ServiceInterfaceName: serviceInterfaceName,
@@ -99,7 +101,7 @@ sealed record ServiceModel(
             ? $"global::{@namespace}.{serviceInterfaceName}"
             : $"global::{serviceInterfaceName}";
 
-        var (parameters, cancellationTokenParameter) = GetParameters(method, ct);
+        var (parameters, interception, cancellationTokenParameter) = GetParameters(method, ct);
         var (returnsTask, returnsValueTask, resultTypeName) = InterpretReturnType(method, ct);
 
         ServiceVisibility? visibility = attribute.Visibility is ServiceVisibility.Default
@@ -115,6 +117,7 @@ sealed record ServiceModel(
             RequestTypeFullName: requestTypeFullName,
             RequestTypeKind: attribute.RequestTypeKind,
             Parameters: parameters,
+            Interception: interception,
             ResultTypeFullName: resultTypeName,
             ServiceInterfaceFullName: serviceInterfaceFullName,
             ServiceInterfaceName: serviceInterfaceName,
@@ -124,12 +127,14 @@ sealed record ServiceModel(
 
         return result;
     }
-    private static (EquatableList<ParameterModel> parameters, ParameterModel? cancellationTokenParameter) GetParameters(IMethodSymbol method, CancellationToken ct)
+    private static (EquatableList<ParameterModel>, InterceptionModel, ParameterModel?) GetParameters(IMethodSymbol method, CancellationToken ct)
     {
         ct.ThrowIfCancellationRequested();
 
         ParameterModel? cancellationTokenParameter = null;
         var parametersMutable = new List<ParameterModel>();
+        var interceptedParametersMutable = new List<InterceptedParameterModel>();
+        var requiredInterceptorTypeArgumentsMutable = new Dictionary<String, Int32>();
 
         foreach(var parameter in method.Parameters)
         {
@@ -138,9 +143,9 @@ sealed record ServiceModel(
             var model = ParameterModel.Create(parameter);
             if(parameter.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == Constants.CtTypeName)
             {
-                if(cancellationTokenParameter.HasValue)
+                if(cancellationTokenParameter != null)
                 {
-                    parametersMutable.Add(cancellationTokenParameter.Value);
+                    parametersMutable.Add(cancellationTokenParameter);
                 }
 
                 cancellationTokenParameter = model;
@@ -148,11 +153,30 @@ sealed record ServiceModel(
             {
                 parametersMutable.Add(model);
             }
+
+            if(model.IsIntercepted)
+            {
+                if(!requiredInterceptorTypeArgumentsMutable.TryGetValue(model.Type, out var index))
+                {
+                    index = requiredInterceptorTypeArgumentsMutable.Count;
+                    _ = requiredInterceptorTypeArgumentsMutable[model.Type] = index;
+                }
+
+                interceptedParametersMutable.Add(new(model, index));
+            }
         }
 
         var parameters = parametersMutable.AsEquatable();
+        var interceptedParameters = interceptedParametersMutable.AsEquatable();
+        var requiredInterceptorTypeArguments = requiredInterceptorTypeArgumentsMutable
+            .Select(kvp => new InterceptorTypeArgumentModel(kvp.Key, kvp.Value))
+            .ToEquatableList(ct);
 
-        return (parameters, cancellationTokenParameter);
+        var interception = new InterceptionModel(
+            interceptedParameters,
+            requiredInterceptorTypeArguments);
+
+        return (parameters, interception, cancellationTokenParameter);
     }
     private static (Boolean returnsTask, Boolean returnsValueTask, String resultTypeName) InterpretReturnType(IMethodSymbol method, CancellationToken ct)
     {

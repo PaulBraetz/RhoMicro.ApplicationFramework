@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
 
+using RhoMicro.ApplicationFramework.Common.Abstractions;
 using RhoMicro.ApplicationFramework.Composition;
 using RhoMicro.ApplicationFramework.Hosting;
 
@@ -10,7 +11,12 @@ using SplitAspectsLib;
 using SplitAspectsTestApp;
 
 var app = CliApp.CreateBuilder()
-    .ConfigureOptions(o => o.Composer += AspectComposers.CreateDefault(Lifestyle.Singleton, CommonAspects.All) + Composer.Create(c =>
+    .ConfigureOptions(o => o.AppRunOptions.Logger = NullContainerLogger.Instance)
+    .ConfigureOptions(o => o.Composer += AspectComposers.CreateDefault(
+        Lifestyle.Singleton,
+        CommonAspects.None,
+        interceptors => interceptors.Append<ToUpperInterceptor, String>()) + 
+        Composer.Create(c =>
     {
         c.RegisterServices(options: new()
         {
@@ -29,19 +35,23 @@ var app = CliApp.CreateBuilder()
     }))
     .AddHostedServices(typeof(MainService).Assembly)
     .AddConsoleLogging()
-    .AddTimeout(Lifestyle.Singleton)
     .Build();
 
 await app.RunAsync(default).ConfigureAwait(false);
 
-internal class MainService(IConcatService concatService) : IHostedService
+class MainService(IConcatService concatService, IHostLifetime hostLifetime) : IHostedService
 {
-    public Task StartAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
-        var msg = concatService.Concat("Hello, ", "World!", cancellationToken);
+        var msg = await concatService.Concat("Hello, ", "World!", cancellationToken);
         Console.WriteLine(msg);
-        return Task.CompletedTask;
+        await hostLifetime.StopAsync(cancellationToken);
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+}
+
+class ToUpperInterceptor : IInterceptor<String>
+{
+    public ValueTask<String> Intercept(String obj, CancellationToken cancellationToken) => ValueTask.FromResult(obj.ToUpperInvariant());
 }

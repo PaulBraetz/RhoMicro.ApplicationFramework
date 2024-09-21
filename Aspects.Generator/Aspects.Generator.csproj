@@ -44,8 +44,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Compile Include="..\Common\Abstractions\IInterceptor.cs" Link="IInterceptor.cs" />
 		<Compile Include="..\Common\Abstractions\IRequest.cs" Link="IRequest.cs" />
 		<Compile Include="..\Common\Abstractions\IService.cs" Link="IService.cs" />
+		<Compile Include="..\Common\InjectedAttribute.cs" Link="InjectedAttribute.cs" />
+		<Compile Include="..\Common\NullInterceptor.cs" Link="NullInterceptor.cs" />
 		<Compile Include="..\Common\ServiceInjectionInfoAttribute.cs" Link="ServiceInjectionInfoAttribute.cs" />
 	</ItemGroup>
 

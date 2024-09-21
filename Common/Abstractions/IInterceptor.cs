@@ -6,7 +6,10 @@
 /// <typeparam name="T">
 /// The type of object to intercept.
 /// </typeparam>
-public interface IInterceptor<T>
+#if !GENERATOR
+public
+#endif
+interface IInterceptor<T>
 {
     /// <summary>
     /// Intercepts an object.

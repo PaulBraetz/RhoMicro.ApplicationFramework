@@ -29,18 +29,69 @@ public static class AspectComposers
     /// <summary>
     /// Gets a composer able to compose common aspects using the lifestyle provided.
     /// </summary>
-    public static IComposer CreateDefault(Lifestyle lifestyle, CommonAspects aspects = CommonAspects.All) => Composer.Create(
-        CreateInterceptorsComposer(lifestyle),
+    public static IComposer CreateDefault(Lifestyle lifestyle, CommonAspects aspects = CommonAspects.All, Action<InterceptorAppendContext>? appendInterceptors = null) => Composer.Create(
+        CreateForInterceptors(lifestyle, appendInterceptors ?? ( static c => { } )),
         Formatters,
         CreateForLoggingDecorators(lifestyle, aspects));
     /// <summary>
-    /// Creates a composer for registering the aggregate interceptor implementation.
-    /// Register interceptors as collection registrations.
+    /// Creates a composer that registers interceptors to container collections, to be resolved via <see
+    /// cref="AggregateInterceptor{T}"/>. The interceptors will be
+    /// registered using the containers default lifestyle.
     /// </summary>
-    /// <param name="lifestyle">The lifestyle to register the interceptor with.</param>
-    /// <returns></returns>
-    public static IComposer CreateInterceptorsComposer(Lifestyle lifestyle) =>
-        Composer.Create(c => c.Register(typeof(IInterceptor<>), typeof(AggregateInterceptor<>), lifestyle));
+    /// <param name="append">
+    /// The callback to invoke when appending interceptors to container
+    /// collections.
+    /// </param>
+    public static IComposer CreateForInterceptors(Action<InterceptorAppendContext> append)
+    {
+        ArgumentNullException.ThrowIfNull(append);
+        return Interceptors +
+            Composer.Create(container => append.Invoke(new(container, null)));
+    }
+    /// <summary>
+    /// Creates a composer that registers interceptors to container collections, to be resolved via <see
+    /// cref="AggregateInterceptor{T}"/>.
+    /// </summary>
+    /// <param name="lifestyle">
+    /// The default lifestyle of interceptors added via <paramref
+    /// name="append"/>.
+    /// </param>
+    /// <param name="append">
+    /// The callback to invoke when appending interceptors to container
+    /// collections.
+    /// </param>
+    public static IComposer CreateForInterceptors(Lifestyle lifestyle, Action<InterceptorAppendContext> append)
+    {
+        ArgumentNullException.ThrowIfNull(append);
+
+        return CreateForInterceptors(lifestyle) +
+            Composer.Create(container => append.Invoke(new(container, lifestyle)));
+    }
+    /// <summary>
+    /// Creates a composer that registers interceptors to container collections, to be resolved via <see
+    /// cref="AggregateInterceptor{T}"/>.
+    /// </summary>
+    /// <param name="lifestyle">
+    /// The lifestyle to register <see cref="AggregateInterceptor{T}"/> with.
+    /// </param>
+    public static IComposer CreateForInterceptors(Lifestyle lifestyle) =>
+        Composer.Create(c =>
+        {
+            c.Collection.Register(typeof(IInterceptor<>));
+            c.RegisterConditional(typeof(IInterceptor<>), typeof(AggregateInterceptor<>), lifestyle, ctx => !ctx.Handled);
+        });
+    /// <summary>
+    /// Creates a composer that registers interceptors to container collections, to be resolved via <see
+    /// cref="AggregateInterceptor{T}"/>. The interceptor aggregate will be
+    /// registered using the containers default lifestyle.
+    /// </summary>
+    public static IComposer Interceptors { get; } =
+        Composer.Create(c =>
+        {
+            c.Collection.Register(typeof(IInterceptor<>));
+            c.RegisterConditional(typeof(IInterceptor<>), typeof(AggregateInterceptor<>), ctx => !ctx.Handled);
+        });
+
     /// <summary>
     /// Gets a composer for registering default formatters.
     /// </summary>

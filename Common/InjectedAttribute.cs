@@ -3,4 +3,7 @@
 /// Marks target properties for property injection by simpleinjector.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-public sealed class InjectedAttribute : Attribute;
+#if !GENERATOR
+public
+#endif
+sealed class InjectedAttribute : Attribute;

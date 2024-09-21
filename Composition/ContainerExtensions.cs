@@ -40,14 +40,16 @@ public static partial class ContainerExtensions
         container.Register<IService<TRequest, TResult>, TService>(lifestyle);
     }
     /// <summary>
-    /// Conventionally registers all generated implementations of <see cref="IService{TRequest, TResult}"/> to the container.
+    /// Conventionally registers all generated implementations of <see
+    /// cref="IService{TRequest, TResult}"/> to the container.
     /// </summary>
     /// <param name="container">The container to register services to.</param>
     /// <param name="assemblies">The assemblies to query for generated implementations of <see cref="IService{TRequest, TResult}"/>.</param>
     public static void RegisterServices(this Container container, params Assembly[] assemblies) =>
         container.RegisterServices(ConventionalServiceRegistrationOptions.Default, assemblies);
     /// <summary>
-    /// Conventionally registers all generated implementations of <see cref="IService{TRequest, TResult}"/> to the container.
+    /// Conventionally registers all generated implementations of <see
+    /// cref="IService{TRequest, TResult}"/> to the container.
     /// </summary>
     /// <param name="container">The container to register services to.</param>
     /// <param name="options">The optional options to use when registering services.</param>

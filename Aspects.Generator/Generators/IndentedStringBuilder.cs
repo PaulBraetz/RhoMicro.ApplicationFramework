@@ -29,9 +29,17 @@ partial class IndentedStringBuilder
         Append(serviceModel.RequestTypeName).AppendCore('(');
 
         var i = 0;
-        foreach(var (_, paramName, propertyName) in serviceModel.Parameters)
+        foreach(var (_, paramName, propertyName, isIntercepted) in serviceModel.Parameters)
         {
-            Append(paramName).Append(": request.").AppendCore(propertyName);
+            Append(paramName).AppendCore(": ");
+            if(isIntercepted)
+            {
+                AppendCore(paramName);
+            } else
+            {
+                Append("request.").AppendCore(propertyName);
+            }
+
             i++;
             if(i != serviceModel.Parameters.Count)
             {
@@ -39,9 +47,9 @@ partial class IndentedStringBuilder
             }
         }
 
-        if(serviceModel.CancellationTokenParameter.HasValue)
+        if(serviceModel.CancellationTokenParameter != null)
         {
-            Append(", ").Append(serviceModel.CancellationTokenParameter.Value.Name).AppendCore(": cancellationToken");
+            Append(", ").Append(serviceModel.CancellationTokenParameter.Name).AppendCore(": cancellationToken");
         }
 
         AppendCore(')');

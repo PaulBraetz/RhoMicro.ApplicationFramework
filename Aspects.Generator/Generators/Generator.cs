@@ -7,6 +7,9 @@ using RhoMicro.CodeAnalysis.Library;
 using RhoMicro.CodeAnalysis.Generated;
 
 using static RhoMicro.CodeAnalysis.Library.Text.IndentedStringBuilder.Appendables;
+using RhoMicro.ApplicationFramework.Common.Abstractions;
+using RhoMicro.ApplicationFramework.Common;
+using RhoMicro.ApplicationFramework.Composition;
 
 /// <summary>
 /// Generates required members for AOP annotated service methods and request types.
@@ -20,10 +23,8 @@ public sealed class Generator : IIncrementalGenerator
         //if(!System.Diagnostics.Debugger.Launch())
         //    System.Diagnostics.Debugger.Break();
 
-        var settingsProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
-                typeof(ServiceSettingsAttribute).FullName,
-                (node, ct) => true,
-                SettingsModel.Create)
+        var settingsProvider = context.SyntaxProvider
+            .ForServiceSettingsAttribute((node, ct) => true, SettingsModel.Create)
             .Where(m => m is not null)
             .Collect()
             .WithCollectionComparer()
@@ -37,17 +38,14 @@ public sealed class Generator : IIncrementalGenerator
                 return result;
             });
 
-        var partialServicesProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
-                typeof(ServiceMethodImplementationAttribute).FullName,
-                (node, ct) => true,
-                ServiceModel.CreateFromPartial)
+        var partialServicesProvider = context.SyntaxProvider
+            .ForServiceMethodImplementationAttribute((node, ct) => true, ServiceModel.CreateFromPartial)
             .Where(m => m is not null)
             .Collect()
             .WithCollectionComparer();
-        var servicesProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
-                typeof(ServiceMethodAttribute).FullName,
-                (node, ct) => true,
-                ServiceModel.Create)
+
+        var servicesProvider = context.SyntaxProvider
+            .ForServiceMethodAttribute((node, ct) => true, ServiceModel.Create)
             .Where(m => m is not null)
             .Collect()
             .WithCollectionComparer()
@@ -129,35 +127,72 @@ public sealed class Generator : IIncrementalGenerator
                     }
 
                     _ = b.Operators +
-                    '[' + settings!.ServiceInjectionInfoAttributeTypeName +
-                    '(' + NewLine +
-                    Indent() +
-                        "RequestType = typeof(" + service.RequestTypeFullName + ")," + NewLine +
-                        "ResultType = typeof(" + service.ResultTypeFullName + ")," + NewLine +
-                        "ServiceType = typeof(" + service.ServiceInterfaceFullName + ")," + NewLine +
-                        "ImplementationType = typeof(" + service.ImplementationType.Signature.FullDisplayName + ")," + NewLine +
-                        "AdapterType = typeof(" + service.ImplementationType.Signature.Name + "Adapter" + NewLine +
-                    Detent() + NewLine +
+                    '[' + settings!.ServiceInjectionInfoAttributeTypeName + '(' + NewLine +
+                    "RequestType = typeof(" + service.RequestTypeFullName + ")," + NewLine +
+                    "ResultType = typeof(" + service.ResultTypeFullName + ")," + NewLine +
+                    "ServiceType = typeof(" + service.ServiceInterfaceFullName + ")," + NewLine +
+                    "ImplementationType = typeof(" + service.ImplementationType.Signature.FullDisplayName + ")," + NewLine +
+                    "AdapterType = typeof(" + service.ImplementationType.Signature.Name + "Adapter" + NewLine +
                     "))]" + NewLine +
                     "partial " + implTypeSig.RecordKeyword + ' ' + implTypeSig.TypeKind + ' ' + implTypeSig.Name +
                     " : " + AppendServiceType(service, settings) +
                     OpenBracesBlock() +
+                        IndentedStringBuilder.Appendables.Append(b =>
+                        {
+                            foreach(var (arg, index) in service.Interception.RequiredInterceptorTypeArguments)
+                            {
+                                _ = b.Operators +
+                                Append(b => b.Comment
+                                .OpenSummary()
+                                    .Append("The interceptor used to intercept annotated parameters of type ").Comment.SeeRef(arg).AppendLine('.')
+                                    .AppendLine("This property is not intended to be used by user code.")
+                                .CloseBlockCore()) +
+                                "[global::" + typeof(InjectedAttribute).FullName + ']' + NewLine +
+                                "public global::" + typeof(IInterceptor<Object>).Namespace + '.' + nameof(Common.Abstractions.IInterceptor<Object>) + '<' + arg + "> " +
+                                service.RequestTypeName + "Interceptor_" + index.ToString() +
+                                " { get; set; } = global::" + typeof(NullInterceptor<Object>).Namespace + '.' + nameof(NullInterceptor<Object>) + '<' + arg + ">." + nameof(NullInterceptor<Object>.Instance) + ';' + NewLine + NewLine;
+                            }
+                        }) +
+                        Append(b =>
+                        {
+                            if(service.Interception.HasAny)
+                                b.AppendCore("async ");
+                        }) +
                         "global::System.Threading.Tasks.ValueTask<" + service.ResultTypeFullName + "> " +
                         AppendServiceType(service, settings) + '.' + settings.ExecuteName + '(' +
                         service.RequestTypeFullName + " request, " + Constants.CtTypeName + " cancellationToken = default)" +
                         OpenBracesBlock() +
                             Append(b =>
                             {
-                                b.AppendLine("cancellationToken.ThrowIfCancellationRequested();").AppendCore("return ");
+                                b.Append("cancellationToken.ThrowIfCancellationRequested();").AppendLineCore();
 
-                                if(!service.ReturnsValueTask)
+                                foreach(var (parameter, index) in service.Interception.InterceptedParameters)
+                                {
+                                    b.Append("var ").Append(parameter.Name).Append(" = await ")
+                                        .Append(service.RequestTypeName).Append("Interceptor_").Append(index.ToString()).Append('.')
+                                        .Append(nameof(IInterceptor<Object>.Intercept)).Append('(')
+                                        .Append("request.").Append(parameter.PropertyName).Append(", cancellationToken);").AppendLineCore();
+                                }
+
+                                b.AppendCore("return ");
+
+                                var returnsAwaitable = service.ReturnsTask || service.ReturnsValueTask;
+                                var hasInterceptions = service.Interception.HasAny;
+                                var isAwaitRequired = hasInterceptions && returnsAwaitable;
+                                if(isAwaitRequired)
+                                {
+                                    b.AppendCore("await ");
+                                }
+
+                                var isValueTaskConstructionRequired = !( hasInterceptions || service.ReturnsValueTask );
+                                if(isValueTaskConstructionRequired)
                                 {
                                     b.Append("new ").Append(Constants.ValueTaskTypeName).Append('<').Append(service.ResultTypeFullName).AppendCore(">(");
                                 }
 
                                 _ = b.AppendAdapterInvocation(service);
 
-                                if(!service.ReturnsValueTask)
+                                if(isValueTaskConstructionRequired)
                                 {
                                     b.AppendCore(')');
                                 }
@@ -212,7 +247,7 @@ public sealed class Generator : IIncrementalGenerator
                                 .Append(service.RequestTypeName).Append('(')
                                 .Append(b =>
                                 {
-                                    foreach(var (type, name, _) in service.Parameters)
+                                    foreach(var (type, name, _, _) in service.Parameters)
                                     {
                                         b.Append(type).Append(' ').Append(name).AppendCore(", ");
                                     }
@@ -237,20 +272,20 @@ public sealed class Generator : IIncrementalGenerator
                     b.AppendLine().AppendServiceType(services[i], settings).Append(" service_").AppendCore(i.ToString());
                 }
             }) + ") : " +
-            Append(b =>
-            {
-                var addedInterfaces = new HashSet<String>();
-                for(var i = 0; i < services.Count; i++)
+                Append(b =>
                 {
-                    if(!addedInterfaces.Add(services[i].ServiceInterfaceFullName))
-                        continue;
+                    var addedInterfaces = new HashSet<String>();
+                    for(var i = 0; i < services.Count; i++)
+                    {
+                        if(!addedInterfaces.Add(services[i].ServiceInterfaceFullName))
+                            continue;
 
-                    if(i > 0)
-                        b.AppendCore(",");
+                        if(i > 0)
+                            b.AppendCore(",");
 
-                    b.AppendLine().AppendCore(services[i].ServiceInterfaceFullName);
-                }
-            }) +
+                        b.AppendLine().AppendCore(services[i].ServiceInterfaceFullName);
+                    }
+                }) +
             OpenBracesBlock() +
                 Append(b =>
                 {
@@ -262,7 +297,7 @@ public sealed class Generator : IIncrementalGenerator
                         .Append(services[i].RequestTypeName).Append('(')
                         .Append(b =>
                         {
-                            foreach(var (type, name, _) in services[i].Parameters)
+                            foreach(var (type, name, _, _) in services[i].Parameters)
                             {
                                 b.Append(type).Append(' ').Append(name).AppendCore(", ");
                             }
@@ -272,24 +307,24 @@ public sealed class Generator : IIncrementalGenerator
                             .AppendLine("cancellationToken.ThrowIfCancellationRequested();")
                             .Append("return service_").Append(i.ToString()).Append('.').Append(settings!.ExecuteName).Append("(new ").Append(services[i].RequestTypeFullName).AppendLine('(')
                             .Indent()
-                                .Append(b =>
-                                {
-                                    if(services[i].Parameters.Count == 0)
-                                        return;
+                    .Append(b =>
+                    {
+                        if(services[i].Parameters.Count == 0)
+                            return;
 
-                                    var firstParam = services[i].Parameters[0];
-                                    b.Append(firstParam.PropertyName).Append(": ").AppendCore(firstParam.Name);
+                        var firstParam = services[i].Parameters[0];
+                        b.Append(firstParam.PropertyName).Append(": ").AppendCore(firstParam.Name);
 
-                                    for(var j = 1; j < services[i].Parameters.Count; j++)
-                                    {
-                                        var param = services[i].Parameters[j];
-                                        b.AppendLine(',').Append(param.PropertyName).Append(": ").AppendCore(param.Name);
-                                    }
-                                })
+                        for(var j = 1; j < services[i].Parameters.Count; j++)
+                        {
+                            var param = services[i].Parameters[j];
+                            b.AppendLine(',').Append(param.PropertyName).Append(": ").AppendCore(param.Name);
+                        }
+                    })
                             .Detent()
-                            .AppendLine("), cancellationToken);")
+                    .AppendLine("), cancellationToken);")
                             .AppendLine()
-                        .CloseBlockCore();
+                .CloseBlockCore();
                     }
                 }) +
             CloseAllBlocks();
