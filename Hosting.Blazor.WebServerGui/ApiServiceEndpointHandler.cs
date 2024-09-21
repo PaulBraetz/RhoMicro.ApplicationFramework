@@ -18,7 +18,7 @@ sealed class ApiServiceEndpointHandler<TRequest, TResult, TRequestDto, TResultDt
     {
         ArgumentNullException.ThrowIfNull(context);
 
-        var requestDto = await JsonSerializer.DeserializeAsync<TRequestDto>(context.Request.Body, settings.SerializerOptions)
+        var requestDto = await JsonSerializer.DeserializeAsync<TRequestDto>(context.Request.Body, settings.SerializerOptions, context.RequestAborted)
             ?? throw new InvalidOperationException("Unable to deserialize request dto.");
 
         var request = requestDto.ToRequest();
