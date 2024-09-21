@@ -1,9 +1,11 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
 using System.Reflection;
 
+using RhoMicro.ApplicationFramework.Composition;
+
 using SimpleInjector.Advanced;
 
-internal sealed class DependencyAttributePropertySelectionBehavior : IPropertySelectionBehavior
+sealed class InjectedAttributePropertySelectionBehavior : IPropertySelectionBehavior
 {
     public Boolean SelectProperty(Type type, PropertyInfo prop)
     {

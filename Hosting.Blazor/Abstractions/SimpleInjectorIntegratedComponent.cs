@@ -5,6 +5,7 @@ using System.Reflection;
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 
 using Microsoft.AspNetCore.Components;
+using RhoMicro.ApplicationFramework.Composition;
 
 /// <summary>
 /// Base component that integrates with SimpleInjector.

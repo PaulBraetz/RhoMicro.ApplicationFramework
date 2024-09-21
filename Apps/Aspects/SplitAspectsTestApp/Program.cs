@@ -10,7 +10,7 @@ using SplitAspectsLib;
 using SplitAspectsTestApp;
 
 var app = CliApp.CreateBuilder()
-    .ConfigureOptions(o => o.Composer += AspectComposers.Create(Lifestyle.Singleton, CommonAspects.All) + Composer.Create(c =>
+    .ConfigureOptions(o => o.Composer += AspectComposers.CreateDefault(Lifestyle.Singleton, CommonAspects.All) + Composer.Create(c =>
     {
         c.RegisterServices(options: new()
         {

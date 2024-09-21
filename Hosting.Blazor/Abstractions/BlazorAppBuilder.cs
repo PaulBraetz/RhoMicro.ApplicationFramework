@@ -41,15 +41,6 @@ public abstract partial class BlazorAppBuilder<TSelf, TApp, TUnderlyingBuilder, 
     where TCapabilities : BlazorAppBuilderCapabilities
 {
     /// <inheritdoc/>
-    protected override void OnAfterContainerCreated(Container container)
-    {
-        ArgumentNullException.ThrowIfNull(container);
-
-        base.OnAfterContainerCreated(container);
-        container.Options.PropertySelectionBehavior = new DependencyAttributePropertySelectionBehavior();
-    }
-
-    /// <inheritdoc/>
     protected override void OnBeforeContainerComposed(Container container)
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -176,9 +167,7 @@ file static class InjectionUtils
             .BindConfiguration($"Styles:{typeof(TStyleSettings).FullName}")
             .ValidateOnStart();
     }
-#pragma warning disable IDE0060 // Remove unused parameter
     public static void AddValidatableStyle<TStyle, TStyleSettings>(SimpleInjectorAddOptions options, Type componentType)
-#pragma warning restore IDE0060 // Remove unused parameter
         where TStyleSettings : class, TStyle, IValidateRequiredProperties<TStyleSettings>
         where TStyle : class
     {

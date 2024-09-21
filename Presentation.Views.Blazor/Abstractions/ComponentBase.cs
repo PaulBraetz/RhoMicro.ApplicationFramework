@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Components;
 
 using RhoMicro.ApplicationFramework.Common;
+using RhoMicro.ApplicationFramework.Composition;
 using RhoMicro.ApplicationFramework.Hosting;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Exceptions;

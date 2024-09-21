@@ -28,7 +28,7 @@ partial class IndentedStringBuilder
         Appendables.OpenBracesBlock() +
 
             "/// <inheritdoc/>" + NewLine +
-            "[global::RhoMicro.ApplicationFramework.Hosting.Injected]" + NewLine +
+            "[global::RhoMicro.ApplicationFramework.Composition.Injected]" + NewLine +
             "public global::RhoMicro.ApplicationFramework.Hosting.IRenderModeInterceptor RenderModeInterceptor { get; set; }" + NewLine +
         
             "static RenderModeWrapper()" +

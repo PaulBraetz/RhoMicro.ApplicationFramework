@@ -182,6 +182,7 @@ public abstract class AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp
     private Container CreateContainer()
     {
         var container = new Container();
+        container.Options.PropertySelectionBehavior = new InjectedAttributePropertySelectionBehavior();
 
         OnAfterContainerCreated(container);
 
