@@ -4,6 +4,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Hosting;
 
+using RhoMicro.ApplicationFramework.Composition;
 using RhoMicro.RequiredPropertyValidation.RhoMicro.RequiredPropertyValidation;
 
 using SimpleInjector;
@@ -41,6 +42,11 @@ public static class Extensions
     /// </summary>
     public static WebClientGuiAppBuilder AddTimeout(this WebClientGuiAppBuilder appBuilder) =>
         appBuilder.AddTimeout(Lifestyle.Scoped);
+    /// <summary>
+    /// Adds default aspects to the application being built.
+    /// </summary>
+    public static WebClientGuiAppBuilder AddAspects(this WebClientGuiAppBuilder appBuilder, Lifestyle lifestyle, CommonAspects aspects = CommonAspects.All, Action<InterceptorAppendContext>? appendInterceptors = null) =>
+        appBuilder.AddAspects<WebClientGuiAppBuilder, WebClientGuiApp, WebAssemblyHostBuilder, WebAssemblyHost, BlazorAppBuilderCapabilities>(lifestyle, aspects, appendInterceptors);
     /// <summary>
     /// Adds blazor to the web client app builder.
     /// </summary>

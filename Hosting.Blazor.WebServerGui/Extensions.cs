@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Logging;
 using SimpleInjector;
 using Microsoft.Extensions.Hosting;
+using RhoMicro.ApplicationFramework.Composition;
 
 /// <summary>
 /// Contains extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.
@@ -51,6 +52,11 @@ public static class Extensions
     /// </summary>
     public static WebServerGuiAppBuilder AddTimeout(this WebServerGuiAppBuilder appBuilder) =>
         appBuilder.AddTimeout(Lifestyle.Scoped);
+    /// <summary>
+    /// Adds default aspects to the application being built.
+    /// </summary>
+    public static WebServerGuiAppBuilder AddAspects(this WebServerGuiAppBuilder appBuilder, Lifestyle lifestyle, CommonAspects aspects = CommonAspects.All, Action<InterceptorAppendContext>? appendInterceptors = null) =>
+        appBuilder.AddAspects<WebServerGuiAppBuilder, WebServerGuiApp, WebApplicationBuilder, WebApplication, BlazorAppBuilderCapabilities>(lifestyle, aspects, appendInterceptors);
     /// <summary>
     /// Adds blazor to the web server app builder.
     /// </summary>
@@ -141,7 +147,7 @@ public static class Extensions
                     var handler = lambda.Compile();
 
                     _ = app.MapPost(route, handler);
-                    
+
                     logger.LogInformation("Mapping {Handler} to {Route}", ( handlerType.GenericTypeArguments.FirstOrDefault() ?? handlerType ).Name, route);
                 });
         });

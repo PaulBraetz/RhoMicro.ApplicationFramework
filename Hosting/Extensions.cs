@@ -59,6 +59,24 @@ public static class Extensions
         return appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>("RequiredPropertyValidation", "added");
     }
     /// <summary>
+    /// Adds default aspects to the application being built.
+    /// </summary>
+    public static TSelf AddAspects<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(
+        this TSelf appBuilder,
+        Lifestyle lifestyle,
+        CommonAspects aspects = CommonAspects.All,
+        Action<InterceptorAppendContext>? appendInterceptors = null)
+        where TSelf : AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>
+        where TApp : App<TApp, TUnderlyingApp>
+        where TCapabilities : AppBuilderCapabilities
+    {
+        ArgumentNullException.ThrowIfNull(appBuilder);
+
+        appBuilder.Options.Composer += AspectComposers.CreateDefault(lifestyle, aspects, appendInterceptors);
+
+        return appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>("Aspects", "added");
+    }
+    /// <summary>
     /// Adds timeout aspects and related configuration to the application using the lifestyle provided.
     /// </summary>
     public static TSelf AddTimeout<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(

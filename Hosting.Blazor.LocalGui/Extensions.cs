@@ -10,6 +10,7 @@ using Photino.Blazor;
 using RhoMicro.RequiredPropertyValidation.RhoMicro.RequiredPropertyValidation;
 
 using SimpleInjector;
+using RhoMicro.ApplicationFramework.Composition;
 
 /// <summary>
 /// Contains extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.
@@ -20,7 +21,7 @@ public static class Extensions
     /// <summary>
     /// Logs to the app builders setup logging callback a message about a feature.
     /// </summary>
-    public static LocalGuiAppBuilder LogFeature(this LocalGuiAppBuilder appBuilder, String feature, String message)=>
+    public static LocalGuiAppBuilder LogFeature(this LocalGuiAppBuilder appBuilder, String feature, String message) =>
         appBuilder.LogFeature<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>(feature, message);
     /// <summary>
     /// Registers a platform-specific clipboard implementation to the builder services.
@@ -44,6 +45,11 @@ public static class Extensions
     /// </summary>
     public static LocalGuiAppBuilder AddTimeout(this LocalGuiAppBuilder appBuilder) =>
         appBuilder.AddTimeout(Lifestyle.Scoped);
+    /// <summary>
+    /// Adds default aspects to the application being built.
+    /// </summary>
+    public static LocalGuiAppBuilder AddAspects(this LocalGuiAppBuilder appBuilder, Lifestyle lifestyle, CommonAspects aspects = CommonAspects.All, Action<InterceptorAppendContext>? appendInterceptors = null) =>
+        appBuilder.AddAspects<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>(lifestyle, aspects, appendInterceptors);
     /// <summary>
     /// Adds appsettings to the app builder.
     /// </summary>

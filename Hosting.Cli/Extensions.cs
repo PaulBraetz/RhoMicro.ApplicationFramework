@@ -9,6 +9,8 @@ using Microsoft.Extensions.Logging.Console;
 
 using NReco.Logging.File;
 
+using RhoMicro.ApplicationFramework.Composition;
+
 using SimpleInjector;
 using SimpleInjector.Integration.ServiceCollection;
 
@@ -63,6 +65,11 @@ public static class Extensions
     /// </summary>
     public static CliAppBuilder AddTimeout(this CliAppBuilder appBuilder) =>
         appBuilder.AddTimeout(Lifestyle.Scoped);
+    /// <summary>
+    /// Adds default aspects to the application being built.
+    /// </summary>
+    public static CliAppBuilder AddAspects(this CliAppBuilder appBuilder, Lifestyle lifestyle, CommonAspects aspects = CommonAspects.All, Action<InterceptorAppendContext>? appendInterceptors = null) =>
+        appBuilder.AddAspects<CliAppBuilder, CliApp, HostApplicationBuilder, IHost, AppBuilderCapabilities>(lifestyle, aspects, appendInterceptors);
     /// <summary>
     /// Adds all services implementing <see cref="IHostedService"/> from the assemblies provided as hosted services to the app being built.
     /// </summary>
