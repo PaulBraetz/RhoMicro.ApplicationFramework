@@ -1,5 +1,7 @@
 ﻿namespace RhoMicro.ApplicationFramework.Composition;
 
+using RhoMicro.ApplicationFramework.Common;
+
 using SimpleInjector;
 
 /// <summary>
@@ -29,10 +31,19 @@ public static partial class Composer
     /// </summary>
     /// <param name="roots">The roots defining the composite composition.</param>
     /// <returns>A new composite composition root based on the roots provided.</returns>
-    public static IComposer Create(params IComposer[] roots) =>
-        new Strategy(c =>
+    public static IComposer Create(params IComposer[] roots)
+    {
+        ArgumentNullException.ThrowIfNull(roots);
+        for(var i = 0; i < roots.Length; i++)
+        {
+            if(roots[i] is null)
+                throw new ArgumentException($"{nameof(roots)} contains null reference at index {i}.", nameof(roots));
+        }
+
+        return new Strategy(c =>
         {
             for(var i = 0; i < roots.Length; i++)
                 roots[i].Compose(c);
         });
+    }
 }

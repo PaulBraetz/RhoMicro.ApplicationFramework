@@ -27,9 +27,38 @@ public static class AspectComposers
     /// </summary>
     public static IComposer Default { get; } = CreateDefault(Lifestyle.Scoped, CommonAspects.All);
     /// <summary>
+    /// Gets a composer for registering default formatters.
+    /// </summary>
+    public static IComposer Formatters { get; } = Composer.Create(c =>
+    {
+        c.Register<EllipsisFormatter>(Lifestyle.Singleton);
+        c.RegisterConditional(
+            typeof(IStaticFormatter<>),
+            typeof(TypeNameFormatter<>),
+            Lifestyle.Singleton,
+            c => !c.Handled && c.ServiceType.GenericTypeArguments[0].IsAssignableTo(typeof(Exception)));
+        c.RegisterConditional(
+            typeof(IStaticFormatter<>),
+            typeof(ToStringFormatter<>),
+            Lifestyle.Singleton,
+            c => !c.Handled);
+    });
+    /// <summary>
+    /// Creates a composer that registers interceptors to container collections, to be resolved via <see
+    /// cref="AggregateInterceptor{T}"/>. The interceptor aggregate will be
+    /// registered using the containers default lifestyle.
+    /// </summary>
+    public static IComposer Interceptors { get; } =
+        Composer.Create(c =>
+        {
+            c.Collection.Register(typeof(IInterceptor<>));
+            c.RegisterConditional(typeof(IInterceptor<>), typeof(AggregateInterceptor<>), ctx => !ctx.Handled);
+        });
+    /// <summary>
     /// Gets a composer able to compose common aspects using the lifestyle provided.
     /// </summary>
-    public static IComposer CreateDefault(Lifestyle lifestyle, CommonAspects aspects = CommonAspects.All, Action<InterceptorAppendContext>? appendInterceptors = null) => Composer.Create(
+    public static IComposer CreateDefault(Lifestyle lifestyle, CommonAspects aspects = CommonAspects.All, Action<InterceptorAppendContext>? appendInterceptors = null) => 
+        Composer.Create(
         CreateForInterceptors(lifestyle, appendInterceptors ?? ( static c => { } )),
         Formatters,
         CreateForLoggingDecorators(lifestyle, aspects));
@@ -80,35 +109,6 @@ public static class AspectComposers
             c.Collection.Register(typeof(IInterceptor<>));
             c.RegisterConditional(typeof(IInterceptor<>), typeof(AggregateInterceptor<>), lifestyle, ctx => !ctx.Handled);
         });
-    /// <summary>
-    /// Creates a composer that registers interceptors to container collections, to be resolved via <see
-    /// cref="AggregateInterceptor{T}"/>. The interceptor aggregate will be
-    /// registered using the containers default lifestyle.
-    /// </summary>
-    public static IComposer Interceptors { get; } =
-        Composer.Create(c =>
-        {
-            c.Collection.Register(typeof(IInterceptor<>));
-            c.RegisterConditional(typeof(IInterceptor<>), typeof(AggregateInterceptor<>), ctx => !ctx.Handled);
-        });
-
-    /// <summary>
-    /// Gets a composer for registering default formatters.
-    /// </summary>
-    public static IComposer Formatters { get; } = Composer.Create(c =>
-    {
-        c.Register<EllipsisFormatter>(Lifestyle.Singleton);
-        c.RegisterConditional(
-            typeof(IStaticFormatter<>),
-            typeof(TypeNameFormatter<>),
-            Lifestyle.Singleton,
-            c => !c.Handled && c.ServiceType.GenericTypeArguments[0].IsAssignableTo(typeof(Exception)));
-        c.RegisterConditional(
-            typeof(IStaticFormatter<>),
-            typeof(ToStringFormatter<>),
-            Lifestyle.Singleton,
-            c => !c.Handled);
-    });
     /// <summary>
     /// Creates a composer for registering logging decorators.
     /// </summary>
