@@ -79,6 +79,7 @@ public static partial class Extensions
                 o.Composer = Composer.Create(
                     appBuilder.Options.Composer,
                     BlazorModelsComposer,
+                    PresentationComposers.Models,
                     CreateStylesComposer(appBuilder.Capabilities.Configuration.Build()),
                     Composer.Create(c => appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added services")));
             });
