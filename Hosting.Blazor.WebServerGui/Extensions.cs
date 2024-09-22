@@ -162,11 +162,8 @@ public static class Extensions
     /// <summary>
     /// Adds configuration based file logging to the builders capabilities.
     /// </summary>
-    /// <param name="appBuilder"></param>
-    /// <param name="configureOptions"></param>
-    /// <returns></returns>
-    public static WebServerGuiAppBuilder AddFileLogging(this WebServerGuiAppBuilder appBuilder, Action<FileLoggerOptions>? configureOptions = null) =>
-        appBuilder.AddFileLogging<WebServerGuiAppBuilder, WebServerGuiApp, WebApplicationBuilder, WebApplication, BlazorAppBuilderCapabilities>(configureOptions);
+    public static WebServerGuiAppBuilder AddFileLogging(this WebServerGuiAppBuilder appBuilder, String configSection = "Logging", Action<FileLoggerOptions>? configureOptions = null) =>
+        appBuilder.AddFileLogging<WebServerGuiAppBuilder, WebServerGuiApp, WebApplicationBuilder, WebApplication, BlazorAppBuilderCapabilities>(configSection,configureOptions);
     /// <summary>
     /// Adds configuration based console logging to the builders capabilities.
     /// </summary>

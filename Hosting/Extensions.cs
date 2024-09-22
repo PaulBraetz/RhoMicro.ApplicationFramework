@@ -144,11 +144,9 @@ public static class Extensions
     /// <summary>
     /// Adds configuration based file logging to the builders capabilities.
     /// </summary>
-    /// <param name="appBuilder"></param>
-    /// <param name="configureOptions"></param>
-    /// <returns></returns>
     public static TSelf AddFileLogging<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(
         this TSelf appBuilder,
+        String configSection = "Logging",
         Action<FileLoggerOptions>? configureOptions = null)
         where TSelf : AppBuilder<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>
         where TApp : App<TApp, TUnderlyingApp>
@@ -158,7 +156,7 @@ public static class Extensions
 
         const String feature = "FileLogging";
 
-        var config = appBuilder.Capabilities.Configuration.Build();
+        var config = appBuilder.Capabilities.Configuration.Build().GetSection(configSection);
         _ = appBuilder.Capabilities.Logging.AddFile(config, configureOptions ?? ( static o => { } ));
         appBuilder.Options.OnContainerAdd += o =>
         {

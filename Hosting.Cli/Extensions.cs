@@ -34,11 +34,8 @@ public static class Extensions
     /// <summary>
     /// Adds configuration based file logging to the builders capabilities.
     /// </summary>
-    /// <param name="appBuilder"></param>
-    /// <param name="configureOptions"></param>
-    /// <returns></returns>
-    public static CliAppBuilder AddFileLogging(this CliAppBuilder appBuilder, Action<FileLoggerOptions>? configureOptions = null) =>
-        appBuilder.AddFileLogging<CliAppBuilder, CliApp, HostApplicationBuilder, IHost, AppBuilderCapabilities>(configureOptions);
+    public static CliAppBuilder AddFileLogging(this CliAppBuilder appBuilder, String configSection = "Logging", Action<FileLoggerOptions>? configureOptions = null) =>
+        appBuilder.AddFileLogging<CliAppBuilder, CliApp, HostApplicationBuilder, IHost, AppBuilderCapabilities>(configSection, configureOptions);
 
     /// <summary>
     /// Adds configuration based console logging to the builders capabilities.

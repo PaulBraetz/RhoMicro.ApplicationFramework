@@ -74,8 +74,8 @@ public static class Extensions
     /// <summary>
     /// Adds configuration based file logging to the builders capabilities.
     /// </summary>
-    public static LocalGuiAppBuilder AddFileLogging(this LocalGuiAppBuilder appBuilder, Action<FileLoggerOptions>? configureOptions = null) =>
-        appBuilder.AddFileLogging<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>(configureOptions);
+    public static LocalGuiAppBuilder AddFileLogging(this LocalGuiAppBuilder appBuilder, String configSection = "Logging", Action<FileLoggerOptions>? configureOptions = null) =>
+        appBuilder.AddFileLogging<LocalGuiAppBuilder, LocalGuiApp, PhotinoBlazorAppBuilder, PhotinoBlazorApp, BlazorAppBuilderCapabilities>(configSection, configureOptions);
     /// <summary>
     /// Adds logging support to the builders capabilities.
     /// </summary>
