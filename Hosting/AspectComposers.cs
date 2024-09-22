@@ -23,10 +23,6 @@ public static class AspectComposers
     public static IComposer SynchronizationContextDiscardingDecoratorComposer { get; } =
         Composer.Create(c => c.RegisterDecorator(typeof(IService<,>), typeof(SynchronizationContextDiscardingDecorator<,>), Lifestyle.Scoped));
     /// <summary>
-    /// Gets a composer able to compose common aspects using the <see cref="Lifestyle.Scoped"/> lifestyle.
-    /// </summary>
-    public static IComposer Default { get; } = CreateDefault(Lifestyle.Scoped, CommonAspects.All);
-    /// <summary>
     /// Gets a composer for registering default formatters.
     /// </summary>
     public static IComposer Formatters { get; } = Composer.Create(c =>
@@ -54,6 +50,10 @@ public static class AspectComposers
             c.Collection.Register(typeof(IInterceptor<>));
             c.RegisterConditional(typeof(IInterceptor<>), typeof(AggregateInterceptor<>), ctx => !ctx.Handled);
         });
+    /// <summary>
+    /// Gets a composer able to compose common aspects using the <see cref="Lifestyle.Scoped"/> lifestyle.
+    /// </summary>
+    public static IComposer Default { get; } = CreateDefault(Lifestyle.Scoped, CommonAspects.All);
     /// <summary>
     /// Gets a composer able to compose common aspects using the lifestyle provided.
     /// </summary>
