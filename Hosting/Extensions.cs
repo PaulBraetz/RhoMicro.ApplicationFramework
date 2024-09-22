@@ -160,8 +160,15 @@ public static class Extensions
         _ = appBuilder.Capabilities.Logging.AddFile(config, configureOptions ?? ( static o => { } ));
         appBuilder.Options.OnContainerAdd += o =>
         {
-            _ = o.AddLogging();
-            _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added services");
+            try
+            {
+                _ = o.AddLogging();
+                _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added services");
+            } catch(InvalidOperationException ex)
+            when(ex.Message == "The AddLogging extension method can only be called once on a Container instance.")
+            {
+                _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "services already added");
+            }
         };
 
         return appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added");
@@ -178,12 +185,19 @@ public static class Extensions
     {
         ArgumentNullException.ThrowIfNull(appBuilder);
 
-        const String feature = "FileLogging";
+        const String feature = "Logging";
 
         appBuilder.Options.OnContainerAdd += o =>
         {
-            _ = o.AddLogging();
-            _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added services");
+            try
+            {
+                _ = o.AddLogging();
+                _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added services");
+            } catch(InvalidOperationException ex)
+            when(ex.Message == "The AddLogging extension method can only be called once on a Container instance.")
+            {
+                _ = appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "services already added");
+            }
         };
 
         return appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added");
