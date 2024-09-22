@@ -80,7 +80,6 @@ public static partial class Extensions
                     appBuilder.Options.Composer,
                     BlazorModelsComposer,
                     CreateStylesComposer(appBuilder.Capabilities.Configuration.Build()),
-                    AspectComposers.Default,
                     Composer.Create(c => appBuilder.LogFeature<TSelf, TApp, TUnderlyingBuilder, TUnderlyingApp, TCapabilities>(feature, "added services")));
             });
 
