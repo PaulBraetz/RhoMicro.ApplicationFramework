@@ -1,4 +1,8 @@
 ﻿namespace RhoMicro.ApplicationFramework.Composition;
+
+using System;
+using System.Collections.Generic;
+
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 
 using SimpleInjector;
@@ -7,7 +11,7 @@ using SimpleInjector;
 /// Context object used when adding sequential interceptors to a container
 /// collection.
 /// </summary>
-public readonly struct InterceptorAppendContext
+public readonly struct InterceptorAppendContext : IEquatable<InterceptorAppendContext>
 {
     internal InterceptorAppendContext(Container container, Lifestyle? lifestyle)
     {
@@ -70,4 +74,12 @@ public readonly struct InterceptorAppendContext
         _container.Collection.Append<IInterceptor<T>, TInterceptor>(lifestyle);
         return this;
     }
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+    public override Boolean Equals(Object? obj) => obj is InterceptorAppendContext context && Equals(context);
+    public Boolean Equals(InterceptorAppendContext other) => EqualityComparer<Container>.Default.Equals(_container, other._container) && EqualityComparer<Lifestyle?>.Default.Equals(_lifestyle, other._lifestyle);
+    public override Int32 GetHashCode() => HashCode.Combine(_container, _lifestyle);
+    public static Boolean operator ==(InterceptorAppendContext left, InterceptorAppendContext right) => left.Equals(right);
+    public static Boolean operator !=(InterceptorAppendContext left, InterceptorAppendContext right) => !( left  ==  right );
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

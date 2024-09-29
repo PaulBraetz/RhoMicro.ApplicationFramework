@@ -1,7 +1,6 @@
 ﻿namespace RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Abstractions;
 
 using RhoMicro.ApplicationFramework.Composition;
-using RhoMicro.ApplicationFramework.Hosting;
 using RhoMicro.ApplicationFramework.Presentation.Models.Abstractions;
 
 /// <summary>

@@ -1,7 +1,5 @@
 ﻿namespace RhoMicro.ApplicationFramework.Composition;
 
-using RhoMicro.ApplicationFramework.Common;
-
 using SimpleInjector;
 
 /// <summary>

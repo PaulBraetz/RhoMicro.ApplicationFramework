@@ -1,6 +1,4 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
-using System.Diagnostics;
-
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 
 /// <summary>

@@ -1,5 +1,4 @@
 ﻿namespace RhoMicro.ApplicationFramework.Common.Abstractions;
-
 /// <summary>
 /// Abstract factory for creating instances of <typeparamref name="TProduct"/>.
 /// </summary>

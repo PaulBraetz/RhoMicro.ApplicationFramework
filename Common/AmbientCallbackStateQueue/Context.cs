@@ -10,7 +10,7 @@ public static partial class AmbientCallbackStateQueue<T>
     {
         private Context() { }
         private static readonly AsyncLocal<Context> _local = new();
-        private static readonly SemaphoreSlim _instanceGate = new(1);
+        private static readonly SemaphoreSlim _instanceGate = new(1, 1);
         private static Context Instance
         {
             get

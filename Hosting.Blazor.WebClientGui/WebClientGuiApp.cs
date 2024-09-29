@@ -1,7 +1,5 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
 
-using System.Diagnostics;
-
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 using RhoMicro.ApplicationFramework.Common.Environment;

@@ -16,8 +16,6 @@ using Microsoft.Extensions.Hosting;
 using SimpleInjector.Integration.ServiceCollection;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text.Json;
-using System.Runtime.CompilerServices;
 
 /// <summary>
 /// Contains extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.

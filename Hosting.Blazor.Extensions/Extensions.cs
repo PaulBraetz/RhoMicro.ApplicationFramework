@@ -15,7 +15,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
 using RhoMicro.ApplicationFramework.Presentation.Views.Blazor.Components;
 using Microsoft.JSInterop;
-using Microsoft.AspNetCore.Http.Features;
 
 /// <summary>
 /// Extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.

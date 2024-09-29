@@ -39,10 +39,8 @@ public sealed class EnvironmentConfiguration : IEnvironmentConfiguration, IEquat
     {
         ArgumentNullException.ThrowIfNull(variable);
 
-#pragma warning disable RS1035 // Do not use APIs banned for analyzers
         var name = Environment.GetEnvironmentVariable(variable);
         var result = Create(name);
-#pragma warning restore RS1035 // Do not use APIs banned for analyzers
 
         return result;
     }

@@ -9,9 +9,7 @@ public class RootTransactionTests
 {
     public RootTransactionTests() => Root = new ObservableTransactionStateMachine(Comparer);
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private ObservableTransactionStateMachine Root { get; set; }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private IEqualityComparer<ITransactionStateMachine> Comparer { get; } = TransactionStateMachineEqualityComparer.Instance;
 
     [Fact]

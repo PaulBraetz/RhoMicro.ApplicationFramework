@@ -3,9 +3,7 @@
 /// <summary>
 /// The <see cref="NullComponentParameterException"/> is thrown whenever a parameter is <see langword="null"/> when it shouldn't be.
 /// </summary>
-#pragma warning disable CA1032 // Implement standard exception constructors
 public sealed class NullComponentParameterException : Exception
-#pragma warning restore CA1032 // Implement standard exception constructors
 {
     /// <summary>
     /// Initializes a new instance.

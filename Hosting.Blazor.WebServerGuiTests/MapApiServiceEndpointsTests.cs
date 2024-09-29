@@ -10,7 +10,6 @@ using SimpleInjector;
 /// </summary>
 public class ApiServiceEndpointsTests
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     [Fact]
     public async Task MapApiServiceEndpoints_throws_validation_exception_for_nonexistent_request_type()
     {
@@ -26,7 +25,7 @@ public class ApiServiceEndpointsTests
             .Build()
             .MapApiServiceEndpoints();
 
-        var cts = new CancellationTokenSource(100);
+        using var cts = new CancellationTokenSource(100);
         var ioeEx1 = await Assert.ThrowsAsync<InvalidOperationException>(async () => await app.RunAsync(cts.Token));
         var activationEx = Assert.IsType<ActivationException>(ioeEx1.InnerException);
         var ioeEx2 = Assert.IsType<InvalidOperationException>(activationEx.InnerException);

@@ -1,5 +1,4 @@
-﻿#pragma warning disable CA1065 // Do not raise exceptions in unexpected locations
-namespace RhoMicro.ApplicationFramework.Common;
+﻿namespace RhoMicro.ApplicationFramework.Common;
 
 using RhoMicro.ApplicationFramework.Common.Abstractions;
 

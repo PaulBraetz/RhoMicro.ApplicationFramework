@@ -1,6 +1,5 @@
 ﻿namespace RhoMicro.ApplicationFramework.Hosting;
 
-using System.Linq.Expressions;
 using System.Reflection;
 
 using Microsoft.Extensions.Hosting;
@@ -12,7 +11,6 @@ using NReco.Logging.File;
 using RhoMicro.ApplicationFramework.Composition;
 
 using SimpleInjector;
-using SimpleInjector.Integration.ServiceCollection;
 
 /// <summary>
 /// Contains extensions for the <c>RhoMicro.ApplicationFramework.Hosting</c> namespace.

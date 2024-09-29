@@ -1,5 +1,4 @@
-﻿#pragma warning disable CA1848 // Use the LoggerMessage delegates
-namespace RhoMicro.ApplicationFramework.Hosting;
+﻿namespace RhoMicro.ApplicationFramework.Hosting;
 
 using System.Reflection;
 

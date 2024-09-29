@@ -18,12 +18,14 @@ sealed class NullInterceptor<T> : IInterceptor<T>
     /// Prefer <see cref="Instance"/> instead.
     /// </summary>
     public NullInterceptor() { }
+
     /// <summary>
     /// Gets the singleton instance of <see cref="NullInterceptor{T}"/>.
     /// </summary>
-#pragma warning disable CA1000 // Do not declare static members on generic types
+    #pragma warning disable CA1000
     public static NullInterceptor<T> Instance { get; } = new();
-#pragma warning restore CA1000 // Do not declare static members on generic types
+    #pragma warning restore CA1000
+
     /// <inheritdoc/>
     public ValueTask<T> Intercept(T obj, CancellationToken cancellationToken) =>
 #if !GENERATOR

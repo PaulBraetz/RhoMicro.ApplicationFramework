@@ -11,7 +11,6 @@ namespace RhoMicro.ApplicationFramework.Common.Transactions.Abstractions;
 /// <param name="name">The name of the transaction, or <see langword="null"/> if a default name is to be used.</param>
 public abstract class TransactionBase<TContext>(ITransactionStateMachine stateMachine, TContext context, String? name = null) : TransactionBase(stateMachine, name), ITransaction<TContext>
 {
-
     /// <inheritdoc/>
     public TContext Context { get; } = context;
 }
